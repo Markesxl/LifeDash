@@ -19,6 +19,7 @@
 *{box-sizing:border-box; font-family: 'Segoe UI', sans-serif;}
 body{margin:0; background: var(--bg-main); color: var(--text); display: flex; min-height: 100vh;}
 
+/* SIDEBAR MODELO IDEAL */
 .sidebar { width: 240px; background: var(--bg-sidebar); padding: 20px; border-right: 1px solid #1e293b; position: fixed; height: 100vh; z-index: 100; transition: 0.3s; }
 .sidebar h1 { color: var(--accent); font-size: 22px; margin-bottom: 40px; text-align: center; }
 .nav button { width: 100%; background: none; border: none; color: #94a3b8; padding: 12px; text-align: left; border-radius: 8px; cursor: pointer; margin-bottom: 10px; font-size: 15px; display: flex; align-items: center; gap: 10px; }
@@ -29,6 +30,7 @@ body{margin:0; background: var(--bg-main); color: var(--text); display: flex; mi
 .section.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+/* CABEÇALHO E BARRA DE XP */
 .header-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
 .card-slim { background: var(--card-bg); border-radius: 12px; padding: 15px 25px; border: 1px solid #1e293b66; display: flex; align-items: center; min-height: 125px; }
 .profile-img-slim { width: 85px; height: 85px; border-radius: 50%; border: 3px solid var(--accent); object-fit: cover; background: #000; flex-shrink: 0; margin-right: 20px; }
@@ -37,8 +39,8 @@ body{margin:0; background: var(--bg-main); color: var(--text); display: flex; mi
 .phrase-slim { font-style: italic; color: var(--accent) !important; font-size: 11px !important; margin-top: 5px !important; }
 
 .xp-wrapper { margin-top: 10px; width: 95%; }
-.xp-container { background: #020617; border-radius: 10px; height: 10px; overflow: hidden; margin-top: 4px; border: 1px solid #1e293b; }
-.xp-bar { background: var(--accent); height: 100%; width: 0%; transition: 1s; box-shadow: 0 0 10px var(--accent); }
+.xp-container { background: #020617; border-radius: 10px; height: 10px; overflow: hidden; margin-top: 4px; }
+.xp-bar { background: var(--accent); height: 100%; width: 0%; transition: 1s; }
 
 .mini-conquistas { display: flex; flex-wrap: wrap; gap: 8px; }
 .badge-mini { width: 35px; height: 35px; border-radius: 8px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 18px; border: 1px solid var(--gold); }
@@ -46,7 +48,7 @@ body{margin:0; background: var(--bg-main); color: var(--text); display: flex; mi
 .card { background: var(--card-bg); border-radius: 12px; padding: 24px; margin-bottom: 24px; border: 1px solid #1e293b66; }
 h3 { color: var(--accent); font-size: 17px; margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #1e293b; padding-bottom: 10px; }
 
-.cat-header { background: #0f172a; padding: 10px 15px; border-radius: 8px; margin-top: 8px; cursor: pointer; color: var(--accent); font-size: 13px; font-weight: bold; border: 1px solid #1e293b; }
+.cat-header { background: #0f172a; padding: 10px 15px; border-radius: 8px; margin-top: 8px; cursor: pointer; color: var(--accent); font-size: 13px; font-weight: bold; display: flex; justify-content: space-between; border: 1px solid #1e293b; }
 .task-list { display: none; padding: 5px 10px; }
 .task-list.open { display: block; }
 
@@ -57,11 +59,14 @@ h3 { color: var(--accent); font-size: 17px; margin-top: 0; margin-bottom: 20px; 
 .item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #1e293b66; align-items: center; font-size: 14px; gap: 10px; }
 .reg-row { display: flex; gap: 10px; align-items: center; margin-bottom: 15px; }
 input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #1e293b; background: #0f172a; color: white; outline: none; }
-button.primary { padding: 12px 20px; border: none; border-radius: 8px; background: var(--accent); color: #000; font-weight: bold; cursor: pointer; transition: 0.2s; }
+button.primary { padding: 12px 20px; border: none; border-radius: 8px; background: var(--accent); color: #000; font-weight: bold; cursor: pointer; }
 
+/* RESPONSIVIDADE RESTAURADA */
 @media (max-width: 850px) {
+  body { flex-direction: column; }
   .sidebar { width: 100%; height: auto; position: relative; border-right: none; padding: 10px; }
   .nav { display: flex; overflow-x: auto; gap: 8px; }
+  .nav button { margin-bottom: 0; white-space: nowrap; width: auto; font-size: 13px; }
   .main { margin-left: 0; padding: 15px; }
   .header-grid, .grid-2, .charts-grid { grid-template-columns: 1fr !important; }
 }
@@ -200,21 +205,20 @@ const firebaseConfig = {
   messagingSenderId: "270639106877",
   appId: "1:270639106877:web:92c8ec9353c6bacb485354"
 };
-
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
-// SONS
-const sndXP = new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-const sndBadge = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
+// SONS AJUSTADOS
+const sndXP = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3'); // Click/Pop discreto
+const sndFanfare = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'); // Fanfarra para conquistas
 
 let usuarioAtivo = null;
 const INICIAL = { perfil: {nome: "", nascimento: "", sexo: "", profissao: "", frase: "", foto: ""}, categorias: [], tarefas: [], habitos: [], hist: [], xp: 0, badges_unlocked: [] };
 let S = JSON.parse(JSON.stringify(INICIAL));
-let charts = {};
 let openCats = {};
 let tempFoto = "";
+let charts = {};
 const hColors = ['#38bdf8', '#fbbf24', '#22c55e', '#f472b6', '#818cf8', '#fb7185', '#a78bfa'];
 
 const BADGES = [
@@ -226,7 +230,7 @@ const BADGES = [
   {id:'6', icon:'👑', title:'Lenda', req:(s)=>xpInfo(s.xp).n>=10}
 ];
 
-// LOGIN E SYNC
+// FIREBASE AUTH
 function fazerLogin() {
   const email = document.getElementById('email').value;
   const pass = document.getElementById('password').value;
@@ -243,7 +247,8 @@ auth.onAuthStateChanged(user => {
     document.getElementById('login-screen').style.display = 'none';
     db.collection("users").doc(user.uid).onSnapshot(doc => {
       if(doc.exists) { 
-        S = doc.data(); render(); sincronizarInputsPerfil(); 
+        const data = doc.data();
+        if(JSON.stringify(data) !== JSON.stringify(S)) { S = data; render(); sincronizarInputsPerfil(); }
       } else { salvar(); }
     });
   } else { document.getElementById('login-screen').style.display = 'flex'; }
@@ -255,7 +260,7 @@ function salvar() {
   render();
 }
 
-// CÁLCULO IDADE
+// LOGICA DE IDADE DINAMICA
 function calcularIdade(dataNasc) {
   if(!dataNasc) return "--";
   const hoje = new Date();
@@ -274,9 +279,8 @@ function localPreview(input) {
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 300; 
-        const scale = MAX_WIDTH / img.width;
-        canvas.width = MAX_WIDTH; canvas.height = img.height * scale;
+        const scale = 300 / img.width;
+        canvas.width = 300; canvas.height = img.height * scale;
         canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
         tempFoto = canvas.toDataURL('image/jpeg', 0.7);
         document.getElementById("pPreview").src = tempFoto;
@@ -288,14 +292,12 @@ function localPreview(input) {
 }
 
 function salvarPerfilFirebase() {
-  S.perfil = {
-    nome: document.getElementById("pNome").value,
-    nascimento: document.getElementById("pNascimento").value,
-    profissao: document.getElementById("pProfissao").value,
-    sexo: document.getElementById("pSexo").value,
-    frase: document.getElementById("pFrase").value,
-    foto: tempFoto || S.perfil.foto
-  };
+  S.perfil.nome = document.getElementById("pNome").value;
+  S.perfil.nascimento = document.getElementById("pNascimento").value;
+  S.perfil.profissao = document.getElementById("pProfissao").value;
+  S.perfil.sexo = document.getElementById("pSexo").value;
+  S.perfil.frase = document.getElementById("pFrase").value;
+  if(tempFoto) S.perfil.foto = tempFoto;
   salvar(); popup("Perfil sincronizado!");
 }
 
@@ -308,7 +310,7 @@ function sincronizarInputsPerfil() {
   document.getElementById("pPreview").src = S.perfil.foto || "https://via.placeholder.com/150";
 }
 
-// AÇÕES E XP (ANTI-ABUSO)
+// TAREFAS E XP (ANTI-ABUSO)
 function alterarStatusTarefa(idx, st) {
   const t = S.tarefas[idx];
   const hoje = new Date().toLocaleDateString();
@@ -336,26 +338,25 @@ function checkBadges() {
   BADGES.forEach(b => {
     if (!S.badges_unlocked.includes(b.id) && b.req(S)) {
       S.badges_unlocked.push(b.id);
-      sndBadge.play(); popup(`🏆 CONQUISTA: ${b.title}!`);
+      sndFanfare.play(); popup(`🏆 CONQUISTA: ${b.title}!`);
     }
   });
 }
 
-// RESETS
+// RESET DIA (XP E BADGES DO DIA)
 function resetDia() {
-  if(confirm("Isso removerá XP e conquistas ganhos HOJE. Confirmar?")) {
-    const hoje = new Date().toLocaleDateString();
+  if(confirm("Deseja resetar as ações de hoje? Isso removerá o XP ganho hoje.")){ 
+    const h=new Date().toLocaleDateString(); 
     let xpDia = 0;
-    S.hist.forEach(h => { if(h.data === hoje) xpDia += (h.xpGanhos || 0); });
+    S.hist.forEach(item => { if(item.data === h) xpDia += (item.xpGanhos || 0); });
     S.xp = Math.max(0, S.xp - xpDia);
-    S.hist = S.hist.filter(h => h.data !== hoje);
-    S.tarefas.forEach(t => t.status = 'pendente');
-    S.habitos.forEach(h => { if(h.ultimaConclusao === hoje){ h.ultimaConclusao=""; h.total = Math.max(0, h.total-1); } });
-    S.badges_unlocked = []; // Força recalcular conquistas baseadas no novo histórico/XP
-    salvar();
-  }
+    S.hist=S.hist.filter(x=>x.data!==h); 
+    S.tarefas.forEach(t=>t.status='pendente'); 
+    S.habitos.forEach(x=>{if(x.ultimaConclusao===h){x.ultimaConclusao=""; x.total--;}}); 
+    salvar(); 
+  } 
 }
-function resetGeral() { if(confirm("APAGAR TUDO PERMANENTEMENTE?")){ S = JSON.parse(JSON.stringify(INICIAL)); salvar(); } }
+function resetGeral() { if(confirm("Apagar tudo?")){ S = JSON.parse(JSON.stringify(INICIAL)); salvar(); } }
 
 // RENDER
 function render() {
@@ -394,6 +395,7 @@ function render() {
   document.getElementById("listHabs").innerHTML = S.habitos.map((h,i)=>`<div class="item">${h.nome}<button onclick="S.habitos.splice(${i},1);salvar()" style="color:var(--danger);border:none;background:none;cursor:pointer">✖</button></div>`).join("");
   document.getElementById("listHist").innerHTML = S.hist.slice().reverse().map(h=>`<div class="item"><span>${h.nome}</span><small>${h.data}</small></div>`).join("");
   document.getElementById("regTarCat").innerHTML = S.categorias.map(c=>`<option value="${c}">${c}</option>`).join("");
+  
   if(document.getElementById('chartsContainer').style.display === 'grid') initCharts();
 }
 
@@ -406,7 +408,6 @@ function addCat() { const i=document.getElementById("regCatNome"); if(i.value){ 
 function addHab() { const i=document.getElementById("regHabNome"); if(i.value){ S.habitos.push({nome:i.value, total:0, ultimaConclusao:""}); i.value=""; salvar(); } }
 function addTar() { const n=document.getElementById("regTarNome"), c=document.getElementById("regTarCat"); if(n.value && c.value){ S.tarefas.push({nome:n.value, cat:c.value, status:'pendente'}); n.value=""; salvar(); } }
 
-// GRÁFICOS
 function initCharts() {
   const ctxP = document.getElementById('chartPizza')?.getContext('2d');
   const ctxB = document.getElementById('chartBarras')?.getContext('2d');
@@ -421,17 +422,15 @@ function initCharts() {
   if(charts.b) charts.b.destroy();
   charts.b = new Chart(ctxB, { type:'bar', data:{labels:dias.map(d=>d.split('/')[0]), datasets:[{label:'XP', data:dias.map(d=>S.hist.filter(h=>h.data===d).reduce((a,b)=>a+(b.xpGanhos||0),0)), backgroundColor:'#38bdf8'}]}, options:{maintainAspectRatio:false, plugins:{legend:{display:false}}}});
 
-  // GRÁFICO PARALELO (CORRIGIDO)
   if(charts.h) charts.h.destroy();
   const hDs = S.habitos.map((h, i) => ({
     label: h.nome,
-    data: dias.map(() => S.habitos.length - i), // Altura fixa para manter paralelo
+    data: dias.map(() => S.habitos.length - i),
     borderColor: hColors[i % hColors.length],
     pointRadius: dias.map(d => S.hist.find(x => x.nome === h.nome && x.data === d) ? 6 : 0),
-    pointBackgroundColor: hColors[i % hColors.length],
     tension: 0, borderWidth: 2
   }));
-  charts.h = new Chart(ctxH, { type:'line', data:{labels:dias.map(d=>d.split('/')[0]), datasets:hDs}, options:{maintainAspectRatio:false, scales:{y:{display:false, suggestedMax:S.habitos.length+1}, x:{ticks:{color:'#94a3b8'}}}, plugins:{legend:{display:true, position:'bottom', labels:{color:'#e5e7eb', usePointStyle:true}}}}});
+  charts.h = new Chart(ctxH, { type:'line', data:{labels:dias.map(d=>d.split('/')[0]), datasets:hDs}, options:{maintainAspectRatio:false, scales:{y:{display:false}, x:{ticks:{color:'#94a3b8'}}}, plugins:{legend:{display:true, position:'bottom', labels:{color:'#e5e7eb', usePointStyle:true}}}}});
 }
 </script>
 </body>
