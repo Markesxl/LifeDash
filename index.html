@@ -48,23 +48,12 @@ body{margin:0; background: var(--bg-main); color: var(--text); display: flex; mi
 .card { background: var(--card-bg); border-radius: 12px; padding: 24px; margin-bottom: 24px; border: 1px solid #1e293b66; }
 h3 { color: var(--accent); font-size: 17px; margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #1e293b; padding-bottom: 10px; }
 
-/* SWITCH TOGGLE (Item 3) */
-.switch { position: relative; display: inline-block; width: 44px; height: 24px; }
-.switch input { opacity: 0; width: 0; height: 0; }
-.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #1e293b; transition: .4s; border-radius: 24px; border: 1px solid #334155; }
-.slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-input:checked + .slider { background-color: var(--success); border-color: var(--success); }
-input:checked + .slider:before { transform: translateX(20px); }
-
-/* CALENDÁRIO DE HÁBITOS (Item 2) */
-.habit-calendar { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
-.habit-calendar th, .habit-calendar td { border: 1px solid #1e293b; padding: 8px; text-align: center; }
-.habit-calendar th { color: var(--accent); background: #0f172a; }
-.habit-day-check { color: var(--success); font-weight: bold; }
-
 .cat-header { background: #0f172a; padding: 10px 15px; border-radius: 8px; margin-top: 8px; cursor: pointer; color: var(--accent); font-size: 13px; font-weight: bold; display: flex; justify-content: space-between; border: 1px solid #1e293b; }
 .task-list { display: none; padding: 5px 10px; }
 .task-list.open { display: block; }
+
+.charts-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; padding-top: 10px; }
+.chart-box { height: 220px; position: relative; }
 
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
 .item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #1e293b66; align-items: center; font-size: 14px; gap: 10px; }
@@ -72,8 +61,11 @@ input:checked + .slider:before { transform: translateX(20px); }
 input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #1e293b; background: #0f172a; color: white; outline: none; margin-bottom: 10px; }
 button.primary { padding: 12px 20px; border: none; border-radius: 8px; background: var(--accent); color: #000; font-weight: bold; cursor: pointer; }
 
+/* TELA DE LOGIN/REGISTRO */
 #login-screen { position: fixed; inset: 0; background: var(--bg-main); z-index: 10000; display: flex; align-items: center; justify-content: center; overflow-y: auto; padding: 20px; }
 .login-box { background: var(--card-bg); padding: 30px; border-radius: 15px; border: 1px solid var(--accent); width: 100%; max-width: 450px; text-align: center; }
+.login-box h2 { color: var(--accent); margin-top: 0; }
+.toggle-auth { color: var(--accent); cursor: pointer; text-decoration: underline; font-size: 14px; margin-top: 15px; display: block; }
 #popup { position: fixed; top: 20px; right: 20px; background: var(--gold); color: #000; padding: 15px 25px; border-radius: 8px; font-weight: bold; display: none; z-index: 9999; }
 </style>
 </head>
@@ -85,24 +77,30 @@ button.primary { padding: 12px 20px; border: none; border-radius: 8px; backgroun
     <h2>Login</h2>
     <input type="email" id="login-email" placeholder="E-mail">
     <input type="password" id="login-password" placeholder="Senha">
-    <button class="primary" style="width: 100%" onclick="btnClick(); fazerLogin()">Entrar</button>
+    <button class="primary" style="width: 100%" onclick="fazerLogin()">Entrar</button>
     <a href="javascript:void(0)" onclick="recuperarSenha()" style="color: var(--text); font-size: 12px; display: block; margin-top: 10px;">Esqueci minha senha</a>
     <span class="toggle-auth" onclick="toggleAuth('register')">Não tem conta? Registre-se aqui</span>
   </div>
 
   <div class="login-box" id="auth-register" style="display: none;">
     <h2>Criar Nova Conta</h2>
+    <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 15px;">
+        <img id="regPreview" src="https://via.placeholder.com/100" style="width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--accent); object-fit: cover; margin-bottom: 5px;">
+        <input type="file" id="regFoto" onchange="previewRegistro(this)" style="font-size: 11px;">
+    </div>
     <input type="text" id="regNome" placeholder="Nome Completo">
-    <input type="text" id="regNascimento" placeholder="Nascimento (DD/MM/AAAA)" oninput="mascaraData(this)" maxlength="10">
-    <select id="regSexo">
-        <option value="">Sexo...</option>
-        <option>Masculino</option>
-        <option>Feminino</option>
-    </select>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <input type="date" id="regNascimento">
+        <select id="regSexo">
+            <option value="">Sexo...</option>
+            <option>Masculino</option>
+            <option>Feminino</option>
+        </select>
+    </div>
     <input type="text" id="regProfissao" placeholder="Profissão">
     <input type="email" id="regEmail" placeholder="E-mail Real">
     <input type="password" id="regPassword" placeholder="Crie uma Senha">
-    <button class="primary" style="width: 100%" onclick="btnClick(); fazerRegistro()">Cadastrar e Verificar E-mail</button>
+    <button class="primary" style="width: 100%" onclick="fazerRegistro()">Cadastrar e Verificar E-mail</button>
     <span class="toggle-auth" onclick="toggleAuth('login')">Já tem conta? Faça Login</span>
   </div>
 </div>
@@ -112,12 +110,12 @@ button.primary { padding: 12px 20px; border: none; border-radius: 8px; backgroun
 <div class="sidebar">
   <h1>LIFE DASH</h1>
   <div class="nav">
-    <button class="active" onclick="btnClick(); nav('home', this)">🏠 Home</button>
-    <button onclick="btnClick(); nav('conquistas', this)">🏆 Conquistas</button>
-    <button onclick="btnClick(); nav('perfil', this)">👤 Perfil</button>
-    <button onclick="btnClick(); nav('registros', this)">📝 Registros</button>
-    <button onclick="btnClick(); nav('historico', this)">📜 Histórico</button>
-    <button onclick="btnClick(); fazerLogout()" style="margin-top: 30px; color: var(--danger);">🚪 Sair</button>
+    <button class="active" onclick="nav('home', this)">🏠 Home</button>
+    <button onclick="nav('conquistas', this)">🏆 Conquistas</button>
+    <button onclick="nav('perfil', this)">👤 Perfil</button>
+    <button onclick="nav('registros', this)">📝 Registros</button>
+    <button onclick="nav('historico', this)">📜 Histórico</button>
+    <button onclick="fazerLogout()" style="margin-top: 30px; color: var(--danger);">🚪 Sair</button>
   </div>
 </div>
 
@@ -147,11 +145,15 @@ button.primary { padding: 12px 20px; border: none; border-radius: 8px; backgroun
     <div class="grid-2">
       <div class="card"><h3>🚀 Tarefas do Dia</h3><div id="homeTarefas"></div></div>
       <div>
+        <div class="card"><h3>✨ Hábitos Ativos</h3><div id="homeHabitos"></div></div>
         <div class="card">
-            <h3>📅 Monitor de Hábitos (Semanal)</h3>
-            <div id="calendarioHabitosContainer"></div>
+          <h3 onclick="toggleCharts()" style="cursor:pointer">📊 Estatísticas <small style="margin-left:auto; font-size:10px">▼</small></h3>
+          <div id="chartsContainer" class="charts-grid" style="display: none;">
+            <div><div class="chart-box"><canvas id="chartPizza"></canvas></div></div>
+            <div><div class="chart-box"><canvas id="chartBarras"></canvas></div></div>
+            <div><div class="chart-box"><canvas id="chartHabitos"></canvas></div></div>
+          </div>
         </div>
-        <div class="card"><h3>✨ Ações Rápidas</h3><div id="homeHabitos"></div></div>
       </div>
     </div>
   </div>
@@ -162,34 +164,49 @@ button.primary { padding: 12px 20px; border: none; border-radius: 8px; backgroun
 
   <div id="perfil" class="section">
     <div class="card">
-      <h3>👤 Editar Perfil</h3>
-      <input id="pNome" placeholder="Nome">
-      <input id="pNascimento" placeholder="Nascimento (DD/MM/AAAA)" oninput="mascaraData(this)" maxlength="10">
-      <input id="pProfissao" placeholder="Profissão">
-      <select id="pSexo"><option value="">Sexo...</option><option>Masculino</option><option>Feminino</option></select>
-      <input id="pFrase" placeholder="Sua frase..." maxlength="60">
-      <button class="primary" style="width:100%" onclick="btnClick(); salvarPerfilFirebase()">💾 Salvar</button>
+      <h3>👤 Gerenciar Perfil</h3>
+      <div class="grid-2">
+        <div style="text-align: center;">
+          <img id="pPreview" src="https://via.placeholder.com/150" style="width: 150px; height: 150px; border-radius: 50%; border: 4px solid var(--accent); object-fit: cover; margin-bottom: 15px;">
+          <input type="file" onchange="localPreview(this)" style="font-size: 12px">
+        </div>
+        <div>
+          <input id="pNome" placeholder="Nome" style="margin-bottom:10px">
+          <input type="date" id="pNascimento" style="margin-bottom:10px">
+          <input id="pProfissao" placeholder="Profissão" style="margin-bottom:10px">
+          <select id="pSexo" style="margin-bottom:10px"><option value="">Sexo...</option><option>Masculino</option><option>Feminino</option></select>
+          <input id="pFrase" placeholder="Sua frase..." maxlength="60" style="margin-bottom:15px">
+          <button class="primary" style="width:100%" onclick="salvarPerfilFirebase()">💾 Salvar na Nuvem</button>
+        </div>
+      </div>
+      <div style="border-top: 1px solid #1e293b; padding-top: 25px; margin-top: 20px; display: flex; gap: 15px;">
+        <button onclick="resetDia()" style="flex:1; padding:12px; border:1px solid var(--gold); background:none; color:var(--gold); cursor:pointer; font-weight:bold; border-radius:8px;">Resetar Hoje</button>
+        <button onclick="resetGeral()" style="flex:1; padding:12px; border:1px solid var(--danger); background:none; color:var(--danger); cursor:pointer; font-weight:bold; border-radius:8px;">Reset Total</button>
+      </div>
     </div>
   </div>
 
   <div id="registros" class="section">
     <div class="grid-2">
-        <div class="card">
-            <h3>➕ Novo Registro</h3>
-            <p style="color:var(--accent); font-size:11px; font-weight:bold;">CATEGORIA</p>
-            <div class="reg-row"><input id="regCatNome" placeholder="Nome..."><button class="primary" onclick="btnClick(); addCat()">Criar</button></div>
-            <p style="color:var(--accent); font-size:11px; font-weight:bold;">TAREFA</p>
-            <select id="regTarCat" style="margin-bottom:10px"></select>
-            <div class="reg-row"><input id="regTarNome" placeholder="Tarefa..."><button class="primary" onclick="btnClick(); addTar()">Add</button></div>
-            <p style="color:var(--accent); font-size:11px; font-weight:bold;">HÁBITO</p>
-            <div class="reg-row"><input id="regHabNome" placeholder="Hábito..."><button class="primary" onclick="btnClick(); addHab()">Add</button></div>
-        </div>
-        <div class="card">
-            <h3>📋 Gerenciar</h3>
-            <div id="listCats"></div>
-            <div id="listTars"></div>
-            <div id="listHabs"></div>
-        </div>
+      <div class="card">
+        <h3>➕ Novo Registro</h3>
+        <p style="color:var(--accent); font-size:11px; font-weight:bold;">CATEGORIA</p>
+        <div class="reg-row"><input id="regCatNome" placeholder="Nome..."><button class="primary" onclick="addCat()">Criar</button></div>
+        <p style="color:var(--accent); font-size:11px; font-weight:bold;">TAREFA</p>
+        <select id="regTarCat" style="margin-bottom:10px"></select>
+        <div class="reg-row"><input id="regTarNome" placeholder="Tarefa..."><button class="primary" onclick="addTar()">Add</button></div>
+        <p style="color:var(--accent); font-size:11px; font-weight:bold;">HÁBITO</p>
+        <div class="reg-row"><input id="regHabNome" placeholder="Hábito..."><button class="primary" onclick="addHab()">Add</button></div>
+      </div>
+      <div class="card">
+        <h3>📋 Estrutura Ativa</h3>
+        <p style="color:var(--accent); font-size:11px; font-weight:bold;">CATEGORIAS</p>
+        <div id="listCats" style="margin-bottom:15px"></div>
+        <p style="color:var(--accent); font-size:11px; font-weight:bold;">TAREFAS</p>
+        <div id="listTars" style="margin-bottom:15px"></div>
+        <p style="color:var(--accent); font-size:11px; font-weight:bold;">HÁBITOS</p>
+        <div id="listHabs"></div>
+      </div>
     </div>
   </div>
 
@@ -197,7 +214,7 @@ button.primary { padding: 12px 20px; border: none; border-radius: 8px; backgroun
 </div>
 
 <script>
-// --- CONFIGURAÇÃO E SONS (Item 1) ---
+// --- CONFIGURAÇÃO FIREBASE ---
 const firebaseConfig = {
   apiKey: "AIzaSyBkSJDH_aEVsp-LSNGm4XBqWoo_FUIJYNo",
   authDomain: "life-dash-e33f2.firebaseapp.com",
@@ -210,233 +227,303 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
-const sndPlin = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3'); // XP
-const sndFanfare = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'); // Conquista
-const sndLevelUp = new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'); // Novo Nível
-const sndClick = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'); // Botões
+const sndXP = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+const sndFanfare = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
 
-function btnClick() { sndClick.play(); }
-
-// --- LÓGICA DE DATA (Item 4) ---
-function mascaraData(i) {
-    let v = i.value.replace(/\D/g,'');
-    if(v.length > 2) v = v.substring(0,2) + '/' + v.substring(2);
-    if(v.length > 5) v = v.substring(0,5) + '/' + v.substring(5,9);
-    i.value = v;
-}
-
-function parseDataBR(str) {
-    if(!str) return null;
-    const p = str.split('/');
-    return new Date(p[2], p[1]-1, p[0]);
-}
-
-// --- CORE DO SISTEMA ---
 let usuarioAtivo = null;
-const INICIAL = { perfil: {nome:"", nascimento:"", sexo:"", profissao:"", frase:"", verified:false, createdAt:0}, categorias:[], tarefas:[], habitos:[], hist:[], xp:0, badges_unlocked:[], lastReset: "" };
+const INICIAL = { 
+    perfil: {nome: "", nascimento: "", sexo: "", profissao: "", frase: "", foto: "", verified: false, createdAt: 0}, 
+    categorias: [], tarefas: [], habitos: [], hist: [], xp: 0, badges_unlocked: [] 
+};
 let S = JSON.parse(JSON.stringify(INICIAL));
 let openCats = {};
+let tempFoto = "";
+let charts = {};
+const hColors = ['#38bdf8', '#fbbf24', '#22c55e', '#f472b6', '#818cf8', '#fb7185', '#a78bfa'];
+
+const BADGES = [
+  {id:'1', icon:'🦉', title:'Coruja', req:(s)=>s.hist.filter(h=>h.tipo==='T' && parseInt(h.hora)>=20).length>=5},
+  {id:'2', icon:'🚀', title:'Decolagem', req:(s)=>xpInfo(s.xp).n>=2},
+  {id:'3', icon:'🔥', title:'Em Chamas', req:(s)=>s.habitos.some(h=>h.total>=7)},
+  {id:'4', icon:'🧩', title:'Estrategista', req:(s)=>s.categorias.length>=5},
+  {id:'5', icon:'💎', title:'Relíquia', req:(s)=>s.xp>=1000},
+  {id:'6', icon:'👑', title:'Lenda', req:(s)=>xpInfo(s.xp).n>=10}
+];
+
+// --- LOGICA DE REGISTRO E LOGIN ---
+function toggleAuth(mode) {
+    document.getElementById('auth-login').style.display = mode === 'login' ? 'block' : 'none';
+    document.getElementById('auth-register').style.display = mode === 'register' ? 'block' : 'none';
+}
+
+function previewRegistro(input) {
+    if(input.files && input.files[0]){
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const scale = 200 / img.width;
+                canvas.width = 200; canvas.height = img.height * scale;
+                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                tempFoto = canvas.toDataURL('image/jpeg', 0.7);
+                document.getElementById("regPreview").src = tempFoto;
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+async function fazerRegistro() {
+    const email = document.getElementById('regEmail').value;
+    const pass = document.getElementById('regPassword').value;
+    const nome = document.getElementById('regNome').value;
+    
+    if(!email || !pass || !nome) return alert("E-mail, Senha e Nome são obrigatórios!");
+
+    try {
+        const cred = await auth.createUserWithEmailAndPassword(email, pass);
+        await cred.user.sendEmailVerification();
+        
+        const novosDados = JSON.parse(JSON.stringify(INICIAL));
+        novosDados.perfil = {
+            nome: nome,
+            nascimento: document.getElementById('regNascimento').value,
+            sexo: document.getElementById('regSexo').value,
+            profissao: document.getElementById('regProfissao').value,
+            frase: "Bem-vindo! Verifique seu e-mail.",
+            foto: tempFoto || "",
+            verified: false,
+            createdAt: Date.now() // SALVA MOMENTO DA CRIAÇÃO PARA LIMPEZA
+        };
+        
+        await db.collection("users").doc(cred.user.uid).set(novosDados);
+        alert("Conta criada! Verifique seu e-mail para validar o acesso.");
+        auth.signOut();
+        toggleAuth('login');
+    } catch (err) { alert("Erro: " + err.message); }
+}
+
+async function fazerLogin() {
+    const email = document.getElementById('login-email').value;
+    const pass = document.getElementById('login-password').value;
+    if(!email || !pass) return alert("Preencha os campos.");
+
+    try {
+        const cred = await auth.signInWithEmailAndPassword(email, pass);
+        if (!cred.user.emailVerified) {
+            alert("E-mail não verificado!");
+            auth.signOut();
+            return;
+        }
+        // Se verificou agora, atualiza o status no banco
+        await db.collection("users").doc(cred.user.uid).update({"perfil.verified": true});
+    } catch (err) { alert("Erro no login: Verifique seus dados."); }
+}
+
+// --- FUNÇÃO DE AUTO-LIMPEZA (CHAMADA AO INICIAR) ---
+async function limparContasInvalidas() {
+    console.log("Iniciando varredura de limpeza...");
+    const agora = Date.now();
+    const limite24h = 24 * 60 * 60 * 1000;
+
+    try {
+        // Busca usuários que não estão marcados como verificados
+        const snapshot = await db.collection("users")
+            .where("perfil.verified", "==", false)
+            .get();
+
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const criadoEm = data.perfil.createdAt || 0;
+            
+            // Se foi criado há mais de 24 horas e nunca verificou
+            if (agora - criadoEm > limite24h) {
+                console.log("Removendo conta expirada:", doc.id);
+                db.collection("users").doc(doc.id).delete();
+                // Nota: O Auth User precisa ser removido manualmente no console 
+                // ou via Cloud Functions, mas isso já limpa seu banco Firestore.
+            }
+        });
+    } catch (e) { console.log("Erro na limpeza:", e); }
+}
+
+function recuperarSenha() {
+    const email = document.getElementById('login-email').value;
+    if(!email) return alert("Digite o e-mail no campo de login.");
+    auth.sendPasswordResetEmail(email).then(() => alert("E-mail enviado!")).catch(err => alert(err.message));
+}
+
+function fazerLogout() { auth.signOut().then(() => location.reload()); }
 
 auth.onAuthStateChanged(user => {
   if(user && user.emailVerified) {
     usuarioAtivo = user;
     document.getElementById('login-screen').style.display = 'none';
     db.collection("users").doc(user.uid).onSnapshot(doc => {
-      if(doc.exists) { 
-          S = doc.data(); 
-          verificarResetDiario(); // Item 5
-          render(); 
-      }
+      if(doc.exists) { S = doc.data(); render(); sincronizarInputsPerfil(); }
     });
-  } else { document.getElementById('login-screen').style.display = 'flex'; }
+    limparContasInvalidas(); // Roda a limpeza silenciosamente ao entrar
+  } else { 
+    document.getElementById('login-screen').style.display = 'flex'; 
+  }
 });
 
-// Item 5: Reset de tarefas às 00h00
-function verificarResetDiario() {
-    const hoje = new Date().toLocaleDateString('pt-BR');
-    if(S.lastReset !== hoje) {
-        // Remove tarefas concluídas e volta o status das outras
-        S.tarefas = S.tarefas.filter(t => t.status !== 'concluido');
-        S.lastReset = hoje;
-        salvar();
-    }
-}
-
+// --- RESTANTE DAS FUNÇÕES DO SISTEMA (MANTIDAS IGUAIS) ---
 function salvar() {
-    if(usuarioAtivo) db.collection("users").doc(usuarioAtivo.uid).set(S);
+  checkBadges();
+  if(usuarioAtivo) db.collection("users").doc(usuarioAtivo.uid).set(Object.assign({}, S));
+  render();
 }
-
-// Item 3: Toggle Switch para Tarefas
-function toggleTarefa(idx) {
-    btnClick();
-    const t = S.tarefas[idx];
-    const hoje = new Date().toLocaleDateString('pt-BR');
-    
-    if(t.status === 'pendente') {
-        t.status = 'concluido';
-        S.xp += 10;
-        S.hist.push({nome: t.nome, data: hoje, tipo: 'T', cat: t.cat, hora: new Date().getHours(), xpGanhos: 10});
-        sndPlin.play();
-        verificarLevelUp(S.xp - 10, S.xp);
-    } else {
-        t.status = 'pendente';
-        S.xp = Math.max(0, S.xp - 10);
-        const hIdx = S.hist.findLastIndex(h => h.nome === t.nome && h.data === hoje);
-        if(hIdx > -1) S.hist.splice(hIdx, 1);
-    }
-    salvar();
+function calcularIdade(dataNasc) {
+  if(!dataNasc) return "--";
+  const hoje = new Date(); const nasc = new Date(dataNasc);
+  let idade = hoje.getFullYear() - nasc.getFullYear();
+  const m = hoje.getMonth() - nasc.getMonth();
+  if (m < 0 || (m === 0 && hoje.getDate() < nasc.getDate())) idade--;
+  return idade;
 }
-
-function verificarLevelUp(xpAntigo, xpNovo) {
-    if(xpInfo(xpNovo).n > xpInfo(xpAntigo).n) {
-        sndLevelUp.play();
-        popup("🎉 NOVO NÍVEL ALCANÇADO!");
-    }
+function localPreview(input) { 
+  if(input.files && input.files[0]){ 
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const scale = 300 / img.width;
+        canvas.width = 300; canvas.height = img.height * scale;
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        tempFoto = canvas.toDataURL('image/jpeg', 0.7);
+        document.getElementById("pPreview").src = tempFoto;
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(input.files[0]);
+  } 
 }
-
+function salvarPerfilFirebase() {
+  S.perfil.nome = document.getElementById("pNome").value;
+  S.perfil.nascimento = document.getElementById("pNascimento").value;
+  S.perfil.profissao = document.getElementById("pProfissao").value;
+  S.perfil.sexo = document.getElementById("pSexo").value;
+  S.perfil.frase = document.getElementById("pFrase").value;
+  if(tempFoto) S.perfil.foto = tempFoto;
+  salvar(); popup("Sincronizado!");
+}
+function sincronizarInputsPerfil() {
+  document.getElementById("pNome").value = S.perfil.nome || "";
+  document.getElementById("pNascimento").value = S.perfil.nascimento || "";
+  document.getElementById("pProfissao").value = S.perfil.profissao || "";
+  document.getElementById("pSexo").value = S.perfil.sexo || "";
+  document.getElementById("pFrase").value = S.perfil.frase || "";
+  document.getElementById("pPreview").src = S.perfil.foto || "https://via.placeholder.com/150";
+}
+function alterarStatusTarefa(idx, st) {
+  const t = S.tarefas[idx]; const hoje = new Date().toLocaleDateString();
+  if(st==='concluido' && t.status!=='concluido') { 
+    S.xp+=10; S.hist.push({nome:t.nome, data:hoje, tipo:'T', cat:t.cat, hora:new Date().getHours(), xpGanhos:10}); 
+    sndXP.play(); popup("+10 XP!");
+  } else if(st==='pendente' && t.status==='concluido') {
+    S.xp = Math.max(0, S.xp - 10);
+    const hIdx = S.hist.findLastIndex(h => h.nome === t.nome && h.data === hoje);
+    if(hIdx > -1) S.hist.splice(hIdx, 1);
+  }
+  t.status = st; salvar();
+}
 function concluirHabito(i) {
-    btnClick();
-    const h = S.habitos[i];
-    const hoje = new Date().toLocaleDateString('pt-BR');
-    if(h.ultimaConclusao === hoje) return;
-
-    h.total++;
-    h.ultimaConclusao = hoje;
-    S.xp += 15;
-    S.hist.push({nome: h.nome, data: hoje, tipo: 'H', cat: 'Hábito', xpGanhos: 15});
-    sndPlin.play();
-    verificarLevelUp(S.xp - 15, S.xp);
-    salvar();
+  const h = S.habitos[i]; const hoje = new Date().toLocaleDateString();
+  h.total++; h.ultimaConclusao = hoje;
+  S.xp+=15; S.hist.push({nome:h.nome, data:hoje, tipo:'H', cat:'Hábito', xpGanhos:15}); 
+  sndXP.play(); salvar(); popup("+15 XP!");
 }
-
-// Item 2: Calendário de Hábitos Semanal
-function renderCalendarioHabitos() {
-    const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-    const hoje = new Date();
-    const inicioSemana = new Date(hoje);
-    inicioSemana.setDate(hoje.getDate() - hoje.getDay());
-
-    let html = `<table class="habit-calendar"><thead><tr><th>Hábito</th>`;
-    const datasDaSemana = [];
-    
-    for(let i=0; i<7; i++) {
-        let d = new Date(inicioSemana);
-        d.setDate(inicioSemana.getDate() + i);
-        const dataStr = d.toLocaleDateString('pt-BR');
-        datasDaSemana.push(dataStr);
-        html += `<th>${diasSemana[i]}<br><small>${d.getDate()}</small></th>`;
+function checkBadges() {
+  BADGES.forEach(b => {
+    if (!S.badges_unlocked.includes(b.id) && b.req(S)) {
+      S.badges_unlocked.push(b.id);
+      sndFanfare.play(); popup(`🏆 ${b.title}!`);
     }
-    html += `</tr></thead><tbody>`;
-
-    S.habitos.forEach(h => {
-        html += `<tr><td style="text-align:left; font-weight:bold">${h.nome}</td>`;
-        datasDaSemana.forEach(dataStr => {
-            const concluiu = S.hist.some(reg => reg.nome === h.nome && reg.data === dataStr);
-            html += `<td>${concluiu ? '<span class="habit-day-check">✔</span>' : '—'}</td>`;
-        });
-        html += `</tr>`;
-    });
-
-    html += `</tbody></table>`;
-    document.getElementById('calendarioHabitosContainer').innerHTML = html;
+  });
 }
+function resetDia() {
+  if(confirm("Resetar hoje?")){ 
+    const h=new Date().toLocaleDateString(); 
+    let xpDia = 0;
+    S.hist.forEach(item => { if(item.data === h) xpDia += (item.xpGanhos || 0); });
+    S.xp = Math.max(0, S.xp - xpDia);
+    S.hist=S.hist.filter(x=>x.data!==h); 
+    S.tarefas.forEach(t=>t.status='pendente'); 
+    S.habitos.forEach(x=>{if(x.ultimaConclusao===h){x.ultimaConclusao=""; x.total--;}}); 
+    salvar(); 
+  } 
+}
+function resetGeral() { if(confirm("Apagar tudo?")){ S = JSON.parse(JSON.stringify(INICIAL)); salvar(); } }
 
 function render() {
-    const l = xpInfo(S.xp);
-    document.getElementById("hNome").innerText = S.perfil.nome || "---";
-    document.getElementById("hIdade").innerText = calcularIdade(S.perfil.nascimento);
-    document.getElementById("hNivel").innerText = l.n;
-    document.getElementById("xpBar").style.width = l.p + "%";
-    document.getElementById("xpNumerico").innerText = `${Math.floor(l.cur)}/${Math.floor(l.max)} XP`;
+  const l = xpInfo(S.xp); const hoje = new Date().toLocaleDateString();
+  document.getElementById("hNome").innerText = S.perfil.nome || "---";
+  document.getElementById("hIdade").innerText = calcularIdade(S.perfil.nascimento);
+  document.getElementById("hSexo").innerText = S.perfil.sexo || "---";
+  document.getElementById("hProfissao").innerText = S.perfil.profissao || "---";
+  document.getElementById("hFrase").innerText = S.perfil.frase ? `"${S.perfil.frase}"` : "---";
+  document.getElementById("hNivel").innerText = l.n;
+  document.getElementById("xpNumerico").innerText = `${Math.floor(l.cur)}/${Math.floor(l.max)} XP`;
+  document.getElementById("xpBar").style.width = l.p + "%";
+  document.getElementById("hFoto").src = S.perfil.foto || "https://via.placeholder.com/85";
 
-    // Render Tarefas com Switch
-    let tarHtml = "";
-    S.categorias.forEach(cat => {
-        const ts = S.tarefas.filter(t => t.cat === cat);
-        tarHtml += `<div class="cat-header" onclick="toggleCat('${cat}')"><span>${cat}</span></div><div class="task-list ${openCats[cat]?'open':''}">`;
-        ts.forEach(t => {
-            const globalIdx = S.tarefas.indexOf(t);
-            tarHtml += `<div class="item"><span>${t.nome}</span>
-                <label class="switch">
-                    <input type="checkbox" ${t.status==='concluido'?'checked':''} onchange="toggleTarefa(${globalIdx})">
-                    <span class="slider"></span>
-                </label>
-            </div>`;
-        });
-        tarHtml += `</div>`;
-    });
-    document.getElementById("homeTarefas").innerHTML = tarHtml;
-
-    // Ações rápidas de hábitos
-    document.getElementById("homeHabitos").innerHTML = S.habitos.map((h,i) => `
-        <div class="item"><span>${h.nome}</span>
-        <button onclick="concluirHabito(${i})" style="color:var(--success); background:none; border:none; cursor:pointer" ${h.ultimaConclusao===new Date().toLocaleDateString('pt-BR')?'disabled':''}>
-            ${h.ultimaConclusao===new Date().toLocaleDateString('pt-BR')?'Concluído de Hoje':'Marcar como Feito'}
-        </button></div>`).join("");
-
-    renderCalendarioHabitos();
-    checkBadges();
+  let hBadge = ""; let mBadge = "";
+  BADGES.forEach(b => {
+    const ok = S.badges_unlocked.includes(b.id);
+    if(ok) hBadge += `<div class="badge-mini">${b.icon}</div>`;
+    mBadge += `<div style="background:#0f172a; padding:15px; border-radius:12px; text-align:center; border:1px solid ${ok?'var(--gold)':'#1e293b'}; opacity:${ok?1:0.3};"><span style="font-size:30px">${b.icon}</span><h4 style="font-size:12px;margin:5px 0">${b.title}</h4></div>`;
+  });
+  document.getElementById("homeBadges").innerHTML = hBadge;
+  document.getElementById("muralConquistas").innerHTML = mBadge;
+  document.getElementById("homeHabitos").innerHTML = S.habitos.map((h,i) => `<div class="item"><span>${h.nome}</span><button onclick="concluirHabito(${i})" style="color:var(--success); background:none; border:none; cursor:pointer" ${h.ultimaConclusao===hoje?'disabled':''}>${h.ultimaConclusao===hoje?'⏳':'✔'}</button></div>`).join("");
+  
+  let tarHtml = "";
+  S.categorias.forEach(cat => {
+    const ts = S.tarefas.filter(t=>t.cat===cat);
+    tarHtml += `<div class="cat-header" onclick="toggleCat('${cat}')"><span>${cat}</span></div><div class="task-list ${openCats[cat]?'open':''}">` +
+    ts.map(t => `<div class="item"><span>${t.nome}</span><select onchange="alterarStatusTarefa(${S.tarefas.indexOf(t)}, this.value)" style="width:auto; padding:4px;"><option value="pendente" ${t.status==='pendente'?'selected':''}>Pendente</option><option value="concluido" ${t.status==='concluido'?'selected':''}>Feito</option></select></div>`).join("") + `</div>`;
+  });
+  document.getElementById("homeTarefas").innerHTML = tarHtml;
+  document.getElementById("listCats").innerHTML = S.categorias.map((c,i)=>`<div class="item">${c}<button onclick="S.categorias.splice(${i},1);salvar()" style="color:var(--danger);border:none;background:none;cursor:pointer">✖</button></div>`).join("");
+  document.getElementById("listTars").innerHTML = S.tarefas.map((t,i)=>`<div class="item">${t.nome} <small>(${t.cat})</small><button onclick="S.tarefas.splice(${i},1);salvar()" style="color:var(--danger);border:none;background:none;cursor:pointer">✖</button></div>`).join("");
+  document.getElementById("listHabs").innerHTML = S.habitos.map((h,i)=>`<div class="item">${h.nome}<button onclick="S.habitos.splice(${i},1);salvar()" style="color:var(--danger);border:none;background:none;cursor:pointer">✖</button></div>`).join("");
+  document.getElementById("listHist").innerHTML = S.hist.slice().reverse().map(h=>`<div class="item"><span>${h.nome}</span><small>${h.data}</small></div>`).join("");
+  document.getElementById("regTarCat").innerHTML = S.categorias.map(c=>`<option value="${c}">${c}</option>`).join("");
+  if(document.getElementById('chartsContainer').style.display === 'grid') initCharts();
 }
 
-// Funções auxiliares (XP, Idade, Nav, etc)
 function xpInfo(xp) { let n=1, ac=0, pr=100; while(xp>=pr){ n++; ac=pr; pr+=Math.floor(150*Math.pow(1.2,n-1)); } return {n, p:((xp-ac)/(pr-ac))*100, cur:xp-ac, max:pr-ac}; }
-function calcularIdade(nasc) { 
-    if(!nasc || nasc.length < 10) return "--"; 
-    const dN = parseDataBR(nasc); if(!dN) return "--";
-    const hoje = new Date(); let idade = hoje.getFullYear() - dN.getFullYear();
-    if (hoje.getMonth() < dN.getMonth() || (hoje.getMonth() == dN.getMonth() && hoje.getDate() < dN.getDate())) idade--;
-    return idade;
-}
 function nav(id, btn) { document.querySelectorAll(".section").forEach(s=>s.classList.remove("active")); document.getElementById(id).classList.add("active"); document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); }
 function toggleCat(cat) { openCats[cat] = !openCats[cat]; render(); }
+function toggleCharts() { const c = document.getElementById('chartsContainer'); c.style.display = c.style.display === 'none' ? 'grid' : 'none'; if(c.style.display==='grid') initCharts(); }
 function popup(m){ const p=document.getElementById("popup"); p.innerText=m; p.style.display="block"; setTimeout(()=>p.style.display="none",3000); }
-function checkBadges() { 
-    BADGES.forEach(b => { 
-        if (!S.badges_unlocked.includes(b.id) && b.req(S)) { 
-            S.badges_unlocked.push(b.id); sndFanfare.play(); popup(`🏆 CONQUISTA: ${b.title}`); salvar();
-        } 
-    }); 
-}
-
-// Registro e Perfil
-async function fazerRegistro() {
-    const email = document.getElementById('regEmail').value;
-    const pass = document.getElementById('regPassword').value;
-    const nome = document.getElementById('regNome').value;
-    if(!email || !pass || !nome) return alert("Preencha os campos obrigatórios.");
-    try {
-        const cred = await auth.createUserWithEmailAndPassword(email, pass);
-        await cred.user.sendEmailVerification();
-        const novosDados = JSON.parse(JSON.stringify(INICIAL));
-        novosDados.perfil = { nome, nascimento: document.getElementById('regNascimento').value, sexo: document.getElementById('regSexo').value, profissao: document.getElementById('regProfissao').value, createdAt: Date.now() };
-        await db.collection("users").doc(cred.user.uid).set(novosDados);
-        alert("Verifique seu e-mail!"); auth.signOut(); toggleAuth('login');
-    } catch (e) { alert(e.message); }
-}
-
-async function fazerLogin() {
-    const email = document.getElementById('login-email').value;
-    const pass = document.getElementById('login-password').value;
-    try {
-        const cred = await auth.signInWithEmailAndPassword(email, pass);
-        if(!cred.user.emailVerified) { alert("E-mail não verificado!"); auth.signOut(); }
-    } catch(e) { alert("Erro de login."); }
-}
-
-function salvarPerfilFirebase() {
-    S.perfil.nome = document.getElementById("pNome").value;
-    S.perfil.nascimento = document.getElementById("pNascimento").value;
-    S.perfil.profissao = document.getElementById("pProfissao").value;
-    S.perfil.sexo = document.getElementById("pSexo").value;
-    S.perfil.frase = document.getElementById("pFrase").value;
-    salvar(); popup("Perfil salvo!");
-}
-
 function addCat() { const i=document.getElementById("regCatNome"); if(i.value){ S.categorias.push(i.value); i.value=""; salvar(); } }
 function addHab() { const i=document.getElementById("regHabNome"); if(i.value){ S.habitos.push({nome:i.value, total:0, ultimaConclusao:""}); i.value=""; salvar(); } }
 function addTar() { const n=document.getElementById("regTarNome"), c=document.getElementById("regTarCat"); if(n.value && c.value){ S.tarefas.push({nome:n.value, cat:c.value, status:'pendente'}); n.value=""; salvar(); } }
-function toggleAuth(mode) { document.getElementById('auth-login').style.display = mode === 'login' ? 'block' : 'none'; document.getElementById('auth-register').style.display = mode === 'register' ? 'block' : 'none'; }
-function fazerLogout() { auth.signOut().then(() => location.reload()); }
+
+function initCharts() {
+  const ctxP = document.getElementById('chartPizza')?.getContext('2d');
+  const ctxB = document.getElementById('chartBarras')?.getContext('2d');
+  const ctxH = document.getElementById('chartHabitos')?.getContext('2d');
+  if(!ctxP) return;
+  const dias = [...Array(7)].map((_, i) => { const d = new Date(); d.setDate(d.getDate()-i); return d.toLocaleDateString(); }).reverse();
+  if(charts.p) charts.p.destroy();
+  const cats = {}; S.hist.forEach(h => { if(h.cat) cats[h.cat] = (cats[h.cat]||0)+1; });
+  charts.p = new Chart(ctxP, { type:'pie', data:{labels:Object.keys(cats), datasets:[{data:Object.values(cats), backgroundColor:hColors}]}, options:{maintainAspectRatio:false, plugins:{legend:{display:false}}}});
+  if(charts.b) charts.b.destroy();
+  charts.b = new Chart(ctxB, { type:'bar', data:{labels:dias.map(d=>d.split('/')[0]), datasets:[{label:'XP', data:dias.map(d=>S.hist.filter(h=>h.data===d).reduce((a,b)=>a+(b.xpGanhos||0),0)), backgroundColor:'#38bdf8'}]}, options:{maintainAspectRatio:false, plugins:{legend:{display:false}}}});
+  if(charts.h) charts.h.destroy();
+  const hDs = S.habitos.map((h, i) => ({
+    label: h.nome, data: dias.map(() => S.habitos.length - i), borderColor: hColors[i % hColors.length],
+    pointRadius: dias.map(d => S.hist.find(x => x.nome === h.nome && x.data === d) ? 6 : 0),
+    tension: 0, borderWidth: 2
+  }));
+  charts.h = new Chart(ctxH, { type:'line', data:{labels:dias.map(d=>d.split('/')[0]), datasets:hDs}, options:{maintainAspectRatio:false, scales:{y:{display:false}}, plugins:{legend:{display:true, position:'bottom', labels:{color:'#e5e7eb'}}}}});
+}
 </script>
 </body>
 </html>
