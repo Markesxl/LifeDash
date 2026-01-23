@@ -17,10 +17,36 @@
   --gold: #f59e0b; --danger: #ef4444; --success: #22c55e;
 }
 *{box-sizing:border-box; font-family: 'Segoe UI', sans-serif;}
-body{margin:0; background: var(--bg-main); color: var(--text); display: flex; min-height: 100vh;}
+body{margin:0; background: var(--bg-main); color: var(--text); display: flex; min-height: 100vh; overflow-x: hidden;}
 
-/* SIDEBAR */
-.sidebar { width: 240px; background: var(--bg-sidebar); padding: 20px; border-right: 1px solid #1e293b; position: fixed; height: 100vh; z-index: 100; transition: 0.3s; }
+/* BOTÃO MENU MOBILE */
+.menu-toggle {
+    display: none;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 2000;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+/* SIDEBAR RESPONSIVA */
+.sidebar { 
+    width: 240px; 
+    background: var(--bg-sidebar); 
+    padding: 20px; 
+    border-right: 1px solid #1e293b; 
+    position: fixed; 
+    height: 100vh; 
+    z-index: 1500; 
+    transition: 0.3s; 
+}
 .sidebar h1 { color: var(--accent); font-size: 22px; margin-bottom: 40px; text-align: center; }
 .nav button { width: 100%; background: none; border: none; color: #94a3b8; padding: 12px; text-align: left; border-radius: 8px; cursor: pointer; margin-bottom: 10px; font-size: 15px; display: flex; align-items: center; gap: 10px; }
 .nav button.active { background: #1e293b; color: #fff; }
@@ -28,9 +54,8 @@ body{margin:0; background: var(--bg-main); color: var(--text); display: flex; mi
 .main { flex: 1; padding: 30px; margin-left: 240px; min-width: 0; transition: 0.3s; }
 .section { display: none; animation: fadeIn 0.3s ease; }
 .section.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* CABEÇALHO */
+/* CABEÇALHO GRID */
 .header-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
 .card-slim { background: var(--card-bg); border-radius: 12px; padding: 15px 25px; border: 1px solid #1e293b66; display: flex; align-items: center; min-height: 125px; }
 .profile-img-slim { width: 85px; height: 85px; border-radius: 50%; border: 3px solid var(--accent); object-fit: cover; background: #000; flex-shrink: 0; margin-right: 20px; }
@@ -64,12 +89,28 @@ button.primary { padding: 12px 20px; border: none; border-radius: 8px; backgroun
 /* TELA DE LOGIN/REGISTRO */
 #login-screen { position: fixed; inset: 0; background: var(--bg-main); z-index: 10000; display: flex; align-items: center; justify-content: center; overflow-y: auto; padding: 20px; }
 .login-box { background: var(--card-bg); padding: 30px; border-radius: 15px; border: 1px solid var(--accent); width: 100%; max-width: 450px; text-align: center; }
-.login-box h2 { color: var(--accent); margin-top: 0; }
-.toggle-auth { color: var(--accent); cursor: pointer; text-decoration: underline; font-size: 14px; margin-top: 15px; display: block; }
-#popup { position: fixed; top: 20px; right: 20px; background: var(--gold); color: #000; padding: 15px 25px; border-radius: 8px; font-weight: bold; display: none; z-index: 9999; }
+
+/* MEDIA QUERIES PARA MOBILE */
+@media (max-width: 992px) {
+    .charts-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+    .menu-toggle { display: block; }
+    .sidebar { left: -240px; }
+    .sidebar.open { left: 0; }
+    .main { margin-left: 0; padding: 80px 15px 20px 15px; }
+    .header-grid, .grid-2 { grid-template-columns: 1fr; }
+    .card-slim { flex-direction: column; text-align: center; height: auto; padding: 20px; }
+    .profile-img-slim { margin-right: 0; margin-bottom: 15px; }
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 </style>
 </head>
 <body>
+
+<button class="menu-toggle" onclick="toggleSidebar()">☰ Menu</button>
 
 <div id="login-screen">
   <div class="login-box" id="auth-login">
@@ -79,7 +120,7 @@ button.primary { padding: 12px 20px; border: none; border-radius: 8px; backgroun
     <input type="password" id="login-password" placeholder="Senha">
     <button class="primary" style="width: 100%" onclick="fazerLogin()">Entrar</button>
     <a href="javascript:void(0)" onclick="recuperarSenha()" style="color: var(--text); font-size: 12px; display: block; margin-top: 10px;">Esqueci minha senha</a>
-    <span class="toggle-auth" onclick="toggleAuth('register')">Não tem conta? Registre-se aqui</span>
+    <span class="toggle-auth" onclick="toggleAuth('register')" style="color: var(--accent); cursor: pointer; text-decoration: underline; font-size: 14px; margin-top: 15px; display: block;">Não tem conta? Registre-se aqui</span>
   </div>
 
   <div class="login-box" id="auth-register" style="display: none;">
@@ -101,20 +142,20 @@ button.primary { padding: 12px 20px; border: none; border-radius: 8px; backgroun
     <input type="email" id="regEmail" placeholder="E-mail Real">
     <input type="password" id="regPassword" placeholder="Crie uma Senha">
     <button class="primary" style="width: 100%" onclick="fazerRegistro()">Cadastrar e Verificar E-mail</button>
-    <span class="toggle-auth" onclick="toggleAuth('login')">Já tem conta? Faça Login</span>
+    <span class="toggle-auth" onclick="toggleAuth('login')" style="color: var(--accent); cursor: pointer; text-decoration: underline; font-size: 14px; margin-top: 15px; display: block;">Já tem conta? Faça Login</span>
   </div>
 </div>
 
-<div id="popup"></div>
+<div id="popup" style="position: fixed; top: 20px; right: 20px; background: var(--gold); color: #000; padding: 15px 25px; border-radius: 8px; font-weight: bold; display: none; z-index: 9999;"></div>
 
 <div class="sidebar">
   <h1>LIFE DASH</h1>
   <div class="nav">
-    <button class="active" onclick="nav('home', this)">🏠 Home</button>
-    <button onclick="nav('conquistas', this)">🏆 Conquistas</button>
-    <button onclick="nav('perfil', this)">👤 Perfil</button>
-    <button onclick="nav('registros', this)">📝 Registros</button>
-    <button onclick="nav('historico', this)">📜 Histórico</button>
+    <button class="active" onclick="irPara('home', this)">🏠 Home</button>
+    <button onclick="irPara('conquistas', this)">🏆 Conquistas</button>
+    <button onclick="irPara('perfil', this)">👤 Perfil</button>
+    <button onclick="irPara('registros', this)">📝 Registros</button>
+    <button onclick="irPara('historico', this)">📜 Histórico</button>
     <button onclick="fazerLogout()" style="margin-top: 30px; color: var(--danger);">🚪 Sair</button>
   </div>
 </div>
@@ -179,9 +220,9 @@ button.primary { padding: 12px 20px; border: none; border-radius: 8px; backgroun
           <button class="primary" style="width:100%" onclick="salvarPerfilFirebase()">💾 Salvar na Nuvem</button>
         </div>
       </div>
-      <div style="border-top: 1px solid #1e293b; padding-top: 25px; margin-top: 20px; display: flex; gap: 15px;">
-        <button onclick="resetDia()" style="flex:1; padding:12px; border:1px solid var(--gold); background:none; color:var(--gold); cursor:pointer; font-weight:bold; border-radius:8px;">Resetar Hoje</button>
-        <button onclick="resetGeral()" style="flex:1; padding:12px; border:1px solid var(--danger); background:none; color:var(--danger); cursor:pointer; font-weight:bold; border-radius:8px;">Reset Total</button>
+      <div style="border-top: 1px solid #1e293b; padding-top: 25px; margin-top: 20px; display: flex; flex-wrap: wrap; gap: 15px;">
+        <button onclick="resetDia()" style="flex:1; min-width: 120px; padding:12px; border:1px solid var(--gold); background:none; color:var(--gold); cursor:pointer; font-weight:bold; border-radius:8px;">Resetar Hoje</button>
+        <button onclick="resetGeral()" style="flex:1; min-width: 120px; padding:12px; border:1px solid var(--danger); background:none; color:var(--danger); cursor:pointer; font-weight:bold; border-radius:8px;">Reset Total</button>
       </div>
     </div>
   </div>
@@ -250,7 +291,16 @@ const BADGES = [
   {id:'6', icon:'👑', title:'Lenda', req:(s)=>xpInfo(s.xp).n>=10}
 ];
 
-// --- LOGICA DE REGISTRO E LOGIN ---
+// --- FUNÇÕES DE NAVEGAÇÃO MOBILE ---
+function toggleSidebar() {
+    document.querySelector('.sidebar').classList.toggle('open');
+}
+
+function irPara(id, btn) {
+    nav(id, btn);
+    if(window.innerWidth <= 768) toggleSidebar();
+}
+
 function toggleAuth(mode) {
     document.getElementById('auth-login').style.display = mode === 'login' ? 'block' : 'none';
     document.getElementById('auth-register').style.display = mode === 'register' ? 'block' : 'none';
@@ -295,7 +345,7 @@ async function fazerRegistro() {
             frase: "Bem-vindo! Verifique seu e-mail.",
             foto: tempFoto || "",
             verified: false,
-            createdAt: Date.now() // SALVA MOMENTO DA CRIAÇÃO PARA LIMPEZA
+            createdAt: Date.now()
         };
         
         await db.collection("users").doc(cred.user.uid).set(novosDados);
@@ -317,33 +367,20 @@ async function fazerLogin() {
             auth.signOut();
             return;
         }
-        // Se verificou agora, atualiza o status no banco
         await db.collection("users").doc(cred.user.uid).update({"perfil.verified": true});
     } catch (err) { alert("Erro no login: Verifique seus dados."); }
 }
 
-// --- FUNÇÃO DE AUTO-LIMPEZA (CHAMADA AO INICIAR) ---
 async function limparContasInvalidas() {
-    console.log("Iniciando varredura de limpeza...");
     const agora = Date.now();
     const limite24h = 24 * 60 * 60 * 1000;
-
     try {
-        // Busca usuários que não estão marcados como verificados
-        const snapshot = await db.collection("users")
-            .where("perfil.verified", "==", false)
-            .get();
-
+        const snapshot = await db.collection("users").where("perfil.verified", "==", false).get();
         snapshot.forEach(doc => {
             const data = doc.data();
             const criadoEm = data.perfil.createdAt || 0;
-            
-            // Se foi criado há mais de 24 horas e nunca verificou
             if (agora - criadoEm > limite24h) {
-                console.log("Removendo conta expirada:", doc.id);
                 db.collection("users").doc(doc.id).delete();
-                // Nota: O Auth User precisa ser removido manualmente no console 
-                // ou via Cloud Functions, mas isso já limpa seu banco Firestore.
             }
         });
     } catch (e) { console.log("Erro na limpeza:", e); }
@@ -364,13 +401,12 @@ auth.onAuthStateChanged(user => {
     db.collection("users").doc(user.uid).onSnapshot(doc => {
       if(doc.exists) { S = doc.data(); render(); sincronizarInputsPerfil(); }
     });
-    limparContasInvalidas(); // Roda a limpeza silenciosamente ao entrar
+    limparContasInvalidas();
   } else { 
     document.getElementById('login-screen').style.display = 'flex'; 
   }
 });
 
-// --- RESTANTE DAS FUNÇÕES DO SISTEMA (MANTIDAS IGUAIS) ---
 function salvar() {
   checkBadges();
   if(usuarioAtivo) db.collection("users").doc(usuarioAtivo.uid).set(Object.assign({}, S));
