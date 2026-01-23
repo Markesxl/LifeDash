@@ -73,7 +73,11 @@ body{margin:0; background: var(--bg-main); color: var(--text); display: flex; mi
 .card { background: var(--card-bg); border-radius: 12px; padding: 24px; margin-bottom: 24px; border: 1px solid #1e293b66; }
 h3 { color: var(--accent); font-size: 17px; margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #1e293b; padding-bottom: 10px; }
 
-.cat-header { background: #0f172a; padding: 10px 15px; border-radius: 8px; margin-top: 8px; cursor: pointer; color: var(--accent); font-size: 13px; font-weight: bold; display: flex; justify-content: space-between; border: 1px solid #1e293b; }
+/* ESTILO CATEGORIAS COM CONTADOR */
+.cat-header { background: #0f172a; padding: 10px 15px; border-radius: 8px; margin-top: 8px; cursor: pointer; color: var(--accent); font-size: 13px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; border: 1px solid #1e293b; }
+.cat-counter { font-size: 10px; background: #1e293b; padding: 2px 8px; border-radius: 12px; color: #94a3b8; margin-left: auto; margin-right: 10px; }
+.cat-done { color: var(--success); border-color: var(--success); }
+
 .task-list { display: none; padding: 5px 10px; }
 .task-list.open { display: block; }
 
@@ -81,7 +85,16 @@ h3 { color: var(--accent); font-size: 17px; margin-top: 0; margin-bottom: 20px; 
 .chart-box { height: 220px; position: relative; }
 
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-.item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #1e293b66; align-items: center; font-size: 14px; gap: 10px; }
+.item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #1e293b66; align-items: center; font-size: 14px; gap: 10px; }
+
+/* ESTILO HÁBITOS REFINADO */
+.habit-info { display: flex; flex-direction: column; gap: 2px; }
+.streak-label { font-size: 10px; font-weight: 300; color: var(--gold); display: flex; align-items: center; gap: 3px; }
+.habit-week-grid { display: flex; gap: 4px; margin-top: 5px; }
+.day-dot { width: 8px; height: 8px; border-radius: 50%; background: #1e293b; border: 1px solid #334155; position: relative; }
+.day-dot.active { background: var(--success); border-color: var(--success); box-shadow: 0 0 5px var(--success); }
+.day-dot:hover::after { content: attr(data-date); position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); font-size: 9px; background: #000; padding: 2px 5px; border-radius: 4px; white-space: nowrap; z-index: 10; }
+
 .reg-row { display: flex; gap: 10px; align-items: center; margin-bottom: 15px; }
 input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #1e293b; background: #0f172a; color: white; outline: none; margin-bottom: 10px; }
 button.primary { padding: 12px 20px; border: none; border-radius: 8px; background: var(--accent); color: #000; font-weight: bold; cursor: pointer; }
@@ -90,10 +103,6 @@ button.primary { padding: 12px 20px; border: none; border-radius: 8px; backgroun
 #login-screen { position: fixed; inset: 0; background: var(--bg-main); z-index: 10000; display: flex; align-items: center; justify-content: center; overflow-y: auto; padding: 20px; }
 .login-box { background: var(--card-bg); padding: 30px; border-radius: 15px; border: 1px solid var(--accent); width: 100%; max-width: 450px; text-align: center; }
 
-/* ESTILO STREAK */
-.streak-badge { font-size: 11px; background: #1e293b; color: var(--gold); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--gold); margin-left: 8px; }
-
-/* MEDIA QUERIES PARA MOBILE */
 @media (max-width: 992px) {
     .charts-grid { grid-template-columns: 1fr; }
 }
@@ -281,7 +290,6 @@ const INICIAL = {
 };
 let S = JSON.parse(JSON.stringify(INICIAL));
 
-// Carrega categorias abertas do navegador (LocalStorage)
 let openCats = JSON.parse(localStorage.getItem('lifeDash_openCats')) || {};
 let tempFoto = "";
 let charts = {};
@@ -296,16 +304,8 @@ const BADGES = [
   {id:'6', icon:'👑', title:'Lenda', req:(s)=>xpInfo(s.xp).n>=10}
 ];
 
-// --- FUNÇÕES DE NAVEGAÇÃO MOBILE ---
-function toggleSidebar() {
-    document.querySelector('.sidebar').classList.toggle('open');
-}
-
-function irPara(id, btn) {
-    nav(id, btn);
-    if(window.innerWidth <= 768) toggleSidebar();
-}
-
+function toggleSidebar() { document.querySelector('.sidebar').classList.toggle('open'); }
+function irPara(id, btn) { nav(id, btn); if(window.innerWidth <= 768) toggleSidebar(); }
 function toggleAuth(mode) {
     document.getElementById('auth-login').style.display = mode === 'login' ? 'block' : 'none';
     document.getElementById('auth-register').style.display = mode === 'register' ? 'block' : 'none';
@@ -334,29 +334,15 @@ async function fazerRegistro() {
     const email = document.getElementById('regEmail').value;
     const pass = document.getElementById('regPassword').value;
     const nome = document.getElementById('regNome').value;
-    
     if(!email || !pass || !nome) return alert("E-mail, Senha e Nome são obrigatórios!");
-
     try {
         const cred = await auth.createUserWithEmailAndPassword(email, pass);
         await cred.user.sendEmailVerification();
-        
         const novosDados = JSON.parse(JSON.stringify(INICIAL));
-        novosDados.perfil = {
-            nome: nome,
-            nascimento: document.getElementById('regNascimento').value,
-            sexo: document.getElementById('regSexo').value,
-            profissao: document.getElementById('regProfissao').value,
-            frase: "Bem-vindo! Verifique seu e-mail.",
-            foto: tempFoto || "",
-            verified: false,
-            createdAt: Date.now()
-        };
-        
+        novosDados.perfil = { nome: nome, nascimento: document.getElementById('regNascimento').value, sexo: document.getElementById('regSexo').value, profissao: document.getElementById('regProfissao').value, frase: "Bem-vindo! Verifique seu e-mail.", foto: tempFoto || "", verified: false, createdAt: Date.now() };
         await db.collection("users").doc(cred.user.uid).set(novosDados);
-        alert("Conta criada! Verifique seu e-mail para validar o acesso.");
-        auth.signOut();
-        toggleAuth('login');
+        alert("Conta criada! Verifique seu e-mail.");
+        auth.signOut(); toggleAuth('login');
     } catch (err) { alert("Erro: " + err.message); }
 }
 
@@ -364,37 +350,11 @@ async function fazerLogin() {
     const email = document.getElementById('login-email').value;
     const pass = document.getElementById('login-password').value;
     if(!email || !pass) return alert("Preencha os campos.");
-
     try {
         const cred = await auth.signInWithEmailAndPassword(email, pass);
-        if (!cred.user.emailVerified) {
-            alert("E-mail não verificado!");
-            auth.signOut();
-            return;
-        }
+        if (!cred.user.emailVerified) { alert("E-mail não verificado!"); auth.signOut(); return; }
         await db.collection("users").doc(cred.user.uid).update({"perfil.verified": true});
-    } catch (err) { alert("Erro no login: Verifique seus dados."); }
-}
-
-async function limparContasInvalidas() {
-    const agora = Date.now();
-    const limite24h = 24 * 60 * 60 * 1000;
-    try {
-        const snapshot = await db.collection("users").where("perfil.verified", "==", false).get();
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            const criadoEm = data.perfil.createdAt || 0;
-            if (agora - criadoEm > limite24h) {
-                db.collection("users").doc(doc.id).delete();
-            }
-        });
-    } catch (e) { console.log("Erro na limpeza:", e); }
-}
-
-function recuperarSenha() {
-    const email = document.getElementById('login-email').value;
-    if(!email) return alert("Digite o e-mail no campo de login.");
-    auth.sendPasswordResetEmail(email).then(() => alert("E-mail enviado!")).catch(err => alert(err.message));
+    } catch (err) { alert("Erro no login."); }
 }
 
 function fazerLogout() { auth.signOut().then(() => location.reload()); }
@@ -406,10 +366,7 @@ auth.onAuthStateChanged(user => {
     db.collection("users").doc(user.uid).onSnapshot(doc => {
       if(doc.exists) { S = doc.data(); render(); sincronizarInputsPerfil(); }
     });
-    limparContasInvalidas();
-  } else { 
-    document.getElementById('login-screen').style.display = 'flex'; 
-  }
+  } else { document.getElementById('login-screen').style.display = 'flex'; }
 });
 
 function salvar() {
@@ -434,8 +391,7 @@ function localPreview(input) {
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        const scale = 300 / img.width;
-        canvas.width = 300; canvas.height = img.height * scale;
+        const scale = 300 / img.width; canvas.width = 300; canvas.height = img.height * scale;
         canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
         tempFoto = canvas.toDataURL('image/jpeg', 0.7);
         document.getElementById("pPreview").src = tempFoto;
@@ -479,21 +435,13 @@ function alterarStatusTarefa(idx, st) {
 }
 
 function concluirHabito(i) {
-  const h = S.habitos[i]; 
-  const hoje = new Date();
-  const hojeStr = hoje.toLocaleDateString();
-  
-  // Lógica de Streak (Sequência)
+  const h = S.habitos[i]; const hoje = new Date(); const hojeStr = hoje.toLocaleDateString();
   if (!h.streak) h.streak = 0;
-  if (!h.ultimaConclusao) {
-      h.streak = 1;
-  } else {
+  if (!h.ultimaConclusao) { h.streak = 1; } else {
       const ultima = new Date(h.ultimaConclusao.split('/').reverse().join('-'));
       const diff = Math.floor((hoje - ultima) / (1000 * 60 * 60 * 24));
-      if (diff === 1) h.streak++;
-      else if (diff > 1) h.streak = 1;
+      if (diff === 1) h.streak++; else if (diff > 1) h.streak = 1;
   }
-
   h.total++; h.ultimaConclusao = hojeStr;
   S.xp+=15; S.hist.push({nome:h.nome, data:hojeStr, tipo:'H', cat:'Hábito', xpGanhos:15}); 
   sndXP.play(); salvar(); popup("+15 XP!");
@@ -511,8 +459,7 @@ function checkBadges() {
 function resetDia() {
   if(confirm("Resetar hoje?")){ 
     const h=new Date().toLocaleDateString(); 
-    let xpDia = 0;
-    S.hist.forEach(item => { if(item.data === h) xpDia += (item.xpGanhos || 0); });
+    let xpDia = 0; S.hist.forEach(item => { if(item.data === h) xpDia += (item.xpGanhos || 0); });
     S.xp = Math.max(0, S.xp - xpDia);
     S.hist=S.hist.filter(x=>x.data!==h); 
     S.tarefas.forEach(t=>t.status='pendente'); 
@@ -535,32 +482,69 @@ function render() {
   document.getElementById("xpBar").style.width = l.p + "%";
   document.getElementById("hFoto").src = S.perfil.foto || "https://via.placeholder.com/85";
 
-  let hBadge = ""; let mBadge = "";
-  BADGES.forEach(b => {
-    const ok = S.badges_unlocked.includes(b.id);
-    if(ok) hBadge += `<div class="badge-mini" title="${b.title}">${b.icon}</div>`;
-    mBadge += `<div style="background:#0f172a; padding:15px; border-radius:12px; text-align:center; border:1px solid ${ok?'var(--gold)':'#1e293b'}; opacity:${ok?1:0.3};"><span style="font-size:30px">${b.icon}</span><h4 style="font-size:12px;margin:5px 0">${b.title}</h4></div>`;
-  });
+  let hBadge = "";
+  BADGES.forEach(b => { if(S.badges_unlocked.includes(b.id)) hBadge += `<div class="badge-mini" title="${b.title}">${b.icon}</div>`; });
   document.getElementById("homeBadges").innerHTML = hBadge;
-  document.getElementById("muralConquistas").innerHTML = mBadge;
   
-  // Render Hábitos com Streak
+  // Render de Hábitos com "Mapa de Calor" Semanal
+  const ultimos7Dias = [...Array(7)].map((_, i) => {
+      const d = new Date(); d.setDate(d.getDate() - (6 - i));
+      return d.toLocaleDateString();
+  });
+
   document.getElementById("homeHabitos").innerHTML = S.habitos.map((h,i) => `
-    <div class="item">
-        <span>${h.nome} ${h.streak > 0 ? `<span class="streak-badge">🔥 ${h.streak}</span>` : ''}</span>
-        <button onclick="concluirHabito(${i})" style="color:var(--success); background:none; border:none; cursor:pointer" ${h.ultimaConclusao===hoje?'disabled':''}>
+    <div class="item" style="align-items: flex-start;">
+        <div class="habit-info">
+            <span style="font-weight: bold;">${h.nome}</span>
+            <span class="streak-label">🔥 ${h.streak || 0} dias seguidos</span>
+            <div class="habit-week-grid">
+                ${ultimos7Dias.map(dia => {
+                    const feito = S.hist.some(reg => reg.nome === h.nome && reg.data === dia);
+                    return `<div class="day-dot ${feito?'active':''}" data-date="${dia}"></div>`;
+                }).join("")}
+            </div>
+        </div>
+        <button onclick="concluirHabito(${i})" style="color:var(--success); background:none; border:none; cursor:pointer; font-size: 20px;" ${h.ultimaConclusao===hoje?'disabled':''}>
             ${h.ultimaConclusao===hoje?'⏳':'✔'}
         </button>
     </div>`).join("");
   
+  // Render de Categorias com Contador (X/Y)
   let tarHtml = "";
   S.categorias.forEach(cat => {
     const ts = S.tarefas.filter(t=>t.cat===cat);
+    const concluidas = ts.filter(t => t.status === 'concluido').length;
+    const total = ts.length;
+    const isDone = total > 0 && concluidas === total;
     const isOpen = openCats[cat];
-    tarHtml += `<div class="cat-header" onclick="toggleCat('${cat}')"><span>${cat}</span> <span>${isOpen?'▲':'▼'}</span></div><div class="task-list ${isOpen?'open':''}">` +
-    ts.map(t => `<div class="item"><span>${t.nome}</span><select onchange="alterarStatusTarefa(${S.tarefas.indexOf(t)}, this.value)" style="width:auto; padding:4px;"><option value="pendente" ${t.status==='pendente'?'selected':''}>Pendente</option><option value="concluido" ${t.status==='concluido'?'selected':''}>Feito</option></select></div>`).join("") + `</div>`;
+    
+    tarHtml += `
+      <div class="cat-header ${isDone ? 'cat-done' : ''}" onclick="toggleCat('${cat}')">
+        <span>${cat}</span> 
+        <span class="cat-counter">${concluidas}/${total}</span>
+        <span>${isOpen?'▲':'▼'}</span>
+      </div>
+      <div class="task-list ${isOpen?'open':''}">
+        ${ts.length > 0 ? ts.map(t => `
+          <div class="item">
+            <span>${t.nome}</span>
+            <select onchange="alterarStatusTarefa(${S.tarefas.indexOf(t)}, this.value)" style="width:auto; padding:4px;">
+                <option value="pendente" ${t.status==='pendente'?'selected':''}>Pendente</option>
+                <option value="concluido" ${t.status==='concluido'?'selected':''}>Feito</option>
+            </select>
+          </div>`).join("") : '<p style="font-size:11px; color:#64748b; padding:10px;">Nenhuma tarefa nesta categoria.</p>'}
+      </div>`;
   });
   document.getElementById("homeTarefas").innerHTML = tarHtml;
+
+  // Mural de Conquistas
+  let mBadge = "";
+  BADGES.forEach(b => {
+    const ok = S.badges_unlocked.includes(b.id);
+    mBadge += `<div style="background:#0f172a; padding:15px; border-radius:12px; text-align:center; border:1px solid ${ok?'var(--gold)':'#1e293b'}; opacity:${ok?1:0.3};"><span style="font-size:30px">${b.icon}</span><h4 style="font-size:12px;margin:5px 0">${b.title}</h4></div>`;
+  });
+  document.getElementById("muralConquistas").innerHTML = mBadge;
+
   document.getElementById("listCats").innerHTML = S.categorias.map((c,i)=>`<div class="item">${c}<button onclick="S.categorias.splice(${i},1);salvar()" style="color:var(--danger);border:none;background:none;cursor:pointer">✖</button></div>`).join("");
   document.getElementById("listTars").innerHTML = S.tarefas.map((t,i)=>`<div class="item">${t.nome} <small>(${t.cat})</small><button onclick="S.tarefas.splice(${i},1);salvar()" style="color:var(--danger);border:none;background:none;cursor:pointer">✖</button></div>`).join("");
   document.getElementById("listHabs").innerHTML = S.habitos.map((h,i)=>`<div class="item">${h.nome}<button onclick="S.habitos.splice(${i},1);salvar()" style="color:var(--danger);border:none;background:none;cursor:pointer">✖</button></div>`).join("");
@@ -571,13 +555,7 @@ function render() {
 
 function xpInfo(xp) { let n=1, ac=0, pr=100; while(xp>=pr){ n++; ac=pr; pr+=Math.floor(150*Math.pow(1.2,n-1)); } return {n, p:((xp-ac)/(pr-ac))*100, cur:xp-ac, max:pr-ac}; }
 function nav(id, btn) { document.querySelectorAll(".section").forEach(s=>s.classList.remove("active")); document.getElementById(id).classList.add("active"); document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); }
-
-function toggleCat(cat) { 
-    openCats[cat] = !openCats[cat]; 
-    localStorage.setItem('lifeDash_openCats', JSON.stringify(openCats)); // Salva estado no navegador
-    render(); 
-}
-
+function toggleCat(cat) { openCats[cat] = !openCats[cat]; localStorage.setItem('lifeDash_openCats', JSON.stringify(openCats)); render(); }
 function toggleCharts() { const c = document.getElementById('chartsContainer'); c.style.display = c.style.display === 'none' ? 'grid' : 'none'; if(c.style.display==='grid') initCharts(); }
 function popup(m){ const p=document.getElementById("popup"); p.innerText=m; p.style.display="block"; setTimeout(()=>p.style.display="none",3000); }
 function addCat() { const i=document.getElementById("regCatNome"); if(i.value){ S.categorias.push(i.value); i.value=""; salvar(); } }
