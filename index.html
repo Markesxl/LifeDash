@@ -84,6 +84,9 @@ button.primary { padding: 12px 20px; border: none; border-radius: 8px; backgroun
     <input type="email" id="email" placeholder="E-mail" style="margin-bottom: 10px">
     <input type="password" id="password" placeholder="Senha" style="margin-bottom: 20px">
     <button class="primary" style="width: 100%" onclick="fazerLogin()">Entrar / Registrar</button>
+    <p style="margin-top: 15px; font-size: 13px;">
+        <a href="javascript:void(0)" onclick="recuperarSenha()" style="color: var(--accent); text-decoration: none;">Esqueci minha senha</a>
+    </p>
   </div>
 </div>
 
@@ -234,11 +237,25 @@ const BADGES = [
 function fazerLogin() {
   const email = document.getElementById('email').value;
   const pass = document.getElementById('password').value;
+  if(!email || !pass) return alert("Preencha e-mail e senha.");
   auth.signInWithEmailAndPassword(email, pass).catch(err => {
     if(err.code === 'auth/user-not-found') return auth.createUserWithEmailAndPassword(email, pass);
     alert(err.message);
   });
 }
+
+function recuperarSenha() {
+  const email = document.getElementById('email').value;
+  if(!email) return alert("Por favor, digite seu e-mail no campo acima primeiro.");
+  auth.sendPasswordResetEmail(email)
+    .then(() => {
+      alert("E-mail de redefinição enviado! Verifique sua caixa de entrada.");
+    })
+    .catch((error) => {
+      alert("Erro ao enviar e-mail: " + error.message);
+    });
+}
+
 function fazerLogout() { auth.signOut().then(() => location.reload()); }
 
 auth.onAuthStateChanged(user => {
