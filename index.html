@@ -19,6 +19,17 @@
 *{box-sizing:border-box; font-family: 'Segoe UI', sans-serif;}
 body{margin:0; background: var(--bg-main); color: var(--text); display: flex; min-height: 100vh; overflow-x: hidden;}
 
+/* TÍTULO PRINCIPAL NO TOPO */
+.main-title {
+    text-align: center;
+    color: var(--accent);
+    font-size: 28px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+}
+
 /* BOTÃO MENU MOBILE */
 .menu-toggle {
     display: none;
@@ -36,7 +47,7 @@ body{margin:0; background: var(--bg-main); color: var(--text); display: flex; mi
     box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
-/* SIDEBAR RESPONSIVA */
+/* SIDEBAR RESPONSIVA (SEM O TÍTULO) */
 .sidebar { 
     width: 240px; 
     background: var(--bg-sidebar); 
@@ -47,7 +58,7 @@ body{margin:0; background: var(--bg-main); color: var(--text); display: flex; mi
     z-index: 1500; 
     transition: 0.3s; 
 }
-.sidebar h1 { color: var(--accent); font-size: 22px; margin-bottom: 40px; text-align: center; }
+.sidebar .nav { margin-top: 40px; }
 .nav button { width: 100%; background: none; border: none; color: #94a3b8; padding: 12px; text-align: left; border-radius: 8px; cursor: pointer; margin-bottom: 10px; font-size: 15px; display: flex; align-items: center; gap: 10px; }
 .nav button.active { background: #1e293b; color: #fff; }
 
@@ -103,6 +114,7 @@ button.primary { padding: 12px 20px; border: none; border-radius: 8px; backgroun
     .header-grid, .grid-2 { grid-template-columns: 1fr; }
     .card-slim { flex-direction: column; text-align: center; height: auto; padding: 20px; }
     .profile-img-slim { margin-right: 0; margin-bottom: 15px; }
+    .main-title { font-size: 22px; margin-top: 10px; }
 }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -149,7 +161,6 @@ button.primary { padding: 12px 20px; border: none; border-radius: 8px; backgroun
 <div id="popup" style="position: fixed; top: 20px; right: 20px; background: var(--gold); color: #000; padding: 15px 25px; border-radius: 8px; font-weight: bold; display: none; z-index: 9999;"></div>
 
 <div class="sidebar">
-  <h1>LIFE DASH</h1>
   <div class="nav">
     <button class="active" onclick="irPara('home', this)">🏠 Home</button>
     <button onclick="irPara('conquistas', this)">🏆 Conquistas</button>
@@ -161,6 +172,8 @@ button.primary { padding: 12px 20px; border: none; border-radius: 8px; backgroun
 </div>
 
 <div class="main">
+  <div class="main-title">Life Dash</div>
+
   <div class="header-grid">
     <div class="card-slim">
       <img id="hFoto" class="profile-img-slim" src="https://via.placeholder.com/85">
@@ -291,7 +304,6 @@ const BADGES = [
   {id:'6', icon:'👑', title:'Lenda', req:(s)=>xpInfo(s.xp).n>=10}
 ];
 
-// --- FUNÇÕES DE NAVEGAÇÃO MOBILE ---
 function toggleSidebar() {
     document.querySelector('.sidebar').classList.toggle('open');
 }
