@@ -21,7 +21,7 @@
 body{margin:0; background: var(--bg-main); color: var(--text); display: flex; min-height: 100vh; overflow-x: hidden;}
 
 /* MENU MOBILE E TÍTULO */
-.menu-toggle { display: none; position: fixed; top: 15px; left: 15px; z-index: 2000; background: var(--accent); color: #000; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+.menu-toggle { display: none; position: fixed; top: 15px; left: 15px; z-index: 2000; background: var(--accent); color: #000; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
 #mobile-logo { display: none; text-align: center; color: var(--accent); font-size: 24px; font-weight: bold; margin-bottom: 20px; letter-spacing: 2px; }
 
 /* SIDEBAR */
@@ -46,33 +46,40 @@ body{margin:0; background: var(--bg-main); color: var(--text); display: flex; mi
 .xp-container { background: #020617; border-radius: 10px; height: 10px; overflow: hidden; margin-top: 4px; }
 .xp-bar { background: var(--accent); height: 100%; width: 0%; transition: 1s; }
 
+.mini-conquistas { display: flex; flex-wrap: wrap; gap: 8px; }
+.badge-mini { width: 35px; height: 35px; border-radius: 8px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 18px; border: 1px solid var(--gold); }
+
 /* CATEGORIAS E TAREFAS REFINADAS */
 .cat-header { background: #0f172a; padding: 12px 15px; border-radius: 8px; margin-top: 10px; cursor: pointer; color: var(--accent); font-size: 13px; font-weight: bold; display: flex; align-items: center; border: 1px solid #1e293b; transition: 0.2s; }
-.cat-counter { font-size: 10px; background: #1e293b; padding: 2px 8px; border-radius: 12px; color: #94a3b8; margin-left: auto; margin-right: 10px; }
 .cat-done { color: var(--success); border-color: var(--success); }
 .task-container-wrapper { display: none; background: rgba(15, 23, 42, 0.4); border: 1px solid #1e293b; border-top: none; border-radius: 0 0 8px 8px; padding: 10px; margin-bottom: 10px; }
 .task-container-wrapper.open { display: block; }
 
-/* SWITCH TAREFA */
-.switch { position: relative; display: inline-block; width: 34px; height: 20px; }
+/* SWITCH TAREFA - POSICIONADO À DIREITA */
+.item-task { display: flex; justify-content: space-between; align-items: center; padding: 10px 5px; border-bottom: 1px solid #1e293b44; }
+.switch { position: relative; display: inline-block; width: 34px; height: 20px; flex-shrink: 0; }
 .switch input { opacity: 0; width: 0; height: 0; }
 .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--switch-bg); transition: .4s; border-radius: 20px; border: 1px solid #334155; }
 .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
 input:checked + .slider { background-color: var(--success); border-color: var(--success); }
 input:checked + .slider:before { transform: translateX(14px); }
 
-/* TABELA DE HÁBITOS SEMANAL */
-.habit-table-header { display: grid; grid-template-columns: 1fr repeat(7, 30px); gap: 5px; padding-bottom: 8px; border-bottom: 1px solid #1e293b; margin-bottom: 10px; }
-.day-label { font-size: 9px; text-align: center; color: #94a3b8; line-height: 1.1; }
-.habit-row { display: grid; grid-template-columns: 1fr repeat(7, 30px); gap: 5px; align-items: center; padding: 8px 0; border-bottom: 1px solid #1e293b44; }
-.habit-name-cell { display: flex; flex-direction: column; }
-.habit-check-cell { display: flex; justify-content: center; align-items: center; }
-.habit-circle { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #334155; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; font-size: 12px; color: transparent; }
-.habit-circle.checked { border-color: var(--success); background: var(--success); color: #000; cursor: default; }
-.habit-circle.locked { border-color: #1e293b; color: #475569; cursor: not-allowed; }
+/* TABELA DE HÁBITOS EXPANDIDA */
+.habit-table-header { display: grid; grid-template-columns: 1fr repeat(7, 1fr); gap: 10px; padding-bottom: 8px; border-bottom: 1px solid #1e293b; margin-bottom: 10px; text-align: center; }
+.habit-row { display: grid; grid-template-columns: 1fr repeat(7, 1fr); gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid #1e293b44; }
+.habit-circle { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #334155; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 14px; }
+.habit-circle.done { border-color: var(--success); color: var(--success); cursor: default; }
+.habit-circle.missed { border-color: #475569; color: #475569; cursor: not-allowed; }
 
 .card { background: var(--card-bg); border-radius: 12px; padding: 24px; margin-bottom: 24px; border: 1px solid #1e293b66; }
 h3 { color: var(--accent); font-size: 17px; margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #1e293b; padding-bottom: 10px; }
+
+input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #1e293b; background: #0f172a; color: white; outline: none; margin-bottom: 10px; }
+button.primary { padding: 12px 20px; border: none; border-radius: 8px; background: var(--accent); color: #000; font-weight: bold; cursor: pointer; }
+
+/* TELA DE LOGIN */
+#login-screen { position: fixed; inset: 0; background: var(--bg-main); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.login-box { background: var(--card-bg); padding: 30px; border-radius: 15px; border: 1px solid var(--accent); width: 100%; max-width: 450px; text-align: center; }
 
 @media (max-width: 768px) {
     .menu-toggle { display: block; }
@@ -84,9 +91,7 @@ h3 { color: var(--accent); font-size: 17px; margin-top: 0; margin-bottom: 20px; 
     .header-grid { grid-template-columns: 1fr; }
     .card-slim { flex-direction: column; text-align: center; }
     .profile-img-slim { margin-right: 0; margin-bottom: 15px; }
-    .habit-table-header, .habit-row { grid-template-columns: 1fr repeat(7, 25px); gap: 2px; }
 }
-
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 </style>
 </head>
@@ -146,11 +151,14 @@ h3 { color: var(--accent); font-size: 17px; margin-top: 0; margin-bottom: 20px; 
         </div>
       </div>
     </div>
-    <div class="card-slim"><div id="homeBadges" class="mini-conquistas"></div></div>
+    <div class="card-slim" style="flex-direction: column; align-items: flex-start; justify-content: center;">
+      <h3 style="margin-bottom: 10px; font-size: 14px; border:none; padding:0;">🏆 Conquistas</h3>
+      <div id="homeBadges" class="mini-conquistas"></div>
+    </div>
   </div>
 
   <div id="home" class="section active">
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;" class="grid-main">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
       <div class="card">
         <h3>🚀 Tarefas do Dia</h3>
         <div id="homeTarefas"></div>
@@ -163,7 +171,10 @@ h3 { color: var(--accent); font-size: 17px; margin-top: 0; margin-bottom: 20px; 
     </div>
   </div>
 
-  <div id="conquistas" class="section"><div class="card"><h3>Mural de Honra</h3><div id="muralConquistas" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px;"></div></div></div>
+  <div id="conquistas" class="section">
+    <div class="card"><h3>Mural de Honra</h3><div id="muralConquistas" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px;"></div></div>
+  </div>
+
   <div id="perfil" class="section">
     <div class="card">
       <h3>👤 Gerenciar Perfil</h3>
@@ -181,19 +192,24 @@ h3 { color: var(--accent); font-size: 17px; margin-top: 0; margin-bottom: 20px; 
           <button class="primary" style="width:100%" onclick="salvarPerfilFirebase()">💾 Salvar</button>
         </div>
       </div>
+      <div style="border-top: 1px solid #1e293b; padding-top: 25px; margin-top: 20px; display: flex; flex-wrap: wrap; gap: 15px;">
+        <button onclick="resetDia()" style="flex:1; min-width: 120px; padding:12px; border:1px solid var(--gold); background:none; color:var(--gold); cursor:pointer; font-weight:bold; border-radius:8px;">Resetar Hoje</button>
+        <button onclick="resetGeral()" style="flex:1; min-width: 120px; padding:12px; border:1px solid var(--danger); background:none; color:var(--danger); cursor:pointer; font-weight:bold; border-radius:8px;">Reset Total</button>
+      </div>
     </div>
   </div>
+
   <div id="registros" class="section">
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
       <div class="card">
         <h3>➕ Novo Registro</h3>
-        <p style="font-size:11px; color:var(--accent)">CATEGORIA</p>
-        <div style="display:flex; gap:10px"><input id="regCatNome"><button class="primary" onclick="addCat()">Criar</button></div>
-        <p style="font-size:11px; color:var(--accent)">TAREFA</p>
+        <p style="color:var(--accent); font-size:11px; font-weight:bold;">CATEGORIA</p>
+        <div style="display:flex; gap:10px; margin-bottom:15px"><input id="regCatNome" style="margin:0"><button class="primary" onclick="addCat()">Criar</button></div>
+        <p style="color:var(--accent); font-size:11px; font-weight:bold;">TAREFA</p>
         <select id="regTarCat"></select>
-        <div style="display:flex; gap:10px"><input id="regTarNome"><button class="primary" onclick="addTar()">Add</button></div>
-        <p style="font-size:11px; color:var(--accent)">HÁBITO</p>
-        <div style="display:flex; gap:10px"><input id="regHabNome"><button class="primary" onclick="addHab()">Add</button></div>
+        <div style="display:flex; gap:10px; margin-bottom:15px"><input id="regTarNome" style="margin:0"><button class="primary" onclick="addTar()">Add</button></div>
+        <p style="color:var(--accent); font-size:11px; font-weight:bold;">HÁBITO</p>
+        <div style="display:flex; gap:10px"><input id="regHabNome" style="margin:0"><button class="primary" onclick="addHab()">Add</button></div>
       </div>
       <div class="card">
         <h3>📋 Estrutura Ativa</h3>
@@ -203,11 +219,12 @@ h3 { color: var(--accent); font-size: 17px; margin-top: 0; margin-bottom: 20px; 
       </div>
     </div>
   </div>
+
   <div id="historico" class="section"><div class="card"><h3>📜 Histórico</h3><div id="listHist"></div></div></div>
 </div>
 
 <script>
-// --- CONFIG FIREBASE (MESMA DO SEU CÓDIGO) ---
+// --- CONFIG FIREBASE ---
 const firebaseConfig = {
   apiKey: "AIzaSyBkSJDH_aEVsp-LSNGm4XBqWoo_FUIJYNo",
   authDomain: "life-dash-e33f2.firebaseapp.com",
@@ -221,14 +238,16 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 
 const sndXP = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+const sndFanfare = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
+
 let S = { perfil: {}, categorias: [], tarefas: [], habitos: [], hist: [], xp: 0, badges_unlocked: [] };
-let openCats = JSON.parse(localStorage.getItem('lifeDash_openCats')) || {};
+let openCats = {};
 let tempFoto = "";
 
 const BADGES = [
   {id:'1', icon:'🦉', title:'Coruja', req:(s)=>s.hist.filter(h=>h.tipo==='T' && parseInt(h.hora)>=20).length>=5},
   {id:'2', icon:'🚀', title:'Decolagem', req:(s)=>xpInfo(s.xp).n>=2},
-  {id:'3', icon:'🔥', title:'Em Chamas', req:(s)=>s.habitos.some(h=>h.streak >= 3)}
+  {id:'3', icon:'🔥', title:'Em Chamas', req:(s)=>s.habitos.some(h=>h.total>=7)}
 ];
 
 // AUTH E NAV
@@ -245,13 +264,25 @@ function fazerLogout() { auth.signOut().then(() => location.reload()); }
 auth.onAuthStateChanged(user => {
   if(user) {
     document.getElementById('login-screen').style.display = 'none';
-    db.collection("users").doc(user.uid).onSnapshot(doc => { if(doc.exists) { S = doc.data(); render(); } });
+    db.collection("users").doc(user.uid).onSnapshot(doc => { if(doc.exists) { S = doc.data(); render(); sincronizarInputs(); } });
   } else { document.getElementById('login-screen').style.display = 'flex'; }
 });
 
-function salvar() { if(auth.currentUser) db.collection("users").doc(auth.currentUser.uid).set(S); render(); }
+function salvar() { 
+  checkBadges();
+  if(auth.currentUser) db.collection("users").doc(auth.currentUser.uid).set(S); 
+  render(); 
+}
 
-// FUNÇÕES DE AÇÃO
+function checkBadges() {
+  BADGES.forEach(b => {
+    if (!S.badges_unlocked.includes(b.id) && b.req(S)) {
+      S.badges_unlocked.push(b.id);
+      sndFanfare.play(); popup(`🏆 ${b.title}!`);
+    }
+  });
+}
+
 function toggleTarefa(idx) {
     const t = S.tarefas[idx]; const hoje = new Date().toLocaleDateString();
     if(t.status === 'pendente') {
@@ -270,14 +301,8 @@ function concluirHabito(habIdx, dataStr) {
     const h = S.habitos[habIdx];
     const jaFeito = S.hist.some(r => r.nome === h.nome && r.data === dataStr);
     if(jaFeito) return;
-
     h.total = (h.total || 0) + 1;
     h.ultimaConclusao = dataStr;
-    
-    // Streak Simples
-    const hoje = new Date().toLocaleDateString();
-    if(dataStr === hoje) h.streak = (h.streak || 0) + 1;
-
     S.xp += 15;
     S.hist.push({nome: h.nome, data: dataStr, tipo: 'H', xpGanhos: 15});
     sndXP.play(); popup("+15 XP!"); salvar();
@@ -286,28 +311,35 @@ function concluirHabito(habIdx, dataStr) {
 function render() {
   const l = xpInfo(S.xp); const hoje = new Date().toLocaleDateString();
   document.getElementById("hNome").innerText = S.perfil.nome || "---";
+  document.getElementById("hIdade").innerText = calcularIdade(S.perfil.nascimento);
   document.getElementById("hNivel").innerText = l.n;
   document.getElementById("xpBar").style.width = l.p + "%";
   document.getElementById("xpNumerico").innerText = `${Math.floor(l.cur)}/${Math.floor(l.max)} XP`;
   document.getElementById("hFoto").src = S.perfil.foto || "https://via.placeholder.com/85";
 
-  // RENDER TAREFAS
+  let hBadge = ""; let mBadge = "";
+  BADGES.forEach(b => {
+    const ok = S.badges_unlocked.includes(b.id);
+    if(ok) hBadge += `<div class="badge-mini">${b.icon}</div>`;
+    mBadge += `<div style="background:#0f172a; padding:15px; border-radius:12px; text-align:center; border:1px solid ${ok?'var(--gold)':'#1e293b'}; opacity:${ok?1:0.3};"><span style="font-size:30px">${b.icon}</span><h4 style="font-size:12px;margin:5px 0">${b.title}</h4></div>`;
+  });
+  document.getElementById("homeBadges").innerHTML = hBadge;
+  document.getElementById("muralConquistas").innerHTML = mBadge;
+
+  // TAREFAS
   let tarHtml = "";
   S.categorias.forEach(cat => {
     const ts = S.tarefas.filter(t => t.cat === cat);
     const conc = ts.filter(t => t.status === 'concluido').length;
     const isDone = ts.length > 0 && conc === ts.length;
-    const isOpen = openCats[cat];
-    
     tarHtml += `
       <div class="cat-header ${isDone?'cat-done':''}" onclick="toggleCat('${cat}')">
-        <span>${cat}</span>
-        <span class="cat-counter">${conc}/${ts.length}</span>
-        <span>${isOpen?'▲':'▼'}</span>
+        <span>${cat}</span><span style="margin-left:auto; margin-right:10px; font-size:10px; color:#94a3b8">${conc}/${ts.length}</span>
+        <span>${openCats[cat]?'▲':'▼'}</span>
       </div>
-      <div class="task-container-wrapper ${isOpen?'open':''}">
+      <div class="task-container-wrapper ${openCats[cat]?'open':''}">
         ${ts.map(t => `
-          <div class="item">
+          <div class="item-task">
             <span>${t.nome}</span>
             <label class="switch">
                 <input type="checkbox" ${t.status==='concluido'?'checked':''} onchange="toggleTarefa(${S.tarefas.indexOf(t)})">
@@ -319,45 +351,46 @@ function render() {
   });
   document.getElementById("homeTarefas").innerHTML = tarHtml;
 
-  // RENDER HÁBITOS (TABELA)
+  // HÁBITOS
   const diasSemana = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
   const ultimos7 = [...Array(7)].map((_, i) => {
       const d = new Date(); d.setDate(d.getDate() - (6 - i));
       return { label: diasSemana[d.getDay()], data: d.toLocaleDateString(), num: d.getDate() };
   });
-
-  document.getElementById("habitTableHeader").innerHTML = `<div>Hábito</div>` + ultimos7.map(d => `<div class="day-label">${d.label}<br>${d.num}</div>`).join("");
-  
+  document.getElementById("habitTableHeader").innerHTML = `<div>Hábito</div>` + ultimos7.map(d => `<div style="font-size:10px; color:#94a3b8">${d.label}<br>${d.num}</div>`).join("");
   document.getElementById("homeHabitos").innerHTML = S.habitos.map((h, i) => `
     <div class="habit-row">
-        <div class="habit-name-cell">
-            <span style="font-weight:bold; font-size:13px">${h.nome}</span>
-            <span style="font-size:10px; color:var(--gold)">🔥 ${h.streak || 0} dias seguidos</span>
-        </div>
+        <span style="font-weight:bold; font-size:13px">${h.nome}</span>
         ${ultimos7.map(d => {
             const feito = S.hist.some(r => r.nome === h.nome && r.data === d.data);
             const isHoje = d.data === hoje;
-            return `
-              <div class="habit-check-cell">
-                <div class="habit-circle ${feito ? 'checked' : (isHoje ? '' : 'locked')}" 
-                     onclick="${!feito && isHoje ? `concluirHabito(${i}, '${d.data}')` : ''}">
-                  ${feito ? '✔' : (isHoje ? '' : '⏳')}
-                </div>
-              </div>`;
+            let icon = ''; let classe = '';
+            if(feito) { icon = '⌛'; classe = 'done'; }
+            else if(!isHoje) { icon = '⌛'; classe = 'missed'; }
+            return `<div class="habit-circle ${classe}" onclick="${!feito && isHoje ? `concluirHabito(${i}, '${d.data}')` : ''}">${icon}</div>`;
         }).join("")}
     </div>`).join("");
 
-  // LISTAS DE REGISTRO
+  // REGISTROS
   document.getElementById("regTarCat").innerHTML = S.categorias.map(c=>`<option value="${c}">${c}</option>`).join("");
-  document.getElementById("listCats").innerHTML = S.categorias.map((c,i)=>`<div class="item">${c}<button onclick="S.categorias.splice(${i},1);salvar()">✖</button></div>`).join("");
+  document.getElementById("listCats").innerHTML = S.categorias.map((c,i)=>`<div class="item-task">${c}<button onclick="S.categorias.splice(${i},1);salvar()" style="background:none; border:none; color:var(--danger); cursor:pointer">✖</button></div>`).join("");
+  document.getElementById("listTars").innerHTML = S.tarefas.map((t,i)=>`<div class="item-task">${t.nome} (${t.cat})<button onclick="S.tarefas.splice(${i},1);salvar()" style="background:none; border:none; color:var(--danger); cursor:pointer">✖</button></div>`).join("");
+  document.getElementById("listHabs").innerHTML = S.habitos.map((h,i)=>`<div class="item-task">${h.nome}<button onclick="S.habitos.splice(${i},1);salvar()" style="background:none; border:none; color:var(--danger); cursor:pointer">✖</button></div>`).join("");
+  document.getElementById("listHist").innerHTML = S.hist.slice().reverse().map(h=>`<div class="item-task"><span>${h.nome}</span><small>${h.data}</small></div>`).join("");
 }
 
 function xpInfo(xp) { let n=1, ac=0, pr=100; while(xp>=pr){ n++; ac=pr; pr+=Math.floor(150*Math.pow(1.2,n-1)); } return {n, p:((xp-ac)/(pr-ac))*100, cur:xp-ac, max:pr-ac}; }
-function toggleCat(cat) { openCats[cat] = !openCats[cat]; localStorage.setItem('lifeDash_openCats', JSON.stringify(openCats)); render(); }
+function calcularIdade(d) { if(!d) return "--"; const hoje=new Date(); const n=new Date(d); let i=hoje.getFullYear()-n.getFullYear(); if(hoje.getMonth()<n.getMonth() || (hoje.getMonth()===n.getMonth() && hoje.getDate()<n.getDate())) i--; return i; }
+function toggleCat(cat) { openCats[cat] = !openCats[cat]; render(); }
 function popup(m){ const p=document.getElementById("popup"); p.innerText=m; p.style.display="block"; setTimeout(()=>p.style.display="none",3000); }
 function addCat() { const i=document.getElementById("regCatNome"); if(i.value){ S.categorias.push(i.value); i.value=""; salvar(); } }
-function addHab() { const i=document.getElementById("regHabNome"); if(i.value){ S.habitos.push({nome:i.value, total:0, streak:0}); i.value=""; salvar(); } }
+function addHab() { const i=document.getElementById("regHabNome"); if(i.value){ S.habitos.push({nome:i.value, total:0}); i.value=""; salvar(); } }
 function addTar() { const n=document.getElementById("regTarNome"), c=document.getElementById("regTarCat"); if(n.value && c.value){ S.tarefas.push({nome:n.value, cat:c.value, status:'pendente'}); n.value=""; salvar(); } }
+function localPreview(input) { if(input.files && input.files[0]){ const reader = new FileReader(); reader.onload = (e) => { tempFoto = e.target.result; document.getElementById("pPreview").src = tempFoto; }; reader.readAsDataURL(input.files[0]); } }
+function salvarPerfilFirebase() { S.perfil.nome = document.getElementById("pNome").value; S.perfil.nascimento = document.getElementById("pNascimento").value; S.perfil.profissao = document.getElementById("pProfissao").value; S.perfil.sexo = document.getElementById("pSexo").value; S.perfil.frase = document.getElementById("pFrase").value; if(tempFoto) S.perfil.foto = tempFoto; salvar(); popup("Salvo!"); }
+function sincronizarInputs() { document.getElementById("pNome").value = S.perfil.nome || ""; document.getElementById("pNascimento").value = S.perfil.nascimento || ""; document.getElementById("pProfissao").value = S.perfil.profissao || ""; document.getElementById("pSexo").value = S.perfil.sexo || ""; document.getElementById("pFrase").value = S.perfil.frase || ""; document.getElementById("pPreview").src = S.perfil.foto || "https://via.placeholder.com/150"; }
+function resetDia() { if(confirm("Resetar hoje?")){ const h=new Date().toLocaleDateString(); S.hist=S.hist.filter(x=>x.data!==h); S.tarefas.forEach(t=>t.status='pendente'); S.habitos.forEach(x=>{if(x.ultimaConclusao===h){x.ultimaConclusao=""; x.total--;}}); salvar(); } }
+function resetGeral() { if(confirm("Apagar tudo?")){ S = { perfil: {}, categorias: [], tarefas: [], habitos: [], hist: [], xp: 0, badges_unlocked: [] }; salvar(); } }
 </script>
 </body>
 </html>
