@@ -346,6 +346,7 @@ input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px soli
 
 <script>
 // CONFIGURAÇÃO FIREBASE MANTIDA
+// --- CONFIGURAÇÃO FIREBASE ---
 const firebaseConfig = {
   apiKey: "AIzaSyBkSJDH_aEVsp-LSNGm4XBqWoo_FUIJYNo",
   authDomain: "life-dash-e33f2.firebaseapp.com",
@@ -354,6 +355,7 @@ const firebaseConfig = {
   messagingSenderId: "270639106877",
   appId: "1:270639106877:web:92c8ec9353c6bacb485354"
 };
+
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
@@ -361,64 +363,45 @@ const sndXP = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-p
 
 let S = { perfil: {}, categorias: [], tarefas: [], habitos: [], hist: [], xp: 0, badges_unlocked: [] };
 let openCats = JSON.parse(localStorage.getItem('lifeDash_openCats')) || {};
-let colapsados = { homeTarefasCont: false, homeHabitosCont: false };
 let tempFoto = "";
 
 const BADGES = [
-  {id:'1', icon:'🦉', title:'Coruja', req:(s)=>s.hist.filter(h=>h.tipo==='T' && parseInt(h.hora)>=20).length>=5},
-  {id:'2', icon:'🚀', title:'Decolagem', req:(s)=>xpInfo(s.xp).n>=2},
-  {id:'3', icon:'🔥', title:'Em Chamas', req:(s)=>s.habitos.some(h=>h.streak && h.streak >= 3)}
+  {id:'1', icon:'🦉', title:'Coruja', req:(s)=> (s.hist || []).filter(h=>h.tipo==='T' && parseInt(h.hora)>=20).length>=5},
+  {id:'2', icon:'🚀', title:'Decolagem', req:(s)=> xpInfo(s.xp).n>=2},
+  {id:'3', icon:'🔥', title:'Em Chamas', req:(s)=> (s.habitos || []).some(h=>h.streak >= 3)}
 ];
 
-// FUNÇÕES DE AUTH E STORAGE MANTIDAS
-function previewRegistro(input) { if(input.files && input.files[0]){ const r = new FileReader(); r.onload = (e) => { tempFoto = e.target.result; const img = document.getElementById("regPreview"); img.src = tempFoto; img.style.display="block"; }; r.readAsDataURL(input.files[0]); } }
-function localPreview(input) { if(input.files && input.files[0]){ const r = new FileReader(); r.onload = (e) => { tempFoto = e.target.result; const img = document.getElementById("pPreview"); img.src = tempFoto; img.style.display="block"; document.getElementById("pCameraIcon").style.opacity="0"; }; r.readAsDataURL(input.files[0]); } }
-async function fazerLogin() { auth.signInWithEmailAndPassword(document.getElementById('login-email').value, document.getElementById('login-password').value).catch(e=>alert("Erro login")); }
+// Funções de Autenticação (Restauradas e Funcionais)
+async function fazerLogin() {
+    const e = document.getElementById('login-email').value;
+    const p = document.getElementById('login-password').value;
+    if(!e || !p) return alert("Preencha todos os campos");
+    auth.signInWithEmailAndPassword(e, p).catch(err => alert("Erro: " + err.message));
+}
+
 async function fazerRegistro() {
-    const email = document.getElementById('regEmail').value, pass = document.getElementById('regPassword').value, nome = document.getElementById('regNome').value;
-    if(!email || !pass || !nome) return alert("Campos obrigatórios!");
+    const e = document.getElementById('regEmail').value, p = document.getElementById('regPassword').value, n = document.getElementById('regNome').value;
+    if(!e || !p || !n) return alert("Nome, Email e Senha são obrigatórios!");
     try {
-        const cred = await auth.createUserWithEmailAndPassword(email, pass);
-        await cred.user.sendEmailVerification();
-        const novosDados = { perfil: { nome, nascimento: document.getElementById('regNascimento').value, sexo: document.getElementById('regSexo').value, profissao: document.getElementById('regProfissao').value, frase: "Foco no progresso!", foto: tempFoto || "" }, categorias: [], tarefas: [], habitos: [], hist: [], xp: 0, badges_unlocked: [] };
+        const cred = await auth.createUserWithEmailAndPassword(e, p);
+        const novosDados = { perfil: { nome: n, nascimento: document.getElementById('regNascimento').value, sexo: document.getElementById('regSexo').value, profissao: document.getElementById('regProfissao').value, frase: "Foco no progresso!", foto: tempFoto || "" }, categorias: [], tarefas: [], habitos: [], hist: [], xp: 0, badges_unlocked: [] };
         await db.collection("users").doc(cred.user.uid).set(novosDados);
-        alert("Verifique seu e-mail!"); auth.signOut(); toggleAuth('login');
-    } catch (err) { alert(err.message); }
+    } catch(err) { alert(err.message); }
 }
-async function recuperarSenha() {
-    const email = document.getElementById('login-email').value;
-    if(!email) return alert("Digite seu e-mail no campo de login primeiro!");
-    try { await auth.sendPasswordResetEmail(email); alert("E-mail de recuperação enviado!"); } catch (err) { alert(err.message); }
-}
+
 auth.onAuthStateChanged(user => {
-  if(user && user.emailVerified) {
-    document.getElementById('login-screen').style.display = 'none';
-    db.collection("users").doc(user.uid).onSnapshot(doc => { 
-      if(doc.exists) { 
-        S = doc.data(); 
-        // Proteção contra campos vazios no banco
-        if(!S.badges_unlocked) S.badges_unlocked = [];
-        if(!S.hist) S.hist = [];
-        
-        render(); // Isso desenha o mural e o XP
-        sincronizarInputsPerfil(); 
-      } 
-    });
-  } else { 
-    document.getElementById('login-screen').style.display = 'flex'; 
-  }
+    if(user) {
+        document.getElementById('login-screen').style.display = 'none';
+        db.collection("users").doc(user.uid).onSnapshot(doc => { 
+            if(doc.exists) { 
+                S = doc.data(); 
+                if(!S.badges_unlocked) S.badges_unlocked = [];
+                render(); 
+                sincronizarInputsPerfil(); 
+            } 
+        });
+    } else { document.getElementById('login-screen').style.display = 'flex'; }
 });
-function salvar() { if(auth.currentUser) db.collection("users").doc(auth.currentUser.uid).set(S); render(); }
-
-// FUNÇÕES DE INTERFACE
-function toggleCollapse(id) {
-    const el = document.getElementById(id);
-    const icon = document.getElementById('icon-' + id);
-    colapsados[id] = !colapsados[id];
-    el.style.display = colapsados[id] ? 'none' : 'block';
-    icon.innerText = colapsados[id] ? '▶' : '▼';
-}
-
 function render() {
   const l = xpInfo(S.xp); const hoje = new Date().toLocaleDateString();
   
