@@ -21,8 +21,28 @@
 body{margin:0; background: var(--bg-main); color: var(--text); display: flex; min-height: 100vh; overflow-x: hidden;}
 
 /* MENU MOBILE */
-.menu-toggle { display: none; position: absolute; top: 15px; left: 15px; z-index: 1000; background: var(--accent); color: #000; border: none; width: 45px; height: 45px; border-radius: 8px; font-size: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); align-items: center; justify-content: center; }
-#mobile-logo { display: none; text-align: center; color: var(--accent); font-size: 22px; font-weight: bold; margin-bottom: 20px; letter-spacing: 1px; }
+.menu-toggle { display: none; position: fixed; top: 15px; left: 15px; z-index: 3000; background: transparent; color: var(--accent); border: none; width: 45px; height: 45px; border-radius: 8px; font-size: 20px; font-weight: bold; cursor: pointer; box-shadow: none; align-items: center; justify-content: center; }
+#mobile-logo { display: none; text-align: center; color: var(--accent); font-size: 30px; font-weight: bold; margin-bottom: 20px; letter-spacing: 1px; }
+.menu-toggle:active {
+  transform: scale(0.9);   /* O botão "encolhe" levemente ao ser clicado */
+  opacity: 0.7;            /* Ele fica um pouco transparente ao toque */
+}
+#menu-text {
+    margin-left: 8px;
+    font-size: 16px;
+    color: var(--accent);
+    opacity: 0;               
+    transform: translateX(-15px); 
+    transition: all 0.3s ease; 
+    pointer-events: none;     
+    white-space: nowrap;      
+    display: inline-block; /* Garante que a animação lateral funcione */
+}
+
+.menu-text-active {
+    opacity: 1 !important;
+    transform: translateX(5px) !important; 
+}
 
 /* SIDEBAR */
 .sidebar { width: 240px; background: var(--bg-sidebar); padding: 20px; border-right: 1px solid #1e293b; position: fixed; height: 100vh; z-index: 1500; transition: 0.3s; }
@@ -137,12 +157,23 @@ input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px soli
 
 /* MOBILE RESPONSIVO - CORRIGIDO */
 @media (max-width: 768px) {
-  .menu-toggle { display: flex; }
+  .menu-toggle { 
+      display: flex !important; /* Garante que o botão apareça */
+      align-items: center;      /* Alinha o ☰ e o Menu verticalmente */
+      width: auto !important;   /* MUITO IMPORTANTE: permite que o botão estique */
+      background: transparent;
+      border: none;
+      padding: 5px 10px;
+      position: absolute;
+      z-index: 3000;
+    }
   #mobile-logo { display: block; }
   
   /* Sidebar mobile */
-  .sidebar { left: -240px; }
-  .sidebar.open { left: 0; }
+  .sidebar { left: -240px;
+  padding-top: 80px !important; /* Isso empurra os botões (Home, Perfil, etc) para baixo */ }
+  .sidebar.open { left: 0;
+    box-shadow:0 0 0 10000px rgba(0, 0, 0, 0.5); }
   .sidebar h1 { display: none; } /* Remove título da sidebar no mobile */
   
   /* Main content */
@@ -191,7 +222,10 @@ input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px soli
 </head>
 <body>
 
-<button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+<button class="menu-toggle" onclick="toggleSidebar()">
+  <span>☰</span>
+  <small id="menu-text">Menu</small>
+</button>
 
 <div id="login-screen">
   <div class="login-box" id="auth-login">
@@ -661,9 +695,38 @@ function render() {
 }
 
 // Funções de UI
-function toggleSidebar() { 
-  document.querySelector('.sidebar').classList.toggle('open'); 
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const menuText = document.getElementById('menu-text');
+    
+    sidebar.classList.toggle('open');
+
+    // Lógica da animação lateral
+    if (sidebar.classList.contains('open')) {
+        // Pequeno atraso para o texto aparecer após a sidebar começar a abrir
+        setTimeout(() => {
+            menuText.classList.add('menu-text-active');
+        }, 100);
+    } else {
+        // Remove a classe imediatamente ao fechar para ele sumir antes de tocar nos traços
+        menuText.classList.remove('menu-text-active');
+    }
 }
+
+// Este código fica vigiando cliques na tela toda
+document.addEventListener('click', function(event) {
+    const sidebar = document.querySelector('.sidebar');
+    const menuToggle = document.querySelector('.menu-toggle');
+    const menuText = document.getElementById('menu-text');
+    
+    if (sidebar.classList.contains('open')) {
+        if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
+            sidebar.classList.remove('open');
+            // Remove a animação do texto aqui também
+            menuText.classList.remove('menu-text-active');
+        }
+    }
+});
 
 function irPara(id, btn) { 
   document.querySelectorAll(".section").forEach(s=>s.classList.remove("active")); 
