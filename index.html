@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Life Dash - Intelligence Pro</title>
+<title>Life Dash v1.9 - Intelligence Pro</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -403,7 +403,31 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
-const sndXP = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+
+// 🎵 SISTEMA DE SONS IMERSIVO
+const SONS = {
+  tarefaConcluida: new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3'), // Click suave
+  habitoConcluido: new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'), // Sucesso energético
+  xpGanho: new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3'), // Coleta de moeda
+  conquistaDesbloqueada: new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'), // Fanfarra épica
+  levelUp: new Audio('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3'), // Power-up majestoso
+  erro: new Audio('https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3'), // Erro suave
+  sucesso: new Audio('https://assets.mixkit.co/active_storage/sfx/2001/2001-preview.mp3') // Confirmação
+};
+
+// Função para tocar sons com controle de volume
+function tocarSom(tipoSom, volume = 0.5) {
+  try {
+    const som = SONS[tipoSom];
+    if(som) {
+      som.volume = volume;
+      som.currentTime = 0; // Reinicia o som
+      som.play().catch(e => console.log('Autoplay bloqueado:', e));
+    }
+  } catch(e) {
+    console.log('Erro ao tocar som:', e);
+  }
+}
 
 let S = { perfil: {}, categorias: [], tarefas: [], habitos: [], hist: [], xp: 0, badges_unlocked: [] };
 let openCats = JSON.parse(localStorage.getItem('lifeDash_openCats')) || {};
@@ -506,8 +530,18 @@ function toggleCollapse(id) {
 }
 
 function render() {
+  const lAntes = xpInfo(S.xp);
   const l = xpInfo(S.xp); 
   const hoje = new Date().toLocaleDateString();
+  
+  // Detecta Level Up
+  if(window.nivelAnterior && window.nivelAnterior < l.n) {
+    setTimeout(() => {
+      tocarSom('levelUp', 0.7);
+      mostrarAnimacaoLevelUp(l.n);
+    }, 500);
+  }
+  window.nivelAnterior = l.n;
   
   // Dados do Perfil
   document.getElementById("hNome").innerText = S.perfil.nome || "---";
@@ -528,7 +562,10 @@ function render() {
   BADGES.forEach(b => { 
       if(!S.badges_unlocked.includes(b.id) && b.req(S)) {
           S.badges_unlocked.push(b.id);
-          popup("🏆 Nova Conquista: " + b.title);
+          setTimeout(() => {
+            tocarSom('conquistaDesbloqueada', 0.8);
+            mostrarAnimacaoConquista(b);
+          }, 300);
           salvar();
       }
       if(S.badges_unlocked.includes(b.id)) {
@@ -577,9 +614,19 @@ function render() {
           const isHoje = d.data === hoje;
           let cl = 'habit-circle'; 
           if(feito) cl += ' done'; 
-          return `<td><div class="${cl}" onclick="${!feito && isHoje ? `concluirHabito(${i}, '${d.data}')` : ''}">${feito?'✓':''}</div></td>`;
+          // Usar data-attributes para evitar problemas com onclick inline
+          return `<td><div class="${cl}" ${!feito && isHoje ? `data-habit-idx="${i}" data-habit-date="${d.data}" style="cursor:pointer"` : ''}>${feito?'✓':''}</div></td>`;
       }).join("")}
     </tr>`).join("");
+  
+  // Adicionar event listeners após renderizar
+  document.querySelectorAll('[data-habit-idx]').forEach(el => {
+    el.addEventListener('click', function() {
+      const idx = parseInt(this.getAttribute('data-habit-idx'));
+      const date = this.getAttribute('data-habit-date');
+      concluirHabito(idx, date);
+    });
+  });
 
   // Estrutura de Gerenciamento
   document.getElementById("regTarCat").innerHTML = S.categorias.map(c=>`<option value="${c}">${c}</option>`).join("");
@@ -688,7 +735,8 @@ function salvarPerfilFirebase() {
   S.perfil.frase = document.getElementById("pFrase").value;
   if(tempFoto) S.perfil.foto = tempFoto;
   salvar(); 
-  popup("Perfil Atualizado!");
+  tocarSom('sucesso', 0.5);
+  popupAnimado("Perfil Atualizado! ✓", 'success');
 }
 
 function addCat() { 
@@ -696,6 +744,7 @@ function addCat() {
   if(i.value){ 
     S.categorias.push(i.value); 
     i.value=""; 
+    tocarSom('sucesso', 0.4);
     salvar(); 
   } 
 }
@@ -705,6 +754,7 @@ function addHab() {
   if(i.value){ 
     S.habitos.push({nome:i.value, total:0, streak:0}); 
     i.value=""; 
+    tocarSom('sucesso', 0.4);
     salvar(); 
   } 
 }
@@ -714,9 +764,121 @@ function addTar() {
   if(n.value && c.value){ 
     S.tarefas.push({nome:n.value, cat:c.value, status:'pendente'}); 
     n.value=""; 
+    tocarSom('sucesso', 0.4);
     salvar(); 
   } 
 }
+
+// 🎨 ANIMAÇÕES ÉPICAS
+function mostrarAnimacaoLevelUp(nivel) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  `;
+  
+  overlay.innerHTML = `
+    <div style="text-align: center; animation: scaleIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);">
+      <div style="font-size: 120px; margin-bottom: 20px; animation: rotate 1s ease;">⭐</div>
+      <h1 style="color: var(--gold); font-size: 48px; margin: 0; text-shadow: 0 0 20px var(--gold);">LEVEL UP!</h1>
+      <p style="color: white; font-size: 32px; margin: 10px 0;">Nível ${nivel}</p>
+      <p style="color: var(--accent); font-size: 18px;">Você está evoluindo! Continue assim! 🚀</p>
+    </div>
+  `;
+  
+  document.body.appendChild(overlay);
+  setTimeout(() => {
+    overlay.style.animation = 'fadeOut 0.3s ease';
+    setTimeout(() => overlay.remove(), 300);
+  }, 3000);
+}
+
+function mostrarAnimacaoConquista(badge) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  `;
+  
+  overlay.innerHTML = `
+    <div style="text-align: center; animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);">
+      <div style="font-size: 100px; margin-bottom: 20px; animation: pulse 1s infinite;">${badge.icon}</div>
+      <h2 style="color: var(--gold); font-size: 36px; margin: 0; text-shadow: 0 0 15px var(--gold);">🏆 CONQUISTA DESBLOQUEADA!</h2>
+      <p style="color: white; font-size: 28px; margin: 15px 0; font-weight: bold;">${badge.title}</p>
+      <p style="color: var(--accent); font-size: 16px;">Você alcançou um marco especial!</p>
+    </div>
+  `;
+  
+  document.body.appendChild(overlay);
+  setTimeout(() => {
+    overlay.style.animation = 'fadeOut 0.3s ease';
+    setTimeout(() => overlay.remove(), 300);
+  }, 3500);
+}
+
+function popupAnimado(mensagem, tipo = 'default') {
+  const cores = {
+    success: { bg: 'var(--gold)', cor: '#000' },
+    error: { bg: 'var(--danger)', cor: '#fff' },
+    default: { bg: 'var(--accent)', cor: '#000' }
+  };
+  
+  const estilo = cores[tipo] || cores.default;
+  const p = document.getElementById("popup");
+  
+  p.innerText = mensagem;
+  p.style.background = estilo.bg;
+  p.style.color = estilo.cor;
+  p.style.display = "block";
+  p.style.animation = "slideInRight 0.3s ease";
+  
+  setTimeout(() => {
+    p.style.animation = "slideOutRight 0.3s ease";
+    setTimeout(() => p.style.display = "none", 300);
+  }, 2500);
+}
+
+// Adiciona CSS de animações
+const styleAnimacoes = document.createElement('style');
+styleAnimacoes.innerHTML = `
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+  @keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
+  @keyframes bounceIn { 
+    0% { transform: scale(0) rotate(-180deg); }
+    50% { transform: scale(1.1) rotate(10deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+  @keyframes pulse { 
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+  @keyframes rotate { 
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  @keyframes slideInRight {
+    from { transform: translateX(400px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes slideOutRight {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(400px); opacity: 0; }
+  }
+`;
+document.head.appendChild(styleAnimacoes);
 
 function resetDia() {
     if(confirm("Deseja realmente resetar TODO o progresso de hoje?")){
@@ -791,8 +953,11 @@ function concluirHabito(habIdx, dataStr) {
         hora: new Date().getHours()
     });
 
-    if(typeof sndXP !== 'undefined') sndXP.play();
-    popup("+15 XP!");
+    // 🎵 Som de hábito + XP
+    tocarSom('habitoConcluido', 0.6);
+    setTimeout(() => tocarSom('xpGanho', 0.4), 200);
+    
+    popupAnimado("+15 XP! 🔥", 'success');
     checarConquistas();
     salvar();
 }
@@ -812,14 +977,20 @@ function toggleTarefa(idx) {
             xpGanhos: 10, 
             hora: new Date().getHours()
         });
-        if(typeof sndXP !== 'undefined') sndXP.play(); 
-        popup("+10 XP!");
+        
+        // 🎵 Som de tarefa + XP
+        tocarSom('tarefaConcluida', 0.5);
+        setTimeout(() => tocarSom('xpGanho', 0.3), 150);
+        
+        popupAnimado("+10 XP ✓", 'success');
     } else {
         t.status = 'pendente'; 
         S.xp = Math.max(0, (S.xp || 0) - 10);
         const hIdx = S.hist.findLastIndex(h => h.nome === t.nome && h.data === hoje);
         if (hIdx > -1) S.hist.splice(hIdx, 1);
-        popup("-10 XP");
+        
+        tocarSom('erro', 0.3);
+        popupAnimado("-10 XP", 'error');
     }
 
     checarConquistas();
