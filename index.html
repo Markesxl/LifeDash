@@ -334,10 +334,11 @@ input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px soli
     </div>
   </div>
 
-  <div id="conquistas" class="section">
+<div id="conquistas" class="section">
     <div class="card">
-        <h3>Mural de Honra</h3>
-        <div id="muralConquistas" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px;">
+        <h3>🏆 Mural de Honra</h3>
+        <p style="color:#64748b; font-size:12px; margin-bottom:20px;">Complete os requisitos para desbloquear novos títulos.</p>
+        <div id="muralConquistas" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px;">
             </div>
     </div>
 </div>
@@ -394,15 +395,19 @@ auth.onAuthStateChanged(user => {
   if(user && user.emailVerified) {
     document.getElementById('login-screen').style.display = 'none';
     db.collection("users").doc(user.uid).onSnapshot(doc => { 
-    if(doc.exists) { 
+      if(doc.exists) { 
         S = doc.data(); 
-        // Garantia: se badges_unlocked não existir no banco, criamos um array vazio
+        // Proteção contra campos vazios no banco
         if(!S.badges_unlocked) S.badges_unlocked = [];
-        render(); 
+        if(!S.hist) S.hist = [];
+        
+        render(); // Isso desenha o mural e o XP
         sincronizarInputsPerfil(); 
-    } 
-});
-  } else { document.getElementById('login-screen').style.display = 'flex'; }
+      } 
+    });
+  } else { 
+    document.getElementById('login-screen').style.display = 'flex'; 
+  }
 });
 function salvar() { if(auth.currentUser) db.collection("users").doc(auth.currentUser.uid).set(S); render(); }
 
@@ -487,32 +492,20 @@ function render() {
   document.getElementById("listTars").innerHTML = S.tarefas.map((t,i)=>`<div class="item"><span>${t.nome} <small style='color:#64748b'>(${t.cat})</small></span><button onclick="S.tarefas.splice(${i},1);salvar()" style="color:var(--danger);border:none;background:none;cursor:pointer">✖</button></div>`).join("") || "<small>Nenhuma tarefa</small>";
   document.getElementById("listHabs").innerHTML = S.habitos.map((h,i)=>`<div class="item"><span>${h.nome}</span><button onclick="S.habitos.splice(${i},1);salvar()" style="color:var(--danger);border:none;background:none;cursor:pointer">✖</button></div>`).join("") || "<small>Nenhum hábito</small>";
 
-// Mural de Honra (Aba Conquistas)
-const mConquistas = document.getElementById("muralConquistas");
-if (mConquistas) {
-    mConquistas.innerHTML = BADGES.map(b => {
-        // Verifica se o ID da badge está no array de desbloqueados do usuário
-        const isUnlocked = S.badges_unlocked && S.badges_unlocked.includes(b.id);
-        
+  // Mural de Honra (Aba Conquistas)
+  const mConquistas = document.getElementById("muralConquistas");
+  if(mConquistas) {
+      mConquistas.innerHTML = BADGES.map(b => {
+        const ok = S.badges_unlocked.includes(b.id);
         return `
-            <div style="background:#0f172a; padding:20px; border-radius:12px; text-align:center; 
-                        border:1px solid ${isUnlocked ? 'var(--gold)' : '#1e293b'}; 
-                        opacity:${isUnlocked ? 1 : 0.4}; 
-                        transition: 0.3s;
-                        box-shadow: ${isUnlocked ? '0 0 15px rgba(245, 158, 11, 0.2)' : 'none'};">
-                <div style="font-size:40px; margin-bottom:10px; filter: ${isUnlocked ? 'none' : 'grayscale(100%)'}">
-                    ${b.icon}
-                </div>
-                <h4 style="font-size:14px; margin:5px 0; color:${isUnlocked ? 'white' : '#64748b'}">
-                    ${b.title}
-                </h4>
-                <small style="font-size:10px; color:${isUnlocked ? 'var(--gold)' : '#475569'}; font-weight:bold;">
-                    ${isUnlocked ? 'CONQUISTADO' : 'BLOQUEADO'}
-                </small>
-            </div>`;
-    }).join("");
+          <div style="background:#0f172a; padding:15px; border-radius:12px; text-align:center; border:1px solid ${ok ? 'var(--gold)' : '#1e293b'}; opacity:${ok ? 1 : 0.3};">
+            <span style="font-size:30px">${b.icon}</span>
+            <h4 style="font-size:12px; margin:5px 0; color:${ok ? 'white' : '#64748b'}">${b.title}</h4>
+            <small style="font-size:10px; color:#64748b">${ok ? 'Concluído' : 'Bloqueado'}</small>
+          </div>`;
+      }).join("");
+  }
 }
-
 // LOGICA DE NEGÓCIO
 function toggleSidebar() { document.querySelector('.sidebar').classList.toggle('open'); }
 function irPara(id, btn) { document.querySelectorAll(".section").forEach(s=>s.classList.remove("active")); document.getElementById(id).classList.add("active"); document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); }
