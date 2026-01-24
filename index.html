@@ -161,7 +161,7 @@ input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px soli
       background: transparent;
       border: none;
       padding: 5px 10px;
-      position: fixed;
+      position: absolute;
       top: 15px;
       left: 15px;
       z-index: 3000;
@@ -696,18 +696,20 @@ function render() {
 // Funções de UI
 function toggleSidebar() {
     const sidebar = document.querySelector('.sidebar');
+    const menuToggle = document.querySelector('.menu-toggle'); // Localiza o botão
     const menuText = document.getElementById('menu-text');
     
     sidebar.classList.toggle('open');
 
-    // Lógica da animação lateral
     if (sidebar.classList.contains('open')) {
-        // Pequeno atraso para o texto aparecer após a sidebar começar a abrir
+        // QUANDO ABRIR:
+        menuToggle.style.position = 'fixed'; // Torna o botão flutuante
         setTimeout(() => {
             menuText.classList.add('menu-text-active');
         }, 100);
     } else {
-        // Remove a classe imediatamente ao fechar para ele sumir antes de tocar nos traços
+        // QUANDO FECHAR:
+        menuToggle.style.position = 'absolute'; // Devolve o botão ao topo do site
         menuText.classList.remove('menu-text-active');
     }
 }
@@ -721,6 +723,7 @@ document.addEventListener('click', function(event) {
     if (sidebar.classList.contains('open')) {
         if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
             sidebar.classList.remove('open');
+            menuToggle.style.position = 'absolute'; // Botão volta a ser absoluto ao fechar
             // Remove a animação do texto aqui também
             menuText.classList.remove('menu-text-active');
         }
