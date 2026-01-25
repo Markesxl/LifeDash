@@ -2,10 +2,15 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Life Dash v1.9 - Intelligence Pro</title>
+<title>Life Dash v2.0 - Intelligence Pro</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#38bdf8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icon-192.png">
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -15,208 +20,168 @@
   --bg-sidebar: #020617; --bg-main: #0b1120;
   --card-bg: #161e2d; --accent: #38bdf8; --text: #e5e7eb;
   --gold: #f59e0b; --danger: #ef4444; --success: #22c55e;
-  --input-bg: #0f172a;
+  --input-bg: #0f172a; --purple: #a855f7; --orange: #fb923c;
 }
-*{box-sizing:border-box; font-family: 'Segoe UI', sans-serif;}
-body{margin:0; background: var(--bg-main); color: var(--text); display: flex; min-height: 100vh; overflow-x: hidden;}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-main); color: var(--text); display: flex; min-height: 100vh; overflow-x: hidden;}
 
 /* MENU MOBILE */
-.menu-toggle { display: none; position: fixed; top: 15px; left: 15px; z-index: 3000; background: transparent; color: var(--accent); border: none; width: 45px; height: 45px; border-radius: 8px; font-size: 25px; font-weight: bold; cursor: pointer; box-shadow: none; align-items: center; justify-content: center; }
-#mobile-logo { display: none; text-align: center; color: var(--accent); font-size: 30px; font-weight: bold; margin-bottom: 20px; letter-spacing: 1px; }
-
-#menu-text {
-    margin-left: 8px;
-    font-size: 16px;
-    color: var(--accent);
-    opacity: 0;               
-    transform: translateX(-15px); 
-    transition: all 0.3s ease; 
-    pointer-events: none;     
-    white-space: nowrap;      
-    display: inline-block; /* Garante que a animação lateral funcione */
-}
-
-.menu-text-active {
-    opacity: 1 !important;
-    transform: translateX(5px) !important; 
-}
+.menu-toggle { display: none; position: fixed; top: 15px; left: 15px; z-index: 3000; background: transparent; color: var(--accent); border: none; width: auto; height: 45px; border-radius: 8px; font-size: 25px; cursor: pointer; align-items: center; justify-content: flex-start; padding: 5px 10px; transition: 0.3s; }
+.menu-toggle:hover { background: rgba(56, 189, 248, 0.1); }
+#mobile-logo { display: none; text-align: center; color: var(--accent); font-size: 28px; font-weight: 700; margin-bottom: 20px; letter-spacing: 1px; }
+#menu-text { margin-left: 8px; font-size: 16px; color: var(--accent); opacity: 0; transform: translateX(-15px); transition: all 0.3s ease; white-space: nowrap; display: inline-block; width: 0; overflow: hidden; }
+.menu-text-active { opacity: 1 !important; transform: translateX(5px) !important; width: auto !important; margin-left: 8px !important; }
 
 /* SIDEBAR */
-.sidebar { width: 240px; background: var(--bg-sidebar); padding: 20px; border-right: 1px solid #1e293b; position: fixed; height: 100vh; z-index: 1500; transition: 0.3s; }
-.sidebar h1 { color: var(--accent); font-size: 22px; margin-bottom: 40px; text-align: center; }
-.nav button { width: 100%; background: none; border: none; color: #94a3b8; padding: 12px; text-align: left; border-radius: 8px; cursor: pointer; margin-bottom: 10px; font-size: 15px; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
-.nav button.active { background: #1e293b; color: #fff; }
-.nav button:hover { background: #1e293b; }
+.sidebar { width: 260px; background: var(--bg-sidebar); padding: 20px; border-right: 1px solid #1e293b; position: fixed; height: 100vh; z-index: 1500; transition: 0.3s; overflow-y: auto; }
+.sidebar h1 { color: var(--accent); font-size: 24px; margin-bottom: 40px; text-align: center; font-weight: 700; letter-spacing: 0.5px; }
+.nav button { width: 100%; background: none; border: none; color: #94a3b8; padding: 14px 16px; text-align: left; border-radius: 10px; cursor: pointer; margin-bottom: 8px; font-size: 15px; display: flex; align-items: center; gap: 12px; transition: all 0.2s; font-weight: 500; }
+.nav button:hover { background: #1e293b; color: #fff; transform: translateX(4px); }
+.nav button.active { background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%); color: #fff; box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3); }
+.nav button .icon { font-size: 18px; width: 20px; text-align: center; }
 
-.main { flex: 1; padding: 30px; margin-left: 240px; min-width: 0; transition: 0.3s; }
-.section { display: none; animation: fadeIn 0.3s ease; }
+.main { flex: 1; padding: 30px; margin-left: 260px; min-width: 0; transition: 0.3s; max-width: 1400px; }
+.section { display: none; animation: fadeIn 0.4s ease; }
 .section.active { display: block; }
 
-/* CABEÇALHO GRID */
-.header-grid { display: grid; grid-template-columns: 1fr 350px; gap: 20px; margin-bottom: 30px; }
-.card-slim { background: var(--card-bg); border-radius: 12px; padding: 15px 25px; border: 1px solid #1e293b66; display: flex; align-items: center; min-height: 125px; position: relative; }
-.profile-img-slim { width: 85px; height: 85px; border-radius: 50%; border: 3px solid var(--accent); object-fit: cover; background: #020617; flex-shrink: 0; margin-right: 20px; }
+/* HEADER GRID */
+.header-grid { display: grid; grid-template-columns: 1fr 380px; gap: 20px; margin-bottom: 30px; }
+.card-slim { background: var(--card-bg); border-radius: 16px; padding: 20px 28px; border: 1px solid #1e293b66; display: flex; align-items: center; min-height: 140px; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.3s; }
+.card-slim:hover { border-color: var(--accent); box-shadow: 0 8px 16px rgba(56, 189, 248, 0.15); }
+.profile-img-slim { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--accent); object-fit: cover; background: #020617; flex-shrink: 0; margin-right: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
 .profile-info-slim { flex: 1; min-width: 0; }
-.profile-info-slim p { margin: 2px 0; font-size: 13px; color: #cbd5e1; }
-.phrase-slim { font-style: italic; color: var(--accent) !important; font-size: 11px !important; margin-top: 5px !important; }
-
-/* PHOTO UPLOAD */
-.photo-upload-container { position: relative; width: 150px; height: 150px; margin: 0 auto; cursor: pointer; background: #020617; border-radius: 50%; overflow: hidden; border: 2px dashed #1e293b; }
-.photo-upload-container:hover { border-color: var(--accent); }
-.camera-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; font-size: 24px; color: white; }
-.photo-upload-container:hover .camera-overlay { opacity: 1; }
-.upload-label { font-size: 11px; color: var(--accent); display: block; margin: 8px 0 15px 0; cursor: pointer; text-decoration: underline; }
+.profile-info-slim p { margin: 4px 0; font-size: 13px; color: #cbd5e1; }
+.phrase-slim { font-style: italic; color: var(--accent) !important; font-size: 12px !important; margin-top: 6px !important; }
 
 /* XP BAR */
-.xp-wrapper { margin-top: 10px; width: 95%; }
-.xp-container { background: #020617; border-radius: 10px; height: 10px; overflow: hidden; margin-top: 4px; }
-.xp-bar { background: var(--accent); height: 100%; width: 0%; transition: 1s; }
+.xp-wrapper { margin-top: 12px; width: 100%; }
+.xp-container { background: #020617; border-radius: 12px; height: 12px; overflow: hidden; margin-top: 6px; border: 1px solid #1e293b; }
+.xp-bar { background: linear-gradient(90deg, #38bdf8 0%, #0ea5e9 100%); height: 100%; width: 0%; transition: width 1s ease; box-shadow: 0 0 10px rgba(56, 189, 248, 0.5); }
 
-.mini-conquistas { display: flex; flex-wrap: wrap; gap: 6px; margin: 5px 0; }
-.badge-mini { width: 30px; height: 30px; border-radius: 6px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 16px; border: 1px solid var(--gold); }
+.mini-conquistas { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+.badge-mini { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); display: flex; align-items: center; justify-content: center; font-size: 18px; border: 2px solid var(--gold); transition: 0.3s; cursor: pointer; }
+.badge-mini:hover { transform: scale(1.15); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4); }
+
+/* PHOTO UPLOAD */
+.photo-upload-container { position: relative; width: 160px; height: 160px; margin: 0 auto; cursor: pointer; background: #020617; border-radius: 50%; overflow: hidden; border: 3px dashed #1e293b; transition: 0.3s; }
+.photo-upload-container:hover { border-color: var(--accent); transform: scale(1.05); }
+.camera-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; font-size: 28px; color: white; }
+.photo-upload-container:hover .camera-overlay { opacity: 1; }
+.upload-label { font-size: 12px; color: var(--accent); display: block; margin: 10px 0 15px 0; cursor: pointer; text-decoration: underline; transition: 0.3s; }
+.upload-label:hover { color: #7dd3fc; }
 
 /* CATEGORIAS E TAREFAS */
-.cat-header { background: #0f172a; padding: 10px 15px; border-radius: 8px; margin-top: 8px; cursor: pointer; color: var(--accent); font-size: 13px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; border: 1px solid #1e293b; }
-.cat-done { color: var(--success); border-color: var(--success); }
-.task-container-wrapper { display: none; background: rgba(15, 23, 42, 0.4); border: 1px solid #1e293b; border-top: none; border-radius: 0 0 8px 8px; padding: 5px 15px; margin-bottom: 10px; }
-.task-container-wrapper.open { display: block; }
+.cat-header { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 12px 18px; border-radius: 10px; margin-top: 10px; cursor: pointer; color: var(--accent); font-size: 14px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; border: 1px solid #1e293b; transition: 0.3s; }
+.cat-header:hover { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); transform: translateX(4px); }
+.cat-done { color: var(--success); border-color: var(--success); background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.05) 100%); }
+.task-container-wrapper { display: none; background: rgba(15, 23, 42, 0.3); border: 1px solid #1e293b; border-top: none; border-radius: 0 0 10px 10px; padding: 8px 18px; margin-bottom: 12px; }
+.task-container-wrapper.open { display: block; animation: slideDown 0.3s ease; }
 
 /* SWITCH TAREFA */
-.switch { position: relative; display: inline-block; width: 34px; height: 18px; margin-left: auto; }
+.switch { position: relative; display: inline-block; width: 38px; height: 20px; margin-left: auto; }
 .switch input { opacity: 0; width: 0; height: 0; }
-.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #334155; transition: .4s; border-radius: 20px; }
-.slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-input:checked + .slider { background-color: var(--success); }
-input:checked + .slider:before { transform: translateX(16px); }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #334155; transition: .3s; border-radius: 20px; }
+.slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+input:checked + .slider { background: linear-gradient(135deg, var(--success) 0%, #16a34a 100%); box-shadow: 0 0 8px rgba(34, 197, 94, 0.4); }
+input:checked + .slider:before { transform: translateX(18px); }
 
 /* HABITOS */
-.habit-name { font-weight: bold; font-size: 14px; color: #fff; letter-spacing: 0.5px; }
-.habit-table { width: 100%; border-collapse: collapse; margin-top: 10px; table-layout: fixed; }
-.habit-table th { font-size: 9px; color: #94a3b8; padding: 5px 2px; text-align: center; border-bottom: 1px solid #1e293b; }
-.habit-table td { padding: 10px 2px; text-align: center; border-bottom: 1px solid #1e293b44; }
-.habit-circle { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #334155; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; transition: 0.3s; }
-.habit-circle.done { border-color: var(--success); color: var(--success); }
-.habit-circle:hover { transform: scale(1.1); }
+.habit-name { font-weight: 600; font-size: 15px; color: #fff; letter-spacing: 0.3px; }
+.habit-table { width: 100%; border-collapse: collapse; margin-top: 12px; table-layout: fixed; }
+.habit-table th { font-size: 10px; color: #94a3b8; padding: 8px 4px; text-align: center; border-bottom: 2px solid #1e293b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.habit-table td { padding: 12px 4px; text-align: center; border-bottom: 1px solid #1e293b44; }
+.habit-circle { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #334155; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; transition: all 0.3s; background: rgba(15, 23, 42, 0.5); }
+.habit-circle.done { border-color: var(--success); color: var(--success); background: rgba(34, 197, 94, 0.1); }
+.habit-circle:hover:not(.done) { transform: scale(1.15); border-color: var(--accent); }
 
-/* COMPONENTES GERAIS */
-.card { background: var(--card-bg); border-radius: 12px; padding: 24px; margin-bottom: 24px; border: 1px solid #1e293b66; }
-h3 { color: var(--accent); font-size: 17px; margin: 0 0 20px 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 10px; cursor: pointer; user-select: none; }
-.item { display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 8px 12px; border-radius: 6px; margin-bottom: 5px; border: 1px solid #1e293b; font-size: 14px; }
+/* CARDS */
+.card { background: var(--card-bg); border-radius: 16px; padding: 28px; margin-bottom: 28px; border: 1px solid #1e293b66; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.3s; }
+.card:hover { border-color: rgba(56, 189, 248, 0.3); }
+h3 { color: var(--accent); font-size: 19px; margin: 0 0 24px 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1e293b; padding-bottom: 12px; cursor: pointer; user-select: none; font-weight: 600; }
+.item { display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.6); padding: 10px 16px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #1e293b; font-size: 14px; transition: 0.2s; }
+.item:hover { background: rgba(30, 41, 59, 0.6); transform: translateX(4px); }
 
-.btn-primary { width: 100%; padding: 12px; background: var(--accent); border:none; border-radius:8px; font-weight:bold; cursor:pointer; color: #000; transition: 0.3s; }
-.btn-primary:hover { background: #7dd3fc; }
-.btn-danger-outline { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; width: 100%; }
-.btn-danger-outline:hover { background: var(--danger); color: white; }
-.btn-gold-outline { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; width: 100%; }
-.btn-gold-outline:hover { background: var(--gold); color: black; }
+/* BOTÕES */
+.btn-primary { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--accent) 0%, #0ea5e9 100%); border:none; border-radius:10px; font-weight:600; cursor:pointer; color: #000; transition: 0.3s; font-size: 15px; box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(56, 189, 248, 0.4); }
+.btn-danger-outline { background: transparent; border: 2px solid var(--danger); color: var(--danger); padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.3s; width: 100%; font-size: 14px; }
+.btn-danger-outline:hover { background: var(--danger); color: white; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4); }
+.btn-gold-outline { background: transparent; border: 2px solid var(--gold); color: var(--gold); padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.3s; width: 100%; font-size: 14px; }
+.btn-gold-outline:hover { background: var(--gold); color: black; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4); }
+.btn-plus { width: 44px !important; height: 44px !important; padding: 0 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; font-size: 26px !important; line-height: 1 !important; font-weight: bold !important; border: none !important; cursor: pointer; flex-shrink: 0; border-radius: 10px !important; }
 
-/* BOTÃO PLUS - CORRIGIDO */
-.btn-plus {
-    width: 42px !important;
-    height: 42px !important;
-    padding: 0 !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 24px !important;
-    line-height: 1 !important;
-    font-weight: bold !important;
-    border: none !important;
-    cursor: pointer;
-    flex-shrink: 0;
-}
+/* CONQUISTAS */
+.badge-category { margin-bottom: 32px; }
+.badge-category-title { font-size: 14px; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 16px; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
+.badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px; }
+.badge-card { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 20px; border-radius: 14px; text-align: center; border: 2px solid #1e293b; transition: all 0.3s; cursor: pointer; position: relative; }
+.badge-card.unlocked { border-color: var(--gold); box-shadow: 0 0 20px rgba(245, 158, 11, 0.2); }
+.badge-card.unlocked:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(245, 158, 11, 0.3); }
+.badge-card.locked { opacity: 0.4; }
+.badge-card.locked:hover { opacity: 0.6; }
+.badge-icon { font-size: 40px; margin-bottom: 12px; display: block; }
+.badge-title { font-size: 13px; font-weight: 600; color: #fff; margin: 8px 0 4px 0; }
+.badge-desc { font-size: 10px; color: #94a3b8; line-height: 1.4; }
+.badge-progress { margin-top: 8px; padding-top: 8px; border-top: 1px solid #1e293b; }
+.badge-progress-bar { background: #0f172a; border-radius: 8px; height: 6px; overflow: hidden; margin-top: 4px; }
+.badge-progress-fill { background: linear-gradient(90deg, var(--accent) 0%, #0ea5e9 100%); height: 100%; transition: width 0.5s; }
 
-/* Container de agrupamento na Estrutura Ativa */
-.registro-group {
-    background: rgba(15, 23, 42, 0.5);
-    border: 1px solid #1e293b;
-    border-radius: 8px;
-    padding: 12px;
-    margin-bottom: 15px;
-}
-.registro-group-title {
-    font-size: 11px;
-    font-weight: bold;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    letter-spacing: 1px;
-    border-bottom: 1px solid #1e293b;
-    padding-bottom: 4px;
-}
+/* REGISTRO GROUP */
+.registro-group { background: rgba(15, 23, 42, 0.4); border: 1px solid #1e293b; border-radius: 12px; padding: 16px; margin-bottom: 18px; }
+.registro-group-title { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 1px; border-bottom: 1px solid #1e293b; padding-bottom: 6px; }
 
 /* AUTH */
-#login-screen { position: fixed; inset: 0; background: var(--bg-main); z-index: 10000; display: flex; align-items: center; justify-content: center; overflow-y: auto; padding: 20px; }
-.login-box { background: var(--card-bg); padding: 30px; border-radius: 15px; border: 1px solid var(--accent); width: 100%; max-width: 450px; text-align: center; }
-input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #1e293b; background: #0f172a; color: white; margin-bottom: 10px; }
+#login-screen { position: fixed; inset: 0; background: linear-gradient(135deg, #020617 0%, #0b1120 100%); z-index: 10000; display: flex; align-items: center; justify-content: center; overflow-y: auto; padding: 20px; }
+.login-box { background: var(--card-bg); padding: 40px; border-radius: 20px; border: 2px solid var(--accent); width: 100%; max-width: 480px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+.login-box h1 { color: var(--accent); font-size: 32px; margin-bottom: 8px; font-weight: 700; }
+.login-box h2 { color: #e5e7eb; font-size: 20px; margin-bottom: 28px; font-weight: 500; }
+input, select { width: 100%; padding: 14px 16px; border-radius: 10px; border: 1px solid #1e293b; background: #0f172a; color: white; margin-bottom: 12px; font-size: 15px; transition: 0.3s; }
+input:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1); }
 
-.grid-stack { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+.grid-stack { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
 
-/* MOBILE RESPONSIVO - CORRIGIDO */
+/* MOBILE */
 @media (max-width: 768px) {
-  .menu-toggle { 
-      display: flex !important; /* Garante que o botão apareça */
-      align-items: center;      /* Alinha o ☰ e o Menu verticalmente */
-      width: auto !important;   /* MUITO IMPORTANTE: permite que o botão estique */
-      background: transparent;
-      border: none;
-      padding: 5px 10px;
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      z-index: 3000;
-    }
+  .menu-toggle { display: flex !important; }
   #mobile-logo { display: block; }
-  
-  /* Sidebar mobile */
-  .sidebar { left: -240px;
-  padding-top: 80px !important; /* Isso empurra os botões (Home, Perfil, etc) para baixo */ }
-  .sidebar.open { left: 0;
-    box-shadow:0 0 0 10000px rgba(0, 0, 0, 0.5); }
-  .sidebar h1 { display: none; } /* Remove título da sidebar no mobile */
-  
-  /* Main content */
-  .main { margin-left: 0; padding: 80px 15px 20px 15px; }
-  
-  /* Header grid: 1 coluna, perfil primeiro */
-  .header-grid { 
-    grid-template-columns: 1fr; 
-  }
-  
-  /* Perfil fica em cima */
+  .sidebar { left: -260px; padding-top: 90px; }
+  .sidebar.open { left: 0; box-shadow: 0 0 0 10000px rgba(0, 0, 0, 0.6); }
+  .sidebar h1 { display: none; }
+  .main { margin-left: 0; padding: 90px 18px 24px 18px; }
+  .header-grid { grid-template-columns: 1fr; }
   .card-slim:nth-child(1) { order: 1; }
-  
-  /* Conquistas Recentes: esconder container separado */
   .card-slim:nth-child(2) { display: none; }
-  
-  /* Badges dentro do perfil no mobile */
-  .mobile-badges-container {
-    display: block;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid #1e293b;
-  }
-  
-  /* Cards empilhados verticalmente */
-  .grid-stack {
-    grid-template-columns: 1fr !important;
-  }
-  
-  /* Ajustes de espaçamento */
-  .card { padding: 18px; }
-  h3 { font-size: 15px; }
+  .mobile-badges-container { display: block; margin-top: 12px; padding-top: 12px; border-top: 1px solid #1e293b; }
+  .grid-stack { grid-template-columns: 1fr !important; }
+  .card { padding: 20px; }
+  h3 { font-size: 16px; }
+  .badge-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; }
 }
 
-/* Container de badges mobile (dentro do perfil) */
-.mobile-badges-container {
-  display: none; /* Escondido no desktop */
-}
-
+.mobile-badges-container { display: none; }
 @media (max-width: 768px) {
-  .mobile-badges-container {
-    display: block;
-  }
+  .mobile-badges-container { display: block; }
 }
+
+/* ANIMAÇÕES */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideDown { from { opacity: 0; max-height: 0; } to { opacity: 1; max-height: 500px; } }
+@keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
+@keyframes bounceIn { 
+  0% { transform: scale(0) rotate(-180deg); }
+  50% { transform: scale(1.1) rotate(10deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+@keyframes pulse { 
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+@keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes slideInRight { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes slideOutRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(400px); opacity: 0; } }
+
+/* POPUP */
+#popup { position: fixed; top: 24px; right: 24px; padding: 16px 28px; border-radius: 12px; font-weight: 600; display: none; z-index: 9999; box-shadow: 0 8px 24px rgba(0,0,0,0.3); font-size: 15px; }
 </style>
 </head>
 <body>
@@ -229,44 +194,44 @@ input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px soli
 <div id="login-screen">
   <div class="login-box" id="auth-login">
     <h1>LIFE DASH</h1>
-    <h2>Login</h2>
-    <input type="email" id="login-email" placeholder="E-mail">
-    <input type="password" id="login-password" placeholder="Senha">
+    <h2>Bem-vindo de volta!</h2>
+    <input type="email" id="login-email" placeholder="Seu e-mail">
+    <input type="password" id="login-password" placeholder="Sua senha">
     <button class="btn-primary" onclick="fazerLogin()">Entrar</button>
-    <p onclick="recuperarSenha()" style="color: var(--accent); cursor: pointer; font-size: 12px; margin-top: 15px;">Esqueci minha senha</p>
-    <span onclick="toggleAuth('register')" style="color: var(--accent); cursor: pointer; text-decoration: underline; font-size: 14px; margin-top: 10px; display: block;">Registrar-se</span>
+    <p onclick="recuperarSenha()" style="color: var(--accent); cursor: pointer; font-size: 13px; margin-top: 18px;">Esqueci minha senha</p>
+    <span onclick="toggleAuth('register')" style="color: var(--accent); cursor: pointer; text-decoration: underline; font-size: 14px; margin-top: 12px; display: block;">Criar nova conta</span>
   </div>
 
   <div class="login-box" id="auth-register" style="display: none;">
-    <h2>Criar Nova Conta</h2>
+    <h2>Criar Conta</h2>
     <div class="photo-upload-container" onclick="document.getElementById('regFoto').click()">
         <img id="regPreview" src="" style="width:100%; height:100%; border-radius:50%; object-fit:cover; display:none;">
         <div class="camera-overlay" style="opacity: 1;">📷</div>
     </div>
-    <span class="upload-label" onclick="document.getElementById('regFoto').click()">Clique para adicionar foto</span>
-    <input type="file" id="regFoto" onchange="previewRegistro(this)" style="display:none;">
-    <input type="text" id="regNome" placeholder="Nome Completo">
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+    <span class="upload-label" onclick="document.getElementById('regFoto').click()">Adicionar foto de perfil</span>
+    <input type="file" id="regFoto" onchange="previewRegistro(this)" style="display:none;" accept="image/*">
+    <input type="text" id="regNome" placeholder="Nome completo">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
         <input type="date" id="regNascimento">
-        <select id="regSexo"><option value="">Sexo...</option><option>Masculino</option><option>Feminino</option></select>
+        <select id="regSexo"><option value="">Sexo...</option><option>Masculino</option><option>Feminino</option><option>Outro</option></select>
     </div>
     <input type="text" id="regProfissao" placeholder="Profissão">
     <input type="email" id="regEmail" placeholder="E-mail">
-    <input type="password" id="regPassword" placeholder="Senha">
-    <button class="btn-primary" onclick="fazerRegistro()">Cadastrar</button>
-    <span onclick="toggleAuth('login')" style="color: var(--accent); cursor: pointer; text-decoration: underline; font-size: 14px; margin-top: 15px; display: block;">Já tem conta? Login</span>
+    <input type="password" id="regPassword" placeholder="Senha (mínimo 6 caracteres)">
+    <button class="btn-primary" onclick="fazerRegistro()">Criar Conta</button>
+    <span onclick="toggleAuth('login')" style="color: var(--accent); cursor: pointer; text-decoration: underline; font-size: 14px; margin-top: 18px; display: block;">Já tem conta? Faça login</span>
   </div>
 </div>
 
 <div class="sidebar">
   <h1>LIFE DASH</h1>
   <div class="nav">
-    <button class="active" onclick="irPara('home', this)">🏠 Home</button>
-    <button onclick="irPara('conquistas', this)">🏆 Conquistas</button>
-    <button onclick="irPara('perfil', this)">👤 Perfil</button>
-    <button onclick="irPara('registros', this)">📝 Registros</button>
-    <button onclick="irPara('historico', this)">📜 Histórico</button>
-    <button onclick="fazerLogout()" style="margin-top: 30px; color: var(--danger);">🚪 Sair</button>
+    <button class="active" onclick="irPara('home', this)"><span class="icon">🏠</span> Home</button>
+    <button onclick="irPara('conquistas', this)"><span class="icon">🏆</span> Conquistas</button>
+    <button onclick="irPara('perfil', this)"><span class="icon">👤</span> Perfil</button>
+    <button onclick="irPara('registros', this)"><span class="icon">📝</span> Registros</button>
+    <button onclick="irPara('historico', this)"><span class="icon">📜</span> Histórico</button>
+    <button onclick="fazerLogout()" style="margin-top: 40px; color: var(--danger);"><span class="icon">🚪</span> Sair</button>
   </div>
 </div>
 
@@ -281,14 +246,13 @@ input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px soli
         <p><strong>Sexo:</strong> <span id="hSexo">---</span> | <strong>Profissão:</strong> <span id="hProfissao">---</span></p>
         <p id="hFrase" class="phrase-slim">"---"</p>
         
-        <!-- Badges mobile (dentro do perfil) -->
         <div class="mobile-badges-container">
-          <div style="font-size: 10px; color: var(--accent); margin-bottom: 5px; font-weight: bold;">🏆 CONQUISTAS</div>
+          <div style="font-size: 11px; color: var(--accent); margin-bottom: 8px; font-weight: 700;">🏆 CONQUISTAS</div>
           <div id="homeBadgesMobile" class="mini-conquistas"></div>
         </div>
         
         <div class="xp-wrapper">
-          <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--accent)">
+          <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--accent); font-weight:600">
             <span>Nível <b id="hNivel">1</b></span> <span id="xpNumerico">0/100 XP</span>
           </div>
           <div class="xp-container"><div id="xpBar" class="xp-bar"></div></div>
@@ -297,7 +261,7 @@ input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px soli
     </div>
 
     <div class="card-slim" style="flex-direction: column; align-items: flex-start; justify-content: center;">
-      <h3 style="margin-bottom: 10px; font-size: 14px; border:none; padding:0; cursor:default">🏆 Conquistas Recentes</h3>
+      <h3 style="margin-bottom: 12px; font-size: 15px; border:none; padding:0; cursor:default">🏆 Conquistas Recentes</h3>
       <div id="homeBadges" class="mini-conquistas"></div>
     </div>
   </div>
@@ -306,9 +270,7 @@ input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px soli
     <div class="grid-stack">
       <div class="card">
         <h3 onclick="toggleCollapse('homeTarefasCont')">🚀 Tarefas do Dia <span id="icon-homeTarefasCont">▼</span></h3>
-        <div id="homeTarefasCont">
-            <div id="homeTarefas"></div>
-        </div>
+        <div id="homeTarefasCont"><div id="homeTarefas"></div></div>
       </div>
       <div class="card">
         <h3 onclick="toggleCollapse('homeHabitosCont')">✨ Hábitos Ativos <span id="icon-homeHabitosCont">▼</span></h3>
@@ -332,15 +294,15 @@ input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px soli
             <div class="camera-overlay" id="pCameraIcon" style="opacity: 1;">📷</div>
           </div>
           <span class="upload-label" onclick="document.getElementById('pFotoInput').click()">Alterar foto</span>
-          <input type="file" id="pFotoInput" onchange="localPreview(this)" style="display:none;">
+          <input type="file" id="pFotoInput" onchange="localPreview(this)" style="display:none;" accept="image/*">
         </div>
         <div>
-          <input id="pNome" placeholder="Nome">
+          <input id="pNome" placeholder="Nome completo">
           <input type="date" id="pNascimento">
           <input id="pProfissao" placeholder="Profissão">
-          <select id="pSexo"><option value="">Sexo...</option><option>Masculino</option><option>Feminino</option></select>
-          <input id="pFrase" placeholder="Sua frase..." maxlength="60">
-          <button class="btn-primary" onclick="salvarPerfilFirebase()">💾 Salvar na Nuvem</button>
+          <select id="pSexo"><option value="">Sexo...</option><option>Masculino</option><option>Feminino</option><option>Outro</option></select>
+          <input id="pFrase" placeholder="Sua frase motivacional..." maxlength="80">
+          <button class="btn-primary" onclick="salvarPerfilFirebase()">💾 Salvar Alterações</button>
         </div>
       </div>
     </div>
@@ -350,22 +312,22 @@ input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px soli
     <div class="grid-stack">
       <div class="card">
         <h3 style="cursor: default;">➕ Novo Registro</h3>
-        <p style="color:var(--accent); font-size:11px; font-weight:bold;">CATEGORIA</p>
-        <div style="display:flex; gap:10px; margin-bottom:15px">
-            <input id="regCatNome" placeholder="Nome...">
+        <p style="color:var(--accent); font-size:12px; font-weight:700; margin-bottom:8px;">CATEGORIA</p>
+        <div style="display:flex; gap:12px; margin-bottom:20px">
+            <input id="regCatNome" placeholder="Ex: Trabalho, Estudos...">
             <button class="btn-primary btn-plus" onclick="addCat()">+</button>
         </div>
         
-        <p style="color:var(--accent); font-size:11px; font-weight:bold;">TAREFA</p>
-        <select id="regTarCat" style="margin-bottom:10px"></select>
-        <div style="display:flex; gap:10px; margin-bottom:15px">
-            <input id="regTarNome" placeholder="Tarefa...">
+        <p style="color:var(--accent); font-size:12px; font-weight:700; margin-bottom:8px;">TAREFA</p>
+        <select id="regTarCat" style="margin-bottom:12px"></select>
+        <div style="display:flex; gap:12px; margin-bottom:20px">
+            <input id="regTarNome" placeholder="Nome da tarefa...">
             <button class="btn-primary btn-plus" onclick="addTar()">+</button>
         </div>
         
-        <p style="color:var(--accent); font-size:11px; font-weight:bold;">HÁBITO</p>
-        <div style="display:flex; gap:10px">
-            <input id="regHabNome" placeholder="Hábito...">
+        <p style="color:var(--accent); font-size:12px; font-weight:700; margin-bottom:8px;">HÁBITO</p>
+        <div style="display:flex; gap:12px">
+            <input id="regHabNome" placeholder="Ex: Meditar, Ler...">
             <button class="btn-primary btn-plus" onclick="addHab()">+</button>
         </div>
       </div>
@@ -390,16 +352,16 @@ input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px soli
       </div>
     </div>
     
-    <div class="card" style="border-color: rgba(239, 68, 68, 0.3);">
+    <div class="card" style="border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.05);">
         <h3 style="color: var(--danger); border-bottom-color: var(--danger); cursor: default;">⚠️ Zona de Perigo</h3>
         <div class="grid-stack">
             <div>
-                <p style="font-size: 12px; margin-bottom: 10px; color: #94a3b8;">Limpa apenas os registros feitos hoje.</p>
-                <button onclick="resetDia()" class="btn-gold-outline">Resetar Hoje</button>
+                <p style="font-size: 13px; margin-bottom: 12px; color: #cbd5e1; line-height: 1.5;">Remove apenas o progresso de hoje (tarefas e hábitos concluídos).</p>
+                <button onclick="resetDia()" class="btn-gold-outline">🔄 Resetar Hoje</button>
             </div>
             <div>
-                <p style="font-size: 12px; margin-bottom: 10px; color: #94a3b8;">Apaga todos os seus dados permanentemente.</p>
-                <button onclick="resetGeral()" class="btn-danger-outline">Reset Total</button>
+                <p style="font-size: 13px; margin-bottom: 12px; color: #cbd5e1; line-height: 1.5;">⚠️ CUIDADO! Apaga TODOS os dados permanentemente.</p>
+                <button onclick="resetGeral()" class="btn-danger-outline">💣 Reset Total</button>
             </div>
         </div>
     </div>
@@ -408,20 +370,21 @@ input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px soli
   <div id="conquistas" class="section">
     <div class="card">
         <h3 style="cursor: default;">🏆 Mural de Honra</h3>
-        <p style="color:#64748b; font-size:12px; margin-bottom:20px;">Complete requisitos para desbloquear novos títulos.</p>
-        <div id="muralConquistas" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px;"></div>
+        <p style="color:#94a3b8; font-size:13px; margin-bottom:28px; line-height:1.6;">Desbloqueie conquistas épicas completando desafios! Cada categoria representa um nível de dificuldade crescente.</p>
+        <div id="muralConquistas"></div>
     </div>
   </div>
   
   <div id="historico" class="section">
     <div class="card">
       <h3 style="cursor: default;">📜 Histórico de Atividades</h3>
+      <p style="color:#94a3b8; font-size:13px; margin-bottom:20px;">Registro completo de todas as suas atividades realizadas.</p>
       <div id="listHist"></div>
     </div>
   </div>
 </div>
 
-<div id="popup" style="position: fixed; top: 20px; right: 20px; background: var(--gold); color: #000; padding: 15px 25px; border-radius: 8px; font-weight: bold; display: none; z-index: 9999;"></div>
+<div id="popup"></div>
 
 <script>
 const firebaseConfig = {
@@ -437,51 +400,85 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
-// 🎵 SISTEMA DE SONS IMERSIVO
+// 🎵 SISTEMA DE SONS
 const SONS = {
-  tarefaConcluida: new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3'), // Click suave
-  habitoConcluido: new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'), // Sucesso energético
-  xpGanho: new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3'), // Coleta de moeda
-  conquistaDesbloqueada: new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'), // Fanfarra épica
-  levelUp: new Audio('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3'), // Power-up majestoso
-  erro: new Audio('https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3'), // Erro suave
-  sucesso: new Audio('https://assets.mixkit.co/active_storage/sfx/2001/2001-preview.mp3') // Confirmação
+  tarefaConcluida: new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3'),
+  habitoConcluido: new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'),
+  xpGanho: new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3'),
+  conquistaDesbloqueada: new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'),
+  levelUp: new Audio('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3'),
+  erro: new Audio('https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3'),
+  sucesso: new Audio('https://assets.mixkit.co/active_storage/sfx/2001/2001-preview.mp3')
 };
 
-// Função para tocar sons com controle de volume
-function tocarSom(tipoSom, volume = 0.5) {
+function tocarSom(tipo, vol = 0.5) {
   try {
-    const som = SONS[tipoSom];
+    const som = SONS[tipo];
     if(som) {
-      som.volume = volume;
-      som.currentTime = 0; // Reinicia o som
-      som.play().catch(e => console.log('Autoplay bloqueado:', e));
+      som.volume = vol;
+      som.currentTime = 0;
+      som.play().catch(e => console.log('Autoplay bloqueado'));
     }
-  } catch(e) {
-    console.log('Erro ao tocar som:', e);
-  }
+  } catch(e) { console.log('Erro som:', e); }
 }
 
-let S = { perfil: {}, categorias: [], tarefas: [], habitos: [], hist: [], xp: 0, badges_unlocked: [] };
-let openCats = JSON.parse(localStorage.getItem('lifeDash_openCats')) || {};
-let colapsados = { homeTarefasCont: false, homeHabitosCont: false }; // ADICIONADO
-let tempFoto = "";
-
+// 🏆 SISTEMA DE CONQUISTAS EXPANDIDO (20+ badges)
 const BADGES = [
-  {id:'1', icon:'🦉', title:'Coruja', req:(s)=> (s.hist || []).filter(h=>h.tipo==='T' && parseInt(h.hora)>=20).length>=5},
-  {id:'2', icon:'🚀', title:'Decolagem', req:(s)=> xpInfo(s.xp).n>=2},
-  {id:'3', icon:'🔥', title:'Em Chamas', req:(s)=> (s.habitos || []).some(h=>h.streak >= 3)}
+  // 🌱 INICIANTE (Verde)
+  {id:'1', icon:'👋', title:'Primeiro Passo', desc:'Crie sua primeira tarefa', cat:'Iniciante', req:(s)=> s.tarefas.length >= 1},
+  {id:'2', icon:'🌱', title:'Plantando Hábitos', desc:'Adicione seu primeiro hábito', cat:'Iniciante', req:(s)=> s.habitos.length >= 1},
+  {id:'3', icon:'✅', title:'Primeira Vitória', desc:'Complete sua primeira tarefa', cat:'Iniciante', req:(s)=> s.hist.filter(h=>h.tipo==='T').length >= 1},
+  {id:'4', icon:'🎯', title:'Focado', desc:'Complete 5 tarefas', cat:'Iniciante', req:(s)=> s.hist.filter(h=>h.tipo==='T').length >= 5},
+  
+  // ⚡ INTERMEDIÁRIO (Azul)
+  {id:'5', icon:'🚀', title:'Decolagem', desc:'Alcance o nível 2', cat:'Intermediário', req:(s)=> xpInfo(s.xp).n >= 2},
+  {id:'6', icon:'💪', title:'Determinado', desc:'Complete 20 tarefas', cat:'Intermediário', req:(s)=> s.hist.filter(h=>h.tipo==='T').length >= 20},
+  {id:'7', icon:'🔥', title:'Em Chamas', desc:'Mantenha 3 dias de sequência em um hábito', cat:'Intermediário', req:(s)=> s.habitos.some(h=>h.streak >= 3)},
+  {id:'8', icon:'📚', title:'Organizado', desc:'Crie 3 categorias diferentes', cat:'Intermediário', req:(s)=> s.categorias.length >= 3},
+  {id:'9', icon:'⏰', title:'Pontual', desc:'Complete 10 hábitos', cat:'Intermediário', req:(s)=> s.hist.filter(h=>h.tipo==='H').length >= 10},
+  {id:'10', icon:'🦉', title:'Coruja', desc:'Complete 5 tarefas após às 20h', cat:'Intermediário', req:(s)=> s.hist.filter(h=>h.tipo==='T' && parseInt(h.hora)>=20).length >= 5},
+  
+  // 🔥 AVANÇADO (Roxo)
+  {id:'11', icon:'🏃', title:'Maratonista', desc:'Complete 50 tarefas', cat:'Avançado', req:(s)=> s.hist.filter(h=>h.tipo==='T').length >= 50},
+  {id:'12', icon:'🌟', title:'Estrela Cadente', desc:'Alcance o nível 5', cat:'Avançado', req:(s)=> xpInfo(s.xp).n >= 5},
+  {id:'13', icon:'💎', title:'Consistente', desc:'7 dias de sequência em um hábito', cat:'Avançado', req:(s)=> s.habitos.some(h=>h.streak >= 7)},
+  {id:'14', icon:'🎨', title:'Multitarefa', desc:'Tenha 5 hábitos ativos', cat:'Avançado', req:(s)=> s.habitos.length >= 5},
+  {id:'15', icon:'📈', title:'Produtivo', desc:'Acumule 500 XP', cat:'Avançado', req:(s)=> s.xp >= 500},
+  {id:'16', icon:'🧠', title:'Estrategista', desc:'Complete todas as tarefas de uma categoria', cat:'Avançado', req:(s)=> s.categorias.some(cat => {
+    const tarefas = s.tarefas.filter(t => t.cat === cat);
+    return tarefas.length > 0 && tarefas.every(t => t.status === 'concluido');
+  })},
+  
+  // 👑 LENDÁRIO (Dourado)
+  {id:'17', icon:'👑', title:'Lenda', desc:'Alcance o nível 10', cat:'Lendário', req:(s)=> xpInfo(s.xp).n >= 10},
+  {id:'18', icon:'🔱', title:'Imparável', desc:'Complete 100 tarefas', cat:'Lendário', req:(s)=> s.hist.filter(h=>h.tipo==='T').length >= 100},
+  {id:'19', icon:'⚡', title:'Super-Humano', desc:'30 dias de sequência em um hábito', cat:'Lendário', req:(s)=> s.habitos.some(h=>h.streak >= 30)},
+  {id:'20', icon:'🏆', title:'Mestre da Produtividade', desc:'1000 XP acumulados', cat:'Lendário', req:(s)=> s.xp >= 1000},
+  {id:'21', icon:'💫', title:'Perfeição', desc:'Complete 50 hábitos', cat:'Lendário', req:(s)=> s.hist.filter(h=>h.tipo==='H').length >= 50},
+  {id:'22', icon:'🌈', title:'Arco-Íris', desc:'Desbloqueie 15 conquistas', cat:'Lendário', req:(s)=> s.badges_unlocked.length >= 15},
 ];
 
-// Funções de Preview de Foto
+const BADGE_COLORS = {
+  'Iniciante': '#22c55e',
+  'Intermediário': '#38bdf8',
+  'Avançado': '#a855f7',
+  'Lendário': '#f59e0b'
+};
+
+// ESTADO GLOBAL
+let S = { perfil: {}, categorias: [], tarefas: [], habitos: [], hist: [], xp: 0, badges_unlocked: [] };
+let openCats = JSON.parse(localStorage.getItem('lifeDash_openCats')) || {};
+let colapsados = { homeTarefasCont: false, homeHabitosCont: false };
+let tempFoto = "";
+
+// PREVIEW DE FOTO
 function previewRegistro(input) { 
   if(input.files && input.files[0]){ 
     const r = new FileReader(); 
     r.onload = (e) => { 
       tempFoto = e.target.result; 
-      const img = document.getElementById("regPreview"); 
-      img.src = tempFoto; 
-      img.style.display="block"; 
+      document.getElementById("regPreview").src = tempFoto; 
+      document.getElementById("regPreview").style.display="block"; 
     }; 
     r.readAsDataURL(input.files[0]); 
   } 
@@ -492,43 +489,68 @@ function localPreview(input) {
     const r = new FileReader(); 
     r.onload = (e) => { 
       tempFoto = e.target.result; 
-      const img = document.getElementById("pPreview"); 
-      img.src = tempFoto; 
-      img.style.display="block"; 
+      document.getElementById("pPreview").src = tempFoto; 
+      document.getElementById("pPreview").style.display="block"; 
       document.getElementById("pCameraIcon").style.opacity="0"; 
     }; 
     r.readAsDataURL(input.files[0]); 
   } 
 }
 
-// Autenticação
+// AUTENTICAÇÃO
 async function fazerLogin() {
-    const e = document.getElementById('login-email').value;
+    const e = document.getElementById('login-email').value.trim();
     const p = document.getElementById('login-password').value;
     if(!e || !p) return alert("Preencha todos os campos");
-    auth.signInWithEmailAndPassword(e, p).catch(err => alert("Erro: " + err.message));
+    try {
+      await auth.signInWithEmailAndPassword(e, p);
+    } catch(err) {
+      alert("Erro: " + err.message);
+    }
 }
 
 async function fazerRegistro() {
-    const e = document.getElementById('regEmail').value, p = document.getElementById('regPassword').value, n = document.getElementById('regNome').value;
+    const e = document.getElementById('regEmail').value.trim();
+    const p = document.getElementById('regPassword').value;
+    const n = document.getElementById('regNome').value.trim();
+    
     if(!e || !p || !n) return alert("Nome, Email e Senha são obrigatórios!");
+    if(p.length < 6) return alert("A senha deve ter no mínimo 6 caracteres");
+    
     try {
         const cred = await auth.createUserWithEmailAndPassword(e, p);
-        const novosDados = { perfil: { nome: n, nascimento: document.getElementById('regNascimento').value, sexo: document.getElementById('regSexo').value, profissao: document.getElementById('regProfissao').value, frase: "Foco no progresso!", foto: tempFoto || "" }, categorias: [], tarefas: [], habitos: [], hist: [], xp: 0, badges_unlocked: [] };
+        const novosDados = { 
+          perfil: { 
+            nome: n, 
+            nascimento: document.getElementById('regNascimento').value, 
+            sexo: document.getElementById('regSexo').value, 
+            profissao: document.getElementById('regProfissao').value, 
+            frase: "Foco no progresso!", 
+            foto: tempFoto || "" 
+          }, 
+          categorias: [], 
+          tarefas: [], 
+          habitos: [], 
+          hist: [], 
+          xp: 0, 
+          badges_unlocked: [] 
+        };
         await db.collection("users").doc(cred.user.uid).set(novosDados);
-        alert("Conta criada! Faça login.");
+        alert("Conta criada com sucesso! Faça login.");
         toggleAuth('login');
-    } catch(err) { alert(err.message); }
+    } catch(err) { 
+      alert("Erro: " + err.message); 
+    }
 }
 
 async function recuperarSenha() {
-    const email = document.getElementById('login-email').value;
+    const email = document.getElementById('login-email').value.trim();
     if(!email) return alert("Digite seu e-mail no campo de login primeiro!");
     try { 
       await auth.sendPasswordResetEmail(email); 
-      alert("E-mail de recuperação enviado!"); 
+      alert("E-mail de recuperação enviado! Verifique sua caixa de entrada."); 
     } catch (err) { 
-      alert(err.message); 
+      alert("Erro: " + err.message); 
     }
 }
 
@@ -539,6 +561,10 @@ auth.onAuthStateChanged(user => {
             if(doc.exists) { 
                 S = doc.data(); 
                 if(!S.badges_unlocked) S.badges_unlocked = [];
+                if(!S.hist) S.hist = [];
+                if(!S.categorias) S.categorias = [];
+                if(!S.tarefas) S.tarefas = [];
+                if(!S.habitos) S.habitos = [];
                 render(); 
                 sincronizarInputsPerfil(); 
             } 
@@ -549,21 +575,57 @@ auth.onAuthStateChanged(user => {
 });
 
 function salvar() { 
-  if(auth.currentUser) db.collection("users").doc(auth.currentUser.uid).set(S); 
+  if(auth.currentUser) {
+    db.collection("users").doc(auth.currentUser.uid).set(S).catch(err => {
+      console.error("Erro ao salvar:", err);
+      popupAnimado("Erro ao salvar dados", 'error');
+    });
+  }
   render(); 
 }
 
-// FUNÇÃO TOGGLE COLLAPSE - CORRIGIDA
+// TOGGLE COLLAPSE
 function toggleCollapse(id) {
     const el = document.getElementById(id);
     const icon = document.getElementById('icon-' + id);
+    if(!el || !icon) return;
     colapsados[id] = !colapsados[id];
     el.style.display = colapsados[id] ? 'none' : 'block';
     icon.innerText = colapsados[id] ? '▶' : '▼';
 }
 
+// CÁLCULO DE PROGRESSO DE CONQUISTA
+function calcularProgressoConquista(badge) {
+  let atual = 0;
+  let total = 0;
+  
+  if(badge.id === '1') { atual = S.tarefas.length; total = 1; }
+  else if(badge.id === '2') { atual = S.habitos.length; total = 1; }
+  else if(badge.id === '3') { atual = S.hist.filter(h=>h.tipo==='T').length; total = 1; }
+  else if(badge.id === '4') { atual = S.hist.filter(h=>h.tipo==='T').length; total = 5; }
+  else if(badge.id === '5') { atual = xpInfo(S.xp).n; total = 2; }
+  else if(badge.id === '6') { atual = S.hist.filter(h=>h.tipo==='T').length; total = 20; }
+  else if(badge.id === '7') { atual = Math.max(...S.habitos.map(h=>h.streak||0), 0); total = 3; }
+  else if(badge.id === '8') { atual = S.categorias.length; total = 3; }
+  else if(badge.id === '9') { atual = S.hist.filter(h=>h.tipo==='H').length; total = 10; }
+  else if(badge.id === '10') { atual = S.hist.filter(h=>h.tipo==='T' && parseInt(h.hora)>=20).length; total = 5; }
+  else if(badge.id === '11') { atual = S.hist.filter(h=>h.tipo==='T').length; total = 50; }
+  else if(badge.id === '12') { atual = xpInfo(S.xp).n; total = 5; }
+  else if(badge.id === '13') { atual = Math.max(...S.habitos.map(h=>h.streak||0), 0); total = 7; }
+  else if(badge.id === '14') { atual = S.habitos.length; total = 5; }
+  else if(badge.id === '15') { atual = S.xp; total = 500; }
+  else if(badge.id === '17') { atual = xpInfo(S.xp).n; total = 10; }
+  else if(badge.id === '18') { atual = S.hist.filter(h=>h.tipo==='T').length; total = 100; }
+  else if(badge.id === '19') { atual = Math.max(...S.habitos.map(h=>h.streak||0), 0); total = 30; }
+  else if(badge.id === '20') { atual = S.xp; total = 1000; }
+  else if(badge.id === '21') { atual = S.hist.filter(h=>h.tipo==='H').length; total = 50; }
+  else if(badge.id === '22') { atual = S.badges_unlocked.length; total = 15; }
+  
+  return { atual: Math.min(atual, total), total, percent: total > 0 ? Math.min((atual / total) * 100, 100) : 0 };
+}
+
+// RENDER PRINCIPAL
 function render() {
-  const lAntes = xpInfo(S.xp);
   const l = xpInfo(S.xp); 
   const hoje = new Date().toLocaleDateString();
   
@@ -576,7 +638,7 @@ function render() {
   }
   window.nivelAnterior = l.n;
   
-  // Dados do Perfil
+  // Perfil
   document.getElementById("hNome").innerText = S.perfil.nome || "---";
   document.getElementById("hIdade").innerText = calcularIdade(S.perfil.nascimento);
   document.getElementById("hSexo").innerText = S.perfil.sexo || "---";
@@ -585,50 +647,45 @@ function render() {
   document.getElementById("hNivel").innerText = l.n;
   document.getElementById("xpBar").style.width = l.p + "%";
   document.getElementById("xpNumerico").innerText = `${Math.floor(l.cur)}/${Math.floor(l.max)} XP`;
-  if(S.perfil.foto) { 
-    document.getElementById("hFoto").src = S.perfil.foto; 
-    document.getElementById("hFoto").style.display="block"; 
+  
+  const fotoEl = document.getElementById("hFoto");
+  if(S.perfil.foto && fotoEl) { 
+    fotoEl.src = S.perfil.foto; 
+    fotoEl.style.display="block"; 
   }
 
-  // Render Badges (Desktop e Mobile)
+  // Badges
+  checarConquistas();
   let hBadge = "";
-  BADGES.forEach(b => { 
-      if(!S.badges_unlocked.includes(b.id) && b.req(S)) {
-          S.badges_unlocked.push(b.id);
-          setTimeout(() => {
-            tocarSom('conquistaDesbloqueada', 0.8);
-            mostrarAnimacaoConquista(b);
-          }, 300);
-          salvar();
-      }
-      if(S.badges_unlocked.includes(b.id)) {
-        hBadge += `<div class="badge-mini" title="${b.title}">${b.icon}</div>`; 
-      }
+  const ultimas5 = S.badges_unlocked.slice(-5);
+  ultimas5.forEach(id => {
+    const b = BADGES.find(badge => badge.id === id);
+    if(b) hBadge += `<div class="badge-mini" title="${b.title}: ${b.desc}">${b.icon}</div>`;
   });
   
   const badgeHTML = hBadge || "<small style='color:#64748b'>Nenhuma conquista ainda</small>";
   document.getElementById("homeBadges").innerHTML = badgeHTML;
   document.getElementById("homeBadgesMobile").innerHTML = badgeHTML;
 
-  // Render Tarefas
+  // Tarefas
   let tarHtml = "";
   S.categorias.forEach(cat => {
     const ts = S.tarefas.filter(t => t.cat === cat);
     const conc = ts.filter(t => t.status === 'concluido').length;
     const isOpen = openCats[cat];
     tarHtml += `<div class="cat-header ${conc>0 && conc===ts.length?'cat-done':''}" onclick="toggleCat('${cat}')">
-        <span>${cat}</span><span style="font-size:10px; margin-left:auto; margin-right:10px;">${conc}/${ts.length}</span><span>${isOpen?'▲':'▼'}</span>
+        <span>${cat}</span><span style="font-size:11px; margin-left:auto; margin-right:12px; font-weight:600">${conc}/${ts.length}</span><span>${isOpen?'▲':'▼'}</span>
       </div>
       <div class="task-container-wrapper ${isOpen?'open':''}">
-        ${ts.map(t => `<div style="display:flex; align-items:center; padding:10px 0; border-bottom:1px solid #1e293b44;">
-            <span style="font-size:14px">${t.nome}</span>
+        ${ts.map(t => `<div style="display:flex; align-items:center; padding:12px 0; border-bottom:1px solid #1e293b44;">
+            <span style="font-size:14px; flex:1">${t.nome}</span>
             <label class="switch"><input type="checkbox" ${t.status==='concluido'?'checked':''} onchange="toggleTarefa(${S.tarefas.indexOf(t)})"><span class="slider"></span></label>
           </div>`).join("")}
       </div>`;
   });
-  document.getElementById("homeTarefas").innerHTML = tarHtml || "<p style='font-size:12px; color:#94a3b8;'>Nenhuma tarefa registrada.</p>";
+  document.getElementById("homeTarefas").innerHTML = tarHtml || "<p style='font-size:13px; color:#94a3b8; text-align:center; padding:20px 0;'>Nenhuma tarefa registrada. Crie uma na aba Registros!</p>";
 
-  // Render Hábitos
+  // Hábitos
   const diasS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
   const ultimos7 = [...Array(7)].map((_, i) => {
       const d = new Date(); d.setDate(d.getDate() - (6 - i));
@@ -636,85 +693,127 @@ function render() {
   });
   
   const hHead = document.getElementById("habitHead");
-  if(hHead) hHead.innerHTML = `<tr><th style="text-align:left; width:35%">Hábito</th>${ultimos7.map(d=>`<th>${d.label}<br>${d.num}</th>`).join("")}</tr>`;
+  if(hHead) hHead.innerHTML = `<tr><th style="text-align:left; width:35%">Hábito</th>${ultimos7.map(d=>`<th>${d.label}<br><span style="font-size:11px">${d.num}</span></th>`).join("")}</tr>`;
   
   const hBody = document.getElementById("homeHabitos");
-  if(hBody) hBody.innerHTML = S.habitos.map((h, i) => `
-    <tr>
-      <td style="text-align:left"><div class="habit-name">${h.nome}</div><div style="font-size:9px; color:var(--gold)">🔥 ${h.streak||0} dias seguidos</div></td>
-      ${ultimos7.map(d => {
-          const feito = S.hist.some(r => r.nome === h.nome && r.data === d.data);
-          const isHoje = d.data === hoje;
-          let cl = 'habit-circle'; 
-          if(feito) cl += ' done'; 
-          // Usar data-attributes para evitar problemas com onclick inline
-          return `<td><div class="${cl}" ${!feito && isHoje ? `data-habit-idx="${i}" data-habit-date="${d.data}" style="cursor:pointer"` : ''}>${feito?'✓':''}</div></td>`;
-      }).join("")}
-    </tr>`).join("");
+  if(hBody) {
+    if(S.habitos.length === 0) {
+      hBody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:24px; color:#94a3b8;">Nenhum hábito configurado. Adicione um na aba Registros!</td></tr>`;
+    } else {
+      hBody.innerHTML = S.habitos.map((h, i) => `
+        <tr>
+          <td style="text-align:left">
+            <div class="habit-name">${h.nome}</div>
+            <div style="font-size:10px; color:var(--gold); margin-top:4px">🔥 ${h.streak||0} dias</div>
+          </td>
+          ${ultimos7.map(d => {
+              const feito = S.hist.some(r => r.nome === h.nome && r.data === d.data);
+              const isHoje = d.data === hoje;
+              let cl = 'habit-circle'; 
+              if(feito) cl += ' done'; 
+              return `<td><div class="${cl}" ${!feito && isHoje ? `data-habit-idx="${i}" data-habit-date="${d.data}"` : ''}>${feito?'✓':''}</div></td>`;
+          }).join("")}
+        </tr>`).join("");
+      
+      // Event listeners
+      document.querySelectorAll('[data-habit-idx]').forEach(el => {
+        el.addEventListener('click', function() {
+          concluirHabito(parseInt(this.getAttribute('data-habit-idx')), this.getAttribute('data-habit-date'));
+        });
+      });
+    }
+  }
+
+  // Estrutura
+  document.getElementById("regTarCat").innerHTML = S.categorias.length > 0 ? 
+    S.categorias.map(c=>`<option value="${c}">${c}</option>`).join("") :
+    "<option value=''>Crie uma categoria primeiro</option>";
+    
+  document.getElementById("listCats").innerHTML = S.categorias.map((c,i)=>`<div class="item"><span>${c}</span><button onclick="if(confirm('Remover categoria ${c}?')){S.categorias.splice(${i},1);salvar();}" style="color:var(--danger);border:none;background:none;cursor:pointer;font-size:18px">✖</button></div>`).join("") || "<small style='color:#64748b'>Nenhuma categoria</small>";
   
-  // Adicionar event listeners após renderizar
-  document.querySelectorAll('[data-habit-idx]').forEach(el => {
-    el.addEventListener('click', function() {
-      const idx = parseInt(this.getAttribute('data-habit-idx'));
-      const date = this.getAttribute('data-habit-date');
-      concluirHabito(idx, date);
-    });
-  });
+  document.getElementById("listTars").innerHTML = S.tarefas.map((t,i)=>`<div class="item"><span>${t.nome} <small style='color:#64748b'>(${t.cat})</small></span><button onclick="if(confirm('Remover tarefa?')){S.tarefas.splice(${i},1);salvar();}" style="color:var(--danger);border:none;background:none;cursor:pointer;font-size:18px">✖</button></div>`).join("") || "<small style='color:#64748b'>Nenhuma tarefa</small>";
+  
+  document.getElementById("listHabs").innerHTML = S.habitos.map((h,i)=>`<div class="item"><span>${h.nome}</span><button onclick="if(confirm('Remover hábito?')){S.habitos.splice(${i},1);salvar();}" style="color:var(--danger);border:none;background:none;cursor:pointer;font-size:18px">✖</button></div>`).join("") || "<small style='color:#64748b'>Nenhum hábito</small>";
 
-  // Estrutura de Gerenciamento
-  document.getElementById("regTarCat").innerHTML = S.categorias.map(c=>`<option value="${c}">${c}</option>`).join("");
-  document.getElementById("listCats").innerHTML = S.categorias.map((c,i)=>`<div class="item"><span>${c}</span><button onclick="S.categorias.splice(${i},1);salvar()" style="color:var(--danger);border:none;background:none;cursor:pointer">✖</button></div>`).join("") || "<small style='color:#64748b'>Nenhuma categoria</small>";
-  document.getElementById("listTars").innerHTML = S.tarefas.map((t,i)=>`<div class="item"><span>${t.nome} <small style='color:#64748b'>(${t.cat})</small></span><button onclick="S.tarefas.splice(${i},1);salvar()" style="color:var(--danger);border:none;background:none;cursor:pointer">✖</button></div>`).join("") || "<small style='color:#64748b'>Nenhuma tarefa</small>";
-  document.getElementById("listHabs").innerHTML = S.habitos.map((h,i)=>`<div class="item"><span>${h.nome}</span><button onclick="S.habitos.splice(${i},1);salvar()" style="color:var(--danger);border:none;background:none;cursor:pointer">✖</button></div>`).join("") || "<small style='color:#64748b'>Nenhum hábito</small>";
-
-  // Mural de Honra
+  // Mural de Conquistas
   const mConquistas = document.getElementById("muralConquistas");
   if(mConquistas) {
-      mConquistas.innerHTML = BADGES.map(b => {
-        const ok = S.badges_unlocked.includes(b.id);
-        return `
-          <div style="background:#0f172a; padding:15px; border-radius:12px; text-align:center; border:1px solid ${ok ? 'var(--gold)' : '#1e293b'}; opacity:${ok ? 1 : 0.3};">
-            <span style="font-size:30px">${b.icon}</span>
-            <h4 style="font-size:12px; margin:5px 0; color:${ok ? 'white' : '#64748b'}">${b.title}</h4>
-            <small style="font-size:10px; color:#64748b">${ok ? 'Concluído' : 'Bloqueado'}</small>
-          </div>`;
-      }).join("");
+    const categorias = ['Iniciante', 'Intermediário', 'Avançado', 'Lendário'];
+    let html = '';
+    
+    categorias.forEach(cat => {
+      const badgesCat = BADGES.filter(b => b.cat === cat);
+      const desbloqueadas = badgesCat.filter(b => S.badges_unlocked.includes(b.id)).length;
+      const cor = BADGE_COLORS[cat];
+      
+      html += `
+        <div class="badge-category">
+          <div class="badge-category-title" style="color:${cor}">
+            <span>${cat === 'Iniciante' ? '🌱' : cat === 'Intermediário' ? '⚡' : cat === 'Avançado' ? '🔥' : '👑'}</span>
+            <span>${cat}</span>
+            <span style="font-size:12px; color:#64748b; font-weight:400; margin-left:auto">${desbloqueadas}/${badgesCat.length}</span>
+          </div>
+          <div class="badge-grid">
+            ${badgesCat.map(b => {
+              const ok = S.badges_unlocked.includes(b.id);
+              const prog = calcularProgressoConquista(b);
+              return `
+                <div class="badge-card ${ok ? 'unlocked' : 'locked'}" title="${b.desc}">
+                  <span class="badge-icon">${b.icon}</span>
+                  <div class="badge-title">${b.title}</div>
+                  <div class="badge-desc">${b.desc}</div>
+                  ${!ok ? `
+                    <div class="badge-progress">
+                      <div style="font-size:9px; color:#64748b; margin-bottom:2px">${prog.atual}/${prog.total}</div>
+                      <div class="badge-progress-bar">
+                        <div class="badge-progress-fill" style="width:${prog.percent}%"></div>
+                      </div>
+                    </div>
+                  ` : '<div style="font-size:10px; color:var(--gold); margin-top:8px">✓ Desbloqueada</div>'}
+                </div>
+              `;
+            }).join("")}
+          </div>
+        </div>
+      `;
+    });
+    
+    mConquistas.innerHTML = html;
   }
   
   // Histórico
   const histEl = document.getElementById("listHist");
   if(histEl) {
-    histEl.innerHTML = S.hist.slice().reverse().map(h=>`
-      <div class="item">
-        <span>${h.tipo === 'T' ? '📋' : '🔁'} ${h.nome}</span>
-        <small style="color:#64748b">${h.data} • +${h.xpGanhos}XP</small>
-      </div>
-    `).join("") || "<p style='color:#64748b; font-size:13px;'>Nenhuma atividade registrada ainda.</p>";
+    if(S.hist.length === 0) {
+      histEl.innerHTML = "<p style='color:#64748b; font-size:14px; text-align:center; padding:40px 0;'>Nenhuma atividade registrada ainda. Complete tarefas e hábitos para começar seu histórico!</p>";
+    } else {
+      histEl.innerHTML = S.hist.slice().reverse().map(h=>`
+        <div class="item">
+          <span>${h.tipo === 'T' ? '📋' : '🔁'} ${h.nome}</span>
+          <small style="color:#64748b">${h.data} • <span style="color:var(--accent);font-weight:600">+${h.xpGanhos}XP</span></small>
+        </div>
+      `).join("");
+    }
   }
 }
 
-// Funções de UI
+// FUNÇÕES DE UI
 function toggleSidebar() {
     const sidebar = document.querySelector('.sidebar');
-    const menuToggle = document.querySelector('.menu-toggle'); // Localiza o botão
+    const menuToggle = document.querySelector('.menu-toggle');
     const menuText = document.getElementById('menu-text');
     
     sidebar.classList.toggle('open');
 
     if (sidebar.classList.contains('open')) {
-        // QUANDO ABRIR:
-        menuToggle.style.position = 'fixed'; // Torna o botão flutuante
-        setTimeout(() => {
-            menuText.classList.add('menu-text-active');
-        }, 100);
+        menuToggle.style.position = 'fixed';
+        setTimeout(() => menuText.classList.add('menu-text-active'), 100);
     } else {
-        // QUANDO FECHAR:
-        menuToggle.style.position = 'absolute'; // Devolve o botão ao topo do site
+        menuToggle.style.position = 'absolute';
         menuText.classList.remove('menu-text-active');
     }
 }
 
-// Este código fica vigiando cliques na tela toda
 document.addEventListener('click', function(event) {
     const sidebar = document.querySelector('.sidebar');
     const menuToggle = document.querySelector('.menu-toggle');
@@ -723,8 +822,7 @@ document.addEventListener('click', function(event) {
     if (sidebar.classList.contains('open')) {
         if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
             sidebar.classList.remove('open');
-            menuToggle.style.position = 'absolute'; // Botão volta a ser absoluto ao fechar
-            // Remove a animação do texto aqui também
+            menuToggle.style.position = 'absolute';
             menuText.classList.remove('menu-text-active');
         }
     }
@@ -736,9 +834,10 @@ function irPara(id, btn) {
   document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active")); 
   btn.classList.add("active");
   
-  // Fecha sidebar no mobile após navegação
   if(window.innerWidth <= 768) {
     document.querySelector('.sidebar').classList.remove('open');
+    document.querySelector('.menu-toggle').style.position = 'absolute';
+    document.getElementById('menu-text').classList.remove('menu-text-active');
   }
 }
 
@@ -761,13 +860,6 @@ function toggleCat(cat) {
   openCats[cat] = !openCats[cat]; 
   localStorage.setItem('lifeDash_openCats', JSON.stringify(openCats)); 
   render(); 
-}
-
-function popup(m){ 
-  const p=document.getElementById("popup"); 
-  p.innerText=m; 
-  p.style.display="block"; 
-  setTimeout(()=>p.style.display="none",3000); 
 }
 
 function calcularIdade(d) { 
@@ -793,54 +885,70 @@ function sincronizarInputsPerfil() {
 }
 
 function salvarPerfilFirebase() {
-  S.perfil.nome = document.getElementById("pNome").value;
+  S.perfil.nome = document.getElementById("pNome").value.trim();
   S.perfil.nascimento = document.getElementById("pNascimento").value;
-  S.perfil.profissao = document.getElementById("pProfissao").value;
+  S.perfil.profissao = document.getElementById("pProfissao").value.trim();
   S.perfil.sexo = document.getElementById("pSexo").value;
-  S.perfil.frase = document.getElementById("pFrase").value;
+  S.perfil.frase = document.getElementById("pFrase").value.trim();
   if(tempFoto) S.perfil.foto = tempFoto;
   salvar(); 
   tocarSom('sucesso', 0.5);
-  popupAnimado("Perfil Atualizado! ✓", 'success');
+  popupAnimado("Perfil atualizado com sucesso!", 'success');
 }
 
 function addCat() { 
   const i=document.getElementById("regCatNome"); 
-  if(i.value){ 
-    S.categorias.push(i.value); 
+  const nome = i.value.trim();
+  if(nome){ 
+    if(S.categorias.includes(nome)) {
+      popupAnimado("Categoria já existe!", 'error');
+      return;
+    }
+    S.categorias.push(nome); 
     i.value=""; 
     tocarSom('sucesso', 0.4);
+    popupAnimado("Categoria criada!", 'success');
     salvar(); 
   } 
 }
 
 function addHab() { 
   const i=document.getElementById("regHabNome"); 
-  if(i.value){ 
-    S.habitos.push({nome:i.value, total:0, streak:0}); 
+  const nome = i.value.trim();
+  if(nome){ 
+    if(S.habitos.some(h => h.nome === nome)) {
+      popupAnimado("Hábito já existe!", 'error');
+      return;
+    }
+    S.habitos.push({nome, total:0, streak:0}); 
     i.value=""; 
     tocarSom('sucesso', 0.4);
+    popupAnimado("Hábito adicionado!", 'success');
     salvar(); 
   } 
 }
 
 function addTar() { 
   const n=document.getElementById("regTarNome"), c=document.getElementById("regTarCat"); 
-  if(n.value && c.value){ 
-    S.tarefas.push({nome:n.value, cat:c.value, status:'pendente'}); 
+  const nome = n.value.trim();
+  if(nome && c.value){ 
+    S.tarefas.push({nome, cat:c.value, status:'pendente'}); 
     n.value=""; 
     tocarSom('sucesso', 0.4);
+    popupAnimado("Tarefa criada!", 'success');
     salvar(); 
-  } 
+  } else if(!c.value) {
+    popupAnimado("Crie uma categoria primeiro!", 'error');
+  }
 }
 
-// 🎨 ANIMAÇÕES ÉPICAS
+// ANIMAÇÕES
 function mostrarAnimacaoLevelUp(nivel) {
   const overlay = document.createElement('div');
   overlay.style.cssText = `
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.85);
+    background: rgba(0,0,0,0.9);
     z-index: 99999;
     display: flex;
     align-items: center;
@@ -851,9 +959,9 @@ function mostrarAnimacaoLevelUp(nivel) {
   overlay.innerHTML = `
     <div style="text-align: center; animation: scaleIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);">
       <div style="font-size: 120px; margin-bottom: 20px; animation: rotate 1s ease;">⭐</div>
-      <h1 style="color: var(--gold); font-size: 48px; margin: 0; text-shadow: 0 0 20px var(--gold);">LEVEL UP!</h1>
-      <p style="color: white; font-size: 32px; margin: 10px 0;">Nível ${nivel}</p>
-      <p style="color: var(--accent); font-size: 18px;">Você está evoluindo! Continue assim! 🚀</p>
+      <h1 style="color: var(--gold); font-size: 56px; margin: 0; text-shadow: 0 0 30px var(--gold); font-weight:700">LEVEL UP!</h1>
+      <p style="color: white; font-size: 36px; margin: 15px 0; font-weight:600">Nível ${nivel}</p>
+      <p style="color: var(--accent); font-size: 20px;">Você está evoluindo! Continue assim! 🚀</p>
     </div>
   `;
   
@@ -869,7 +977,7 @@ function mostrarAnimacaoConquista(badge) {
   overlay.style.cssText = `
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.9);
+    background: rgba(0,0,0,0.95);
     z-index: 99999;
     display: flex;
     align-items: center;
@@ -877,12 +985,17 @@ function mostrarAnimacaoConquista(badge) {
     animation: fadeIn 0.3s ease;
   `;
   
+  const cor = BADGE_COLORS[badge.cat] || 'var(--gold)';
+  
   overlay.innerHTML = `
-    <div style="text-align: center; animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);">
-      <div style="font-size: 100px; margin-bottom: 20px; animation: pulse 1s infinite;">${badge.icon}</div>
-      <h2 style="color: var(--gold); font-size: 36px; margin: 0; text-shadow: 0 0 15px var(--gold);">🏆 CONQUISTA DESBLOQUEADA!</h2>
-      <p style="color: white; font-size: 28px; margin: 15px 0; font-weight: bold;">${badge.title}</p>
-      <p style="color: var(--accent); font-size: 16px;">Você alcançou um marco especial!</p>
+    <div style="text-align: center; animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); max-width:500px; padding:20px">
+      <div style="font-size: 120px; margin-bottom: 20px; animation: pulse 1s infinite;">${badge.icon}</div>
+      <h2 style="color: ${cor}; font-size: 42px; margin: 0; text-shadow: 0 0 20px ${cor}; font-weight:700">🏆 CONQUISTA!</h2>
+      <p style="color: white; font-size: 32px; margin: 20px 0; font-weight: 700;">${badge.title}</p>
+      <p style="color: var(--accent); font-size: 18px; line-height:1.5">${badge.desc}</p>
+      <div style="margin-top:24px; padding:12px 24px; background:rgba(255,255,255,0.1); border-radius:12px; display:inline-block">
+        <span style="color:${cor}; font-size:14px; font-weight:600">${badge.cat}</span>
+      </div>
     </div>
   `;
   
@@ -890,14 +1003,14 @@ function mostrarAnimacaoConquista(badge) {
   setTimeout(() => {
     overlay.style.animation = 'fadeOut 0.3s ease';
     setTimeout(() => overlay.remove(), 300);
-  }, 3500);
+  }, 4000);
 }
 
 function popupAnimado(mensagem, tipo = 'default') {
   const cores = {
-    success: { bg: 'var(--gold)', cor: '#000' },
-    error: { bg: 'var(--danger)', cor: '#fff' },
-    default: { bg: 'var(--accent)', cor: '#000' }
+    success: { bg: 'linear-gradient(135deg, var(--gold) 0%, #f59e0b 100%)', cor: '#000' },
+    error: { bg: 'linear-gradient(135deg, var(--danger) 0%, #dc2626 100%)', cor: '#fff' },
+    default: { bg: 'linear-gradient(135deg, var(--accent) 0%, #0ea5e9 100%)', cor: '#000' }
   };
   
   const estilo = cores[tipo] || cores.default;
@@ -915,84 +1028,66 @@ function popupAnimado(mensagem, tipo = 'default') {
   }, 2500);
 }
 
-// Adiciona CSS de animações
-const styleAnimacoes = document.createElement('style');
-styleAnimacoes.innerHTML = `
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
-  @keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
-  @keyframes bounceIn { 
-    0% { transform: scale(0) rotate(-180deg); }
-    50% { transform: scale(1.1) rotate(10deg); }
-    100% { transform: scale(1) rotate(0deg); }
-  }
-  @keyframes pulse { 
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-  }
-  @keyframes rotate { 
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-  @keyframes slideInRight {
-    from { transform: translateX(400px); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-  }
-  @keyframes slideOutRight {
-    from { transform: translateX(0); opacity: 1; }
-    to { transform: translateX(400px); opacity: 0; }
-  }
-`;
-document.head.appendChild(styleAnimacoes);
-
 function resetDia() {
-    if(confirm("Deseja realmente resetar TODO o progresso de hoje?")){
-        const hoje = new Date().toLocaleDateString();
-        const atividadesDeHoje = S.hist.filter(x => x.data === hoje);
-        let xpParaRemover = 0;
-        
-        atividadesDeHoje.forEach(atv => {
-            xpParaRemover += (atv.xpGanhos || 0);
-            if(atv.tipo === 'H') {
-                const hab = S.habitos.find(h => h.nome === atv.nome);
-                if(hab && hab.streak > 0) hab.streak -= 1;
-            }
-        });
+    if(!confirm("Deseja realmente resetar TODO o progresso de hoje? Esta ação não pode ser desfeita.")) return;
+    
+    const hoje = new Date().toLocaleDateString();
+    const atividadesDeHoje = S.hist.filter(x => x.data === hoje);
+    let xpParaRemover = 0;
+    
+    atividadesDeHoje.forEach(atv => {
+        xpParaRemover += (atv.xpGanhos || 0);
+        if(atv.tipo === 'H') {
+            const hab = S.habitos.find(h => h.nome === atv.nome);
+            if(hab && hab.streak > 0) hab.streak -= 1;
+        }
+    });
 
-        S.xp = Math.max(0, S.xp - xpParaRemover);
-        S.hist = S.hist.filter(x => x.data !== hoje);
-        S.tarefas.forEach(t => t.status = 'pendente');
-        S.badges_unlocked = S.badges_unlocked.filter(id => {
-            const b = BADGES.find(badge => badge.id === id);
-            return b ? b.req(S) : false;
-        });
-
-        salvar();
-        popup("Progresso de hoje resetado!");
+    S.xp = Math.max(0, S.xp - xpParaRemover);
+    S.hist = S.hist.filter(x => x.data !== hoje);
+    S.tarefas.forEach(t => t.status = 'pendente');
+    
+    // Recheca conquistas
+    const conquistasAntes = [...S.badges_unlocked];
+    S.badges_unlocked = S.badges_unlocked.filter(id => {
+        const b = BADGES.find(badge => badge.id === id);
+        return b ? b.req(S) : false;
+    });
+    
+    if(conquistasAntes.length !== S.badges_unlocked.length) {
+      popupAnimado("Algumas conquistas foram perdidas", 'error');
     }
+
+    salvar();
+    tocarSom('sucesso', 0.4);
+    popupAnimado("Progresso de hoje resetado!", 'success');
 }
 
 function resetGeral() {
-    if(confirm("ATENÇÃO: Isso apagará permanentemente seu XP, Histórico, Tarefas e Hábitos. Deseja continuar?")){
-        S = { 
-            perfil: S.perfil, 
-            categorias: [], 
-            tarefas: [], 
-            habitos: [], 
-            hist: [], 
-            xp: 0, 
-            badges_unlocked: [] 
-        }; 
-        
-        localStorage.removeItem('lifeDash_openCats');
-        openCats = {};
+    if(!confirm("⚠️ ATENÇÃO! Isso apagará PERMANENTEMENTE:\n\n• Todo seu XP e nível\n• Histórico completo\n• Todas as tarefas\n• Todos os hábitos\n• Todas as conquistas\n\nApenas seus dados de perfil serão mantidos.\n\nTem CERTEZA ABSOLUTA?")) return;
+    
+    if(!confirm("ÚLTIMA CONFIRMAÇÃO: Esta ação é IRREVERSÍVEL! Confirma?")) return;
+    
+    S = { 
+        perfil: S.perfil, 
+        categorias: [], 
+        tarefas: [], 
+        habitos: [], 
+        hist: [], 
+        xp: 0, 
+        badges_unlocked: [] 
+    }; 
+    
+    localStorage.removeItem('lifeDash_openCats');
+    openCats = {};
+    window.nivelAnterior = 1;
 
-        if(auth.currentUser) {
-            db.collection("users").doc(auth.currentUser.uid).set(S).then(() => {
-                popup("Sistema resetado!");
-                setTimeout(() => location.reload(), 1500);
-            });
-        }
+    if(auth.currentUser) {
+        db.collection("users").doc(auth.currentUser.uid).set(S).then(() => {
+            tocarSom('sucesso', 0.5);
+            popupAnimado("Sistema resetado com sucesso!", 'success');
+            setTimeout(() => location.reload(), 2000);
+        });
     }
 }
 
@@ -1018,12 +1113,10 @@ function concluirHabito(habIdx, dataStr) {
         hora: new Date().getHours()
     });
 
-    // 🎵 Som de hábito + XP
     tocarSom('habitoConcluido', 0.6);
     setTimeout(() => tocarSom('xpGanho', 0.4), 200);
     
     popupAnimado("+15 XP! 🔥", 'success');
-    checarConquistas();
     salvar();
 }
 
@@ -1043,7 +1136,6 @@ function toggleTarefa(idx) {
             hora: new Date().getHours()
         });
         
-        // 🎵 Som de tarefa + XP
         tocarSom('tarefaConcluida', 0.5);
         setTimeout(() => tocarSom('xpGanho', 0.3), 150);
         
@@ -1058,23 +1150,39 @@ function toggleTarefa(idx) {
         popupAnimado("-10 XP", 'error');
     }
 
-    checarConquistas();
     salvar();
 }
 
 function checarConquistas() {
+    let novasConquistas = false;
     BADGES.forEach(b => {
         if(!S.badges_unlocked.includes(b.id) && b.req(S)) {
             S.badges_unlocked.push(b.id);
-            popup("🏆 Nova Conquista: " + b.title);
+            novasConquistas = true;
+            setTimeout(() => {
+                tocarSom('conquistaDesbloqueada', 0.8);
+                mostrarAnimacaoConquista(b);
+            }, 300);
         }
     });
+    if(novasConquistas) salvar();
 }
 
 function fazerLogout() { 
+    if(!confirm("Tem certeza que deseja sair?")) return;
     auth.signOut().then(() => {
+        localStorage.clear();
         location.reload();
     }); 
+}
+
+// SERVICE WORKER PARA PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('Service Worker registrado'))
+      .catch(err => console.log('Erro SW:', err));
+  });
 }
 
 window.onload = () => {
