@@ -74,9 +74,29 @@ body{font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: v
 .cat-header { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 12px 18px; border-radius: 10px; margin-top: 10px; cursor: pointer; color: var(--accent); font-size: 14px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; border: 1px solid #1e293b; transition: 0.3s; }
 .cat-header:hover { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); transform: translateX(4px); }
 .cat-done { color: var(--success); border-color: var(--success); background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.05) 100%); }
-.task-container-wrapper { display: none; background: rgba(15, 23, 42, 0.3); border: 1px solid #1e293b; border-top: none; border-radius: 0 0 10px 10px; padding: 8px 18px; margin-bottom: 12px; }
-.task-container-wrapper.open { display: block; animation: slideDown 0.3s ease; }
+.task-container-wrapper {
+  display: none;
+  background: rgba(15, 23, 42, 0.3);
+  border: 1px solid #1e293b;
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  padding: 8px 18px;
+  margin-bottom: 12px;
+  overflow: hidden; /* IMPORTANTE: adicione esta linha */
+}
 
+/* QUANDO ABERTO PELA PRIMEIRA VEZ (render inicial) */
+.task-container-wrapper.open {
+  display: block;
+  animation: slideDown 0.3s ease;
+}
+
+/* QUANDO ABERTO VIA JAVASCRIPT (interação do usuário) */
+.task-container-wrapper.open-dynamic {
+  display: block;
+  /* Usamos transition em vez de animation para ter mais controle */
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+}
 /* SWITCH TAREFA */
 .switch { position: relative; display: inline-block; width: 38px; height: 20px; margin-left: auto; }
 .switch input { opacity: 0; width: 0; height: 0; }
@@ -166,7 +186,7 @@ input:focus, select:focus { outline: none; border-color: var(--accent); box-shad
 
 /* ANIMAÇÕES */
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes slideDown { from { opacity: 0; max-height: 0; } to { opacity: 1; max-height: 500px; } }
+@keyframes slideDown { from { opacity: 0; max-height: 0; } to { opacity: 1; max-height: 500px; } } /* Vamos usar de forma inteligente */
 @keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
 @keyframes bounceIn { 
   0% { transform: scale(0) rotate(-180deg); }
@@ -180,6 +200,19 @@ input:focus, select:focus { outline: none; border-color: var(--accent); box-shad
 @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes slideInRight { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 @keyframes slideOutRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(400px); opacity: 0; } }
+
+/* ADICIONE ESTA NOVA ANIMAÇÃO APENAS */
+@keyframes dynamicSlideDown { 
+  from { 
+    opacity: 0; 
+    max-height: 0; 
+  } 
+  to { 
+    opacity: 1; 
+    /* A altura será definida via JS - usamos 'none' como placeholder */
+    max-height: none;
+  } 
+}
 
 /* POPUP */
 #popup { position: fixed; top: 24px; right: 24px; padding: 16px 28px; border-radius: 12px; font-weight: 600; display: none; z-index: 9999; box-shadow: 0 8px 24px rgba(0,0,0,0.3); font-size: 15px; }
@@ -1390,6 +1423,17 @@ function renderTasks() {
             <label class="switch"><input type="checkbox" ${t.status==='concluido'?'checked':''} onchange="toggleTarefa(${S.tarefas.indexOf(t)})"><span class="slider"></span></label>
           </div>`).join("")}
       </div>`;
+       setTimeout(() => {
+    S.categorias.forEach((cat, index) => {
+      if (openCats[cat]) {
+        const wrapper = document.querySelectorAll('.task-container-wrapper')[index];
+        if (wrapper && wrapper.classList.contains('open')) {
+          // Para containers abertos na renderização, garantir altura correta
+          wrapper.style.maxHeight = wrapper.scrollHeight + 'px';
+        }
+      }
+    });
+  }, 50);
   });
   
   const homeTarefas = getElement("homeTarefas");
@@ -1753,12 +1797,95 @@ function concluirHabito(habIdx, dataStr) {
   salvar();
 }
 
-function toggleCat(cat) { 
-  openCats[cat] = !openCats[cat]; 
-  localStorage.setItem('lifeDash_openCats', JSON.stringify(openCats)); 
-  scheduleRender('tasks');
+function toggleCat(cat) {
+  // Estado atual
+  const isOpening = !openCats[cat];
+  openCats[cat] = !openCats[cat];
+  localStorage.setItem('lifeDash_openCats', JSON.stringify(openCats));
+  
+  // Encontrar os elementos
+  const catIndex = S.categorias.indexOf(cat);
+  const catHeaders = document.querySelectorAll('.cat-header');
+  const taskWrappers = document.querySelectorAll('.task-container-wrapper');
+  
+  const currentHeader = catHeaders[catIndex];
+  const currentWrapper = taskWrappers[catIndex];
+  
+  if (!currentWrapper) return;
+  
+  // Atualizar ícone
+  const iconSpan = currentHeader.querySelector('span:last-child');
+  if (iconSpan) {
+    iconSpan.innerText = openCats[cat] ? '▲' : '▼';
+  }
+  
+  if (isOpening) {
+    // ========== ABRIR ==========
+    
+    // 1. Primeiro, mostrar o container (sem animação ainda)
+    currentWrapper.style.display = 'block';
+    
+    // 2. Calcular a altura REAL do conteúdo
+    // IMPORTANTE: precisamos ver a altura sem restrições primeiro
+    currentWrapper.style.maxHeight = 'none';
+    const contentHeight = currentWrapper.scrollHeight;
+    
+    // 3. Resetar para 0 e forçar reflow
+    currentWrapper.style.maxHeight = '0';
+    currentWrapper.style.opacity = '0';
+    currentWrapper.offsetHeight; // Força reflow
+    
+    // 4. Adicionar classe para transição
+    currentWrapper.classList.remove('open'); // Remove a animação CSS
+    currentWrapper.classList.add('open-dynamic'); // Usa transição controlada
+    
+    // 5. Animar para a altura real
+    requestAnimationFrame(() => {
+      currentWrapper.style.transition = 'max-height 0.3s ease, opacity 0.3s ease';
+      currentWrapper.style.maxHeight = contentHeight + 'px';
+      currentWrapper.style.opacity = '1';
+    });
+    
+    // 6. Limpar após animação
+    setTimeout(() => {
+      currentWrapper.style.maxHeight = 'none';
+      currentWrapper.style.transition = '';
+    }, 300);
+    
+  } else {
+    // ========== FECHAR ==========
+    
+    // 1. Pegar altura atual
+    const currentHeight = currentWrapper.scrollHeight;
+    
+    // 2. Configurar transição
+    currentWrapper.classList.remove('open');
+    currentWrapper.classList.add('open-dynamic');
+    currentWrapper.style.maxHeight = currentHeight + 'px';
+    currentWrapper.style.transition = 'max-height 0.3s ease, opacity 0.3s ease';
+    
+    // 3. Forçar reflow
+    currentWrapper.offsetHeight;
+    
+    // 4. Animar fechamento
+    currentWrapper.style.maxHeight = '0';
+    currentWrapper.style.opacity = '0';
+    
+    // 5. Esconder completamente após animação
+    setTimeout(() => {
+      currentWrapper.style.display = 'none';
+      currentWrapper.classList.remove('open-dynamic');
+      currentWrapper.style.maxHeight = '';
+      currentWrapper.style.opacity = '';
+      currentWrapper.style.transition = '';
+    }, 300);
+  }
+  
+  // Atualizar classe "cat-done" (opcional, mantém sua lógica)
+  const ts = S.tarefas.filter(t => t.cat === cat);
+  const conc = ts.filter(t => t.status === 'concluido').length;
+  currentHeader.classList.toggle('cat-done', conc > 0 && conc === ts.length);
 }
-
 // ==================== CONQUISTAS ====================
 const BADGES = [
   {id:'1', icon:'👋', title:'Primeiro Passo', desc:'Crie sua primeira tarefa', cat:'Iniciante', req:(s)=> s.tarefas.length >= 1},
