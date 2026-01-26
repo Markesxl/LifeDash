@@ -141,7 +141,7 @@ input:focus, select:focus { outline: none; border-color: var(--accent); box-shad
 .grid-stack { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
 
 /* MOBILE */
-@media (max-width: 768px) {
+@media (max-width: 1090px) {
   .menu-toggle { display: flex !important; }
   #mobile-logo { display: block; }
   .sidebar { left: -260px; padding-top: 90px; }
@@ -160,7 +160,7 @@ input:focus, select:focus { outline: none; border-color: var(--accent); box-shad
 }
 
 .mobile-badges-container { display: none; }
-@media (max-width: 768px) {
+@media (max-width: 1090px) {
   .mobile-badges-container { display: block; }
 }
 
@@ -407,7 +407,7 @@ button:disabled {
 }
 
 /* Mobile touch targets */
-@media (max-width: 768px) {
+@media (max-width: 1090px) {
   .nav button, .btn-primary, .habit-circle {
     min-height: 44px;
   }
@@ -418,7 +418,7 @@ button:disabled {
 }
 
 /* ==================== CORREÇÃO PARA HABITOS NO MOBILE ==================== */
-@media (max-width: 768px) {
+@media (max-width: 1090px) {
   .habit-circle {
     width: 32px !important;
     height: 32px !important;
@@ -454,7 +454,7 @@ button:disabled {
 }
 
 /* No mobile, mostrar elementos mobile-only e esconder desktop-only */
-@media (max-width: 768px) {
+@media (max-width: 1090px) {
   .mobile-only {
     display: block !important;
   }
@@ -903,7 +903,7 @@ function irPara(id, btn) {
   document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active")); 
   btn.classList.add("active");
   
-  if(window.innerWidth <= 768) {
+  if(window.innerWidth <= 1090) {
     document.querySelector('.sidebar').classList.remove('open');
     document.querySelector('.menu-toggle').style.position = 'absolute';
     document.getElementById('menu-text').classList.remove('menu-text-active');
@@ -2346,7 +2346,7 @@ setTimeout(() => {
 
 // ==================== CONTROLE DE RESPONSIVIDADE ====================
 function atualizarVisibilidadeBadges() {
-  const isMobile = window.innerWidth <= 768;
+  const isMobile = window.innerWidth <= 1090;
   console.log(`📱 Atualizando visibilidade: ${isMobile ? 'MOBILE' : 'DESKTOP'} (${window.innerWidth}px)`);
   
   const homeBadgesMobile = document.getElementById("homeBadgesMobile");
