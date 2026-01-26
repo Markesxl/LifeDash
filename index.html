@@ -182,6 +182,240 @@ input:focus, select:focus { outline: none; border-color: var(--accent); box-shad
 
 /* POPUP */
 #popup { position: fixed; top: 24px; right: 24px; padding: 16px 28px; border-radius: 12px; font-weight: 600; display: none; z-index: 9999; box-shadow: 0 8px 24px rgba(0,0,0,0.3); font-size: 15px; }
+
+/* ==================== SKELETONS & LOADING STATES ==================== */
+
+.skeleton {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+  background: linear-gradient(90deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+  background-size: 200% 100%;
+  border-radius: 8px;
+}
+
+@keyframes skeleton-pulse {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-line {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+  background: linear-gradient(90deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+  background-size: 200% 100%;
+  border-radius: 4px;
+}
+
+.skeleton-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+  background: linear-gradient(90deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+  background-size: 200% 100%;
+}
+
+.skeleton-cat {
+  height: 40px;
+  border-radius: 10px;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+  background: linear-gradient(90deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+  background-size: 200% 100%;
+}
+
+.skeleton-task {
+  height: 48px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+  background: linear-gradient(90deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+  background-size: 200% 100%;
+}
+
+.skeleton-habit-row {
+  height: 60px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+  background: linear-gradient(90deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+  background-size: 200% 100%;
+}
+
+.skeleton-badge-card {
+  height: 140px;
+  border-radius: 14px;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+  background: linear-gradient(90deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+  background-size: 200% 100%;
+}
+
+.skeleton-category {
+  margin-bottom: 32px;
+}
+
+/* Loading spinner */
+.spinner {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(56, 189, 248, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--accent);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Loading overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(2, 6, 23, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+
+.loading-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.loading-content {
+  text-align: center;
+  padding: 40px;
+  background: var(--card-bg);
+  border-radius: 20px;
+  border: 2px solid var(--accent);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+/* Toast notifications */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--card-bg);
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  padding: 16px 24px;
+  min-width: 300px;
+  max-width: 90vw;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.toast-success { border-color: var(--success); }
+.toast-error { border-color: var(--danger); }
+.toast-warning { border-color: var(--gold); }
+.toast-info { border-color: var(--accent); }
+
+/* Progress bars */
+.progress-bar {
+  height: 6px;
+  background: #1e293b;
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 8px 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent) 0%, #0ea5e9 100%);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+/* Empty states */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #64748b;
+}
+
+.empty-state-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-state-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #94a3b8;
+}
+
+.empty-state-description {
+  font-size: 14px;
+  max-width: 300px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* Hover effects for better UX */
+.btn-primary:active {
+  transform: translateY(0) !important;
+  transition: transform 0.1s !important;
+}
+
+.nav button:active {
+  transform: scale(0.98) !important;
+  transition: transform 0.1s !important;
+}
+
+/* Focus states for accessibility */
+button:focus, input:focus, select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Disabled states */
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Smooth transitions for all interactive elements */
+.nav button, .btn-primary, .item, .badge-card, .habit-circle {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Mobile touch targets */
+@media (max-width: 768px) {
+  .nav button, .btn-primary, .habit-circle {
+    min-height: 44px;
+  }
+  
+  .switch {
+    transform: scale(1.2);
+  }
+}
+
 </style>
 </head>
 <body>
@@ -238,51 +472,91 @@ input:focus, select:focus { outline: none; border-color: var(--accent); box-shad
 <div class="main">
   <div id="mobile-logo">LIFE DASH</div>
   
-  <div class="header-grid">
-    <div class="card-slim">
-      <img id="hFoto" class="profile-img-slim" src="">
-      <div class="profile-info-slim">
-        <p><strong>Nome:</strong> <span id="hNome">---</span> | <strong>Idade:</strong> <span id="hIdade">--</span></p>
-        <p><strong>Sexo:</strong> <span id="hSexo">---</span> | <strong>Profissão:</strong> <span id="hProfissao">---</span></p>
-        <p id="hFrase" class="phrase-slim">"---"</p>
-        
-        <div class="mobile-badges-container">
-          <div style="font-size: 11px; color: var(--accent); margin-bottom: 8px; font-weight: 700;">🏆 CONQUISTAS</div>
-          <div id="homeBadgesMobile" class="mini-conquistas"></div>
+<div class="header-grid">
+  <!-- Card do Perfil -->
+  <div class="card-slim">
+    <!-- Skeleton para foto -->
+    <div id="hFotoSkeleton" class="profile-img-slim skeleton" style="border:none; background:#1e293b"></div>
+    <img id="hFoto" class="profile-img-slim" src="" style="display:none;">
+    
+    <div class="profile-info-slim">
+      <!-- Skeletons para informações -->
+      <div class="skeleton-line" style="width:70%; height:16px; margin-bottom:8px;"></div>
+      <div class="skeleton-line" style="width:60%; height:16px; margin-bottom:8px;"></div>
+      <div class="skeleton-line" style="width:50%; height:12px; margin-bottom:12px;"></div>
+      
+      <!-- Skeletons para badges mobile -->
+      <div id="mobileBadgesSkeleton" class="mobile-badges-container">
+        <div style="font-size: 11px; color: var(--accent); margin-bottom: 8px; font-weight: 700;">🏆 CONQUISTAS</div>
+        <div style="display:flex; gap:8px;">
+          <div class="skeleton-badge"></div>
+          <div class="skeleton-badge"></div>
+          <div class="skeleton-badge"></div>
         </div>
-        
-        <div class="xp-wrapper">
-          <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--accent); font-weight:600">
-            <span>Nível <b id="hNivel">1</b></span> <span id="xpNumerico">0/100 XP</span>
+      </div>
+      
+      <!-- Skeleton para XP -->
+      <div class="xp-wrapper">
+        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+          <div class="skeleton-line" style="width:40px; height:12px;"></div>
+          <div class="skeleton-line" style="width:60px; height:12px;"></div>
+        </div>
+        <div class="skeleton-line" style="width:100%; height:12px; border-radius:12px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card de Conquistas Recentes -->
+  <div class="card-slim" style="flex-direction: column; align-items: flex-start; justify-content: center;">
+    <div class="skeleton-line" style="width:140px; height:18px; margin-bottom:12px;"></div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <div class="skeleton-badge"></div>
+      <div class="skeleton-badge"></div>
+      <div class="skeleton-badge"></div>
+    </div>
+  </div>
+</div>
+
+<div id="home" class="section active">
+  <div class="grid-stack">
+    <!-- Card de Tarefas -->
+    <div class="card">
+      <h3 onclick="toggleCollapse('homeTarefasCont')">🚀 Tarefas do Dia <span id="icon-homeTarefasCont">▼</span></h3>
+      <div id="homeTarefasCont">
+        <!-- Skeleton para tarefas -->
+        <div id="tarefasSkeleton">
+          <div class="skeleton-cat" style="margin-bottom:12px;"></div>
+          <div class="skeleton-task"></div>
+          <div class="skeleton-task"></div>
+          <div class="skeleton-task"></div>
+        </div>
+        <div id="homeTarefas" style="display:none;"></div>
+      </div>
+    </div>
+    
+    <!-- Card de Hábitos -->
+    <div class="card">
+      <h3 onclick="toggleCollapse('homeHabitosCont')">✨ Hábitos Ativos <span id="icon-homeHabitosCont">▼</span></h3>
+      <div id="homeHabitosCont">
+        <!-- Skeleton para hábitos -->
+        <div id="habitosSkeleton">
+          <div style="display:flex; gap:12px; margin-bottom:16px;">
+            <div class="skeleton-line" style="width:100px; height:20px;"></div>
+            <div class="skeleton-line" style="width:80px; height:20px;"></div>
+            <div class="skeleton-line" style="width:60px; height:20px;"></div>
           </div>
-          <div class="xp-container"><div id="xpBar" class="xp-bar"></div></div>
+          <div class="skeleton-habit-row"></div>
+          <div class="skeleton-habit-row"></div>
+          <div class="skeleton-habit-row"></div>
         </div>
-      </div>
-    </div>
-
-    <div class="card-slim" style="flex-direction: column; align-items: flex-start; justify-content: center;">
-      <h3 style="margin-bottom: 12px; font-size: 15px; border:none; padding:0; cursor:default">🏆 Conquistas Recentes</h3>
-      <div id="homeBadges" class="mini-conquistas"></div>
-    </div>
-  </div>
-
-  <div id="home" class="section active">
-    <div class="grid-stack">
-      <div class="card">
-        <h3 onclick="toggleCollapse('homeTarefasCont')">🚀 Tarefas do Dia <span id="icon-homeTarefasCont">▼</span></h3>
-        <div id="homeTarefasCont"><div id="homeTarefas"></div></div>
-      </div>
-      <div class="card">
-        <h3 onclick="toggleCollapse('homeHabitosCont')">✨ Hábitos Ativos <span id="icon-homeHabitosCont">▼</span></h3>
-        <div id="homeHabitosCont">
-          <table class="habit-table">
-            <thead id="habitHead"></thead>
-            <tbody id="homeHabitos"></tbody>
-          </table>
-        </div>
+        <table class="habit-table" style="display:none;">
+          <thead id="habitHead"></thead>
+          <tbody id="homeHabitos"></tbody>
+        </table>
       </div>
     </div>
   </div>
+</div>
 
   <div id="perfil" class="section">
     <div class="card">
@@ -367,13 +641,34 @@ input:focus, select:focus { outline: none; border-color: var(--accent); box-shad
     </div>
   </div>
 
-  <div id="conquistas" class="section">
-    <div class="card">
-        <h3 style="cursor: default;">🏆 Mural de Honra</h3>
-        <p style="color:#94a3b8; font-size:13px; margin-bottom:28px; line-height:1.6;">Desbloqueie conquistas épicas completando desafios! Cada categoria representa um nível de dificuldade crescente.</p>
-        <div id="muralConquistas"></div>
+<div id="conquistas" class="section">
+  <div class="card">
+    <h3 style="cursor: default;">🏆 Mural de Honra</h3>
+    <p style="color:#94a3b8; font-size:13px; margin-bottom:28px; line-height:1.6;">Desbloqueie conquistas épicas completando desafios! Cada categoria representa um nível de dificuldade crescente.</p>
+    <div id="muralConquistas">
+      <!-- Skeleton para conquistas -->
+      <div id="conquistasSkeleton">
+        <div class="skeleton-category" style="margin-bottom:32px;">
+          <div class="skeleton-line" style="width:120px; height:18px; margin-bottom:16px;"></div>
+          <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:16px;">
+            <div class="skeleton-badge-card"></div>
+            <div class="skeleton-badge-card"></div>
+            <div class="skeleton-badge-card"></div>
+            <div class="skeleton-badge-card"></div>
+          </div>
+        </div>
+        <div class="skeleton-category">
+          <div class="skeleton-line" style="width:120px; height:18px; margin-bottom:16px;"></div>
+          <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:16px;">
+            <div class="skeleton-badge-card"></div>
+            <div class="skeleton-badge-card"></div>
+            <div class="skeleton-badge-card"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+</div>
   
   <div id="historico" class="section">
     <div class="card">
@@ -400,21 +695,358 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
-// 🎵 SISTEMA DE SONS
-const SONS = {
-  tarefaConcluida: new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3'),
-  habitoConcluido: new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'),
-  xpGanho: new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3'),
-  conquistaDesbloqueada: new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'),
-  levelUp: new Audio('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3'),
-  erro: new Audio('https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3'),
-  sucesso: new Audio('https://assets.mixkit.co/active_storage/sfx/2001/2001-preview.mp3')
-};
+// ==================== SISTEMA DE RENDERIZAÇÃO OTIMIZADO ====================
+
+// Sistema de renderização por partes (partial updates)
+let renderQueue = new Set();
+let renderTimeout = null;
+
+function scheduleRender(component = 'all') {
+  renderQueue.add(component);
+  
+  if (renderTimeout) clearTimeout(renderTimeout);
+  renderTimeout = setTimeout(() => {
+    performRender();
+  }, 50); // Debounce de 50ms
+}
+
+function performRender() {
+  if (renderQueue.has('all') || renderQueue.size > 3) {
+    fullRender();
+  } else {
+    partialRender(Array.from(renderQueue));
+  }
+  renderQueue.clear();
+  renderTimeout = null;
+}
+
+function partialRender(components) {
+  components.forEach(comp => {
+    switch(comp) {
+      case 'header':
+        renderHeader();
+        break;
+      case 'tasks':
+        renderTasks();
+        break;
+      case 'habits':
+        renderHabits();
+        break;
+      case 'structure':
+        renderStructure();
+        break;
+      case 'badges':
+        renderBadges();
+        break;
+      case 'history':
+        renderHistory();
+        break;
+    }
+  });
+}
+
+// ==================== CACHE DE ELEMENTOS DO DOM ====================
+const DOMCache = {};
+
+function getElement(id) {
+  if (!DOMCache[id]) {
+    DOMCache[id] = document.getElementById(id);
+  }
+  return DOMCache[id];
+}
+
+// ==================== FUNÇÕES DE RENDER PARCIAL ====================
+
+function renderHeader() {
+  const l = xpInfo(S.xp);
+  const hoje = new Date().toLocaleDateString();
+  
+  // Detecta Level Up
+  if (window.nivelAnterior && window.nivelAnterior < l.n) {
+    setTimeout(() => {
+      tocarSom('levelUp', 0.7);
+      mostrarAnimacaoLevelUp(l.n);
+    }, 500);
+  }
+  window.nivelAnterior = l.n;
+  
+  // Atualiza apenas elementos do header
+  const elementos = {
+    "hNome": S.perfil.nome || "---",
+    "hIdade": calcularIdade(S.perfil.nascimento),
+    "hSexo": S.perfil.sexo || "---",
+    "hProfissao": S.perfil.profissao || "---",
+    "hFrase": S.perfil.frase ? `"${S.perfil.frase}"` : "---",
+    "hNivel": l.n,
+    "xpNumerico": `${Math.floor(l.cur)}/${Math.floor(l.max)} XP`
+  };
+  
+  Object.entries(elementos).forEach(([id, value]) => {
+    const el = getElement(id);
+    if (el) el.textContent = value;
+  });
+  
+  // Barra de XP
+  const xpBar = getElement("xpBar");
+  if (xpBar) xpBar.style.width = l.p + "%";
+  
+  // Foto
+  const fotoEl = getElement("hFoto");
+  if (fotoEl && S.perfil.foto) {
+    fotoEl.src = S.perfil.foto;
+    fotoEl.style.display = "block";
+  }
+  
+  // Badges
+  renderHomeBadges();
+}
+
+function renderHomeBadges() {
+  let hBadge = "";
+  const ultimas5 = S.badges_unlocked.slice(-5);
+  ultimas5.forEach(id => {
+    const b = BADGES.find(badge => badge.id === id);
+    if (b) hBadge += `<div class="badge-mini" title="${b.title}: ${b.desc}">${b.icon}</div>`;
+  });
+  
+  const badgeHTML = hBadge || "<small style='color:#64748b'>Nenhuma conquista ainda</small>";
+  
+  const homeBadges = getElement("homeBadges");
+  const homeBadgesMobile = getElement("homeBadgesMobile");
+  
+  if (homeBadges) homeBadges.innerHTML = badgeHTML;
+  if (homeBadgesMobile) homeBadgesMobile.innerHTML = badgeHTML;
+}
+
+function renderTasks() {
+  let tarHtml = "";
+  S.categorias.forEach(cat => {
+    const ts = S.tarefas.filter(t => t.cat === cat);
+    const conc = ts.filter(t => t.status === 'concluido').length;
+    const isOpen = openCats[cat];
+    
+    tarHtml += `<div class="cat-header ${conc>0 && conc===ts.length?'cat-done':''}" onclick="toggleCat('${cat}')">
+        <span>${cat}</span><span style="font-size:11px; margin-left:auto; margin-right:12px; font-weight:600">${conc}/${ts.length}</span><span>${isOpen?'▲':'▼'}</span>
+      </div>
+      <div class="task-container-wrapper ${isOpen?'open':''}">
+        ${ts.map(t => `<div style="display:flex; align-items:center; padding:12px 0; border-bottom:1px solid #1e293b44;">
+            <span style="font-size:14px; flex:1">${t.nome}</span>
+            <label class="switch"><input type="checkbox" ${t.status==='concluido'?'checked':''} onchange="toggleTarefa(${S.tarefas.indexOf(t)})"><span class="slider"></span></label>
+          </div>`).join("")}
+      </div>`;
+  });
+  
+  const homeTarefas = getElement("homeTarefas");
+  if (homeTarefas) {
+  homeTarefas.innerHTML = tarHtml || 
+    `<div class="empty-state">
+      <div class="empty-state-icon">📝</div>
+      <div class="empty-state-title">Nenhuma tarefa registrada</div>
+      <div class="empty-state-description">Crie sua primeira tarefa na aba Registros para começar!</div>
+    </div>`;
+  }
+}
+
+function renderHabits() {
+  const diasS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const hoje = new Date().toLocaleDateString();
+  const ultimos7 = [...Array(7)].map((_, i) => {
+    const d = new Date(); 
+    d.setDate(d.getDate() - (6 - i));
+    return { 
+      label: diasS[d.getDay()], 
+      data: d.toLocaleDateString(), 
+      num: d.getDate() 
+    };
+  });
+  
+  // Cabeçalho
+  const hHead = getElement("habitHead");
+  if (hHead) {
+    hHead.innerHTML = `<tr><th style="text-align:left; width:35%">Hábito</th>${ultimos7.map(d=>`<th>${d.label}<br><span style="font-size:11px">${d.num}</span></th>`).join("")}</tr>`;
+  }
+  
+  // Corpo
+  const hBody = getElement("homeHabitos");
+  if (hBody) {
+  if (S.habitos.length === 0) {
+    hBody.innerHTML = `<tr><td colspan="8">
+      <div class="empty-state" style="padding:40px 20px;">
+        <div class="empty-state-icon">🔁</div>
+        <div class="empty-state-title">Nenhum hábito configurado</div>
+        <div class="empty-state-description">Adicione hábitos na aba Registros para acompanhar sua rotina!</div>
+      </div>
+    </td></tr>`;
+    } else {
+      hBody.innerHTML = S.habitos.map((h, i) => `
+        <tr>
+          <td style="text-align:left">
+            <div class="habit-name">${h.nome}</div>
+            <div style="font-size:10px; color:var(--gold); margin-top:4px">🔥 ${h.streak||0} dias</div>
+          </td>
+          ${ultimos7.map(d => {
+            const feito = S.hist.some(r => r.nome === h.nome && r.data === d.data);
+            const isHoje = d.data === hoje;
+            let cl = 'habit-circle'; 
+            if (feito) cl += ' done'; 
+            return `<td><div class="${cl}" ${!feito && isHoje ? `data-habit-idx="${i}" data-habit-date="${d.data}"` : ''}>${feito?'✓':''}</div></td>`;
+          }).join("")}
+        </tr>`).join("");
+      
+      // Reatribuir event listeners
+      setTimeout(() => {
+        document.querySelectorAll('[data-habit-idx]').forEach(el => {
+          el.addEventListener('click', function() {
+            concluirHabito(parseInt(this.getAttribute('data-habit-idx')), this.getAttribute('data-habit-date'));
+          });
+        });
+      }, 0);
+    }
+  }
+}
+
+function renderStructure() {
+  // Categorias no dropdown
+  const regTarCat = getElement("regTarCat");
+  if (regTarCat) {
+    regTarCat.innerHTML = S.categorias.length > 0 ? 
+      S.categorias.map(c => `<option value="${c}">${c}</option>`).join("") :
+      "<option value=''>Crie uma categoria primeiro</option>";
+  }
+  
+  // Lista de categorias
+  const listCats = getElement("listCats");
+  if (listCats) {
+    listCats.innerHTML = S.categorias.map((c,i) => 
+      `<div class="item"><span>${c}</span><button onclick="if(confirm('Remover categoria ${c}?')){S.categorias.splice(${i},1);salvar();}" style="color:var(--danger);border:none;background:none;cursor:pointer;font-size:18px">✖</button></div>`
+    ).join("") || "<small style='color:#64748b'>Nenhuma categoria</small>";
+  }
+  
+  // Lista de tarefas
+  const listTars = getElement("listTars");
+  if (listTars) {
+    listTars.innerHTML = S.tarefas.map((t,i) => 
+      `<div class="item"><span>${t.nome} <small style='color:#64748b'>(${t.cat})</small></span><button onclick="if(confirm('Remover tarefa?')){S.tarefas.splice(${i},1);salvar();}" style="color:var(--danger);border:none;background:none;cursor:pointer;font-size:18px">✖</button></div>`
+    ).join("") || "<small style='color:#64748b'>Nenhuma tarefa</small>";
+  }
+  
+  // Lista de hábitos
+  const listHabs = getElement("listHabs");
+  if (listHabs) {
+    listHabs.innerHTML = S.habitos.map((h,i) => 
+      `<div class="item"><span>${h.nome}</span><button onclick="if(confirm('Remover hábito?')){S.habitos.splice(${i},1);salvar();}" style="color:var(--danger);border:none;background:none;cursor:pointer;font-size:18px">✖</button></div>`
+    ).join("") || "<small style='color:#64748b'>Nenhum hábito</small>";
+  }
+}
+
+function renderBadges() {
+  const mConquistas = getElement("muralConquistas");
+  if (!mConquistas) return;
+  
+  const categorias = ['Iniciante', 'Intermediário', 'Avançado', 'Lendário'];
+  let html = '';
+  
+  categorias.forEach(cat => {
+    const badgesCat = BADGES.filter(b => b.cat === cat);
+    const desbloqueadas = badgesCat.filter(b => S.badges_unlocked.includes(b.id)).length;
+    const cor = BADGE_COLORS[cat];
+    
+    html += `
+      <div class="badge-category">
+        <div class="badge-category-title" style="color:${cor}">
+          <span>${cat === 'Iniciante' ? '🌱' : cat === 'Intermediário' ? '⚡' : cat === 'Avançado' ? '🔥' : '👑'}</span>
+          <span>${cat}</span>
+          <span style="font-size:12px; color:#64748b; font-weight:400; margin-left:auto">${desbloqueadas}/${badgesCat.length}</span>
+        </div>
+        <div class="badge-grid">
+          ${badgesCat.map(b => {
+            const ok = S.badges_unlocked.includes(b.id);
+            const prog = calcularProgressoConquista(b);
+            return `
+              <div class="badge-card ${ok ? 'unlocked' : 'locked'}" title="${b.desc}">
+                <span class="badge-icon">${b.icon}</span>
+                <div class="badge-title">${b.title}</div>
+                <div class="badge-desc">${b.desc}</div>
+                ${!ok ? `
+                  <div class="badge-progress">
+                    <div style="font-size:9px; color:#64748b; margin-bottom:2px">${prog.atual}/${prog.total}</div>
+                    <div class="badge-progress-bar">
+                      <div class="badge-progress-fill" style="width:${prog.percent}%"></div>
+                    </div>
+                  </div>
+                ` : '<div style="font-size:10px; color:var(--gold); margin-top:8px">✓ Desbloqueada</div>'}
+              </div>
+            `;
+          }).join("")}
+        </div>
+      </div>
+    `;
+  });
+  
+  mConquistas.innerHTML = html;
+}
+
+function renderHistory() {
+  const histEl = getElement("listHist");
+  if (!histEl) return;
+  
+  if (S.hist.length === 0) {
+  histEl.innerHTML = `
+    <div class="empty-state">
+      <div class="empty-state-icon">📜</div>
+      <div class="empty-state-title">Histórico vazio</div>
+      <div class="empty-state-description">Complete tarefas e hábitos para começar seu histórico de conquistas!</div>
+    </div>`;
+  } else {
+    histEl.innerHTML = S.hist.slice().reverse().map(h => `
+      <div class="item">
+        <span>${h.tipo === 'T' ? '📋' : '🔁'} ${h.nome}</span>
+        <small style="color:#64748b">${h.data} • <span style="color:var(--accent);font-weight:600">+${h.xpGanhos}XP</span></small>
+      </div>
+    `).join("");
+  }
+}
+
+// Função fullRender mantida para compatibilidade
+function fullRender() {
+  renderHeader();
+  renderTasks();
+  renderHabits();
+  renderStructure();
+  renderBadges();
+  renderHistory();
+}
+
+// Substituir a função render() original
+function render() {
+  scheduleRender('all');
+}
+
+// ==================== SISTEMA DE SONS OTIMIZADO ====================
+const SONS = {};
+
+function carregarSons() {
+  if (Object.keys(SONS).length === 0) {
+    SONS.tarefaConcluida = new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3');
+    SONS.habitoConcluido = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
+    SONS.xpGanho = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    SONS.conquistaDesbloqueada = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
+    SONS.levelUp = new Audio('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3');
+    SONS.erro = new Audio('https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3');
+    SONS.sucesso = new Audio('https://assets.mixkit.co/active_storage/sfx/2001/2001-preview.mp3');
+    
+    // Pré-carregar os primeiros segundos
+    Object.values(SONS).forEach(som => {
+      som.preload = 'auto';
+      som.load();
+    });
+  }
+}
 
 function tocarSom(tipo, vol = 0.5) {
   try {
     const som = SONS[tipo];
-    if(som) {
+    if (som) {
       som.volume = vol;
       som.currentTime = 0;
       som.play().catch(e => console.log('Autoplay bloqueado'));
@@ -422,7 +1054,7 @@ function tocarSom(tipo, vol = 0.5) {
   } catch(e) { console.log('Erro som:', e); }
 }
 
-// 🏆 SISTEMA DE CONQUISTAS EXPANDIDO (20+ badges)
+// ==================== SISTEMA DE CONQUISTAS (MANTIDO) ====================
 const BADGES = [
   // 🌱 INICIANTE (Verde)
   {id:'1', icon:'👋', title:'Primeiro Passo', desc:'Crie sua primeira tarefa', cat:'Iniciante', req:(s)=> s.tarefas.length >= 1},
@@ -431,7 +1063,7 @@ const BADGES = [
   {id:'4', icon:'🎯', title:'Focado', desc:'Complete 5 tarefas', cat:'Iniciante', req:(s)=> s.hist.filter(h=>h.tipo==='T').length >= 5},
   
   // ⚡ INTERMEDIÁRIO (Azul)
-  {id:'5', icon:'🚀', title:'Decolagem', desc:'Alcance o nível 2', cat:'Intermediário', req:(s)=> xpInfo(s.xp).n >= 2},
+  {id:'5', icon:'🚀', title:'Decolagem', desc:'Alcance o nível 2', cat:'Intermediário', req:(s)=> xpInfo(S.xp).n >= 2},
   {id:'6', icon:'💪', title:'Determinado', desc:'Complete 20 tarefas', cat:'Intermediário', req:(s)=> s.hist.filter(h=>h.tipo==='T').length >= 20},
   {id:'7', icon:'🔥', title:'Em Chamas', desc:'Mantenha 3 dias de sequência em um hábito', cat:'Intermediário', req:(s)=> s.habitos.some(h=>h.streak >= 3)},
   {id:'8', icon:'📚', title:'Organizado', desc:'Crie 3 categorias diferentes', cat:'Intermediário', req:(s)=> s.categorias.length >= 3},
@@ -440,7 +1072,7 @@ const BADGES = [
   
   // 🔥 AVANÇADO (Roxo)
   {id:'11', icon:'🏃', title:'Maratonista', desc:'Complete 50 tarefas', cat:'Avançado', req:(s)=> s.hist.filter(h=>h.tipo==='T').length >= 50},
-  {id:'12', icon:'🌟', title:'Estrela Cadente', desc:'Alcance o nível 5', cat:'Avançado', req:(s)=> xpInfo(s.xp).n >= 5},
+  {id:'12', icon:'🌟', title:'Estrela Cadente', desc:'Alcance o nível 5', cat:'Avançado', req:(s)=> xpInfo(S.xp).n >= 5},
   {id:'13', icon:'💎', title:'Consistente', desc:'7 dias de sequência em um hábito', cat:'Avançado', req:(s)=> s.habitos.some(h=>h.streak >= 7)},
   {id:'14', icon:'🎨', title:'Multitarefa', desc:'Tenha 5 hábitos ativos', cat:'Avançado', req:(s)=> s.habitos.length >= 5},
   {id:'15', icon:'📈', title:'Produtivo', desc:'Acumule 500 XP', cat:'Avançado', req:(s)=> s.xp >= 500},
@@ -450,7 +1082,7 @@ const BADGES = [
   })},
   
   // 👑 LENDÁRIO (Dourado)
-  {id:'17', icon:'👑', title:'Lenda', desc:'Alcance o nível 10', cat:'Lendário', req:(s)=> xpInfo(s.xp).n >= 10},
+  {id:'17', icon:'👑', title:'Lenda', desc:'Alcance o nível 10', cat:'Lendário', req:(s)=> xpInfo(S.xp).n >= 10},
   {id:'18', icon:'🔱', title:'Imparável', desc:'Complete 100 tarefas', cat:'Lendário', req:(s)=> s.hist.filter(h=>h.tipo==='T').length >= 100},
   {id:'19', icon:'⚡', title:'Super-Humano', desc:'30 dias de sequência em um hábito', cat:'Lendário', req:(s)=> s.habitos.some(h=>h.streak >= 30)},
   {id:'20', icon:'🏆', title:'Mestre da Produtividade', desc:'1000 XP acumulados', cat:'Lendário', req:(s)=> s.xp >= 1000},
@@ -465,39 +1097,71 @@ const BADGE_COLORS = {
   'Lendário': '#f59e0b'
 };
 
-// ESTADO GLOBAL
+// ==================== ESTADO GLOBAL (MANTIDO) ====================
 let S = { perfil: {}, categorias: [], tarefas: [], habitos: [], hist: [], xp: 0, badges_unlocked: [] };
 let openCats = JSON.parse(localStorage.getItem('lifeDash_openCats')) || {};
 let colapsados = { homeTarefasCont: false, homeHabitosCont: false };
 let tempFoto = "";
 
-// PREVIEW DE FOTO
-function previewRegistro(input) { 
-  if(input.files && input.files[0]){ 
-    const r = new FileReader(); 
-    r.onload = (e) => { 
-      tempFoto = e.target.result; 
-      document.getElementById("regPreview").src = tempFoto; 
-      document.getElementById("regPreview").style.display="block"; 
-    }; 
-    r.readAsDataURL(input.files[0]); 
+// ==================== COMPRESSÃO DE FOTOS ====================
+function compressImage(file, maxWidth = 400, quality = 0.7) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (e) => {
+      const img = new Image();
+      img.src = e.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width = img.width;
+        let height = img.height;
+        
+        if (width > maxWidth) {
+          height = (height * maxWidth) / width;
+          width = maxWidth;
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        canvas.toBlob((blob) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(blob);
+          reader.onload = (e) => {
+            resolve(e.target.result);
+          };
+        }, 'image/jpeg', quality);
+      };
+      img.onerror = reject;
+    };
+    reader.onerror = reject;
+  });
+}
+
+// ==================== PREVIEW DE FOTO COM COMPRESSÃO ====================
+async function previewRegistro(input) { 
+  if (input.files && input.files[0]) { 
+    const compressed = await compressImage(input.files[0]);
+    tempFoto = compressed; 
+    document.getElementById("regPreview").src = tempFoto; 
+    document.getElementById("regPreview").style.display = "block"; 
   } 
 }
 
-function localPreview(input) { 
-  if(input.files && input.files[0]){ 
-    const r = new FileReader(); 
-    r.onload = (e) => { 
-      tempFoto = e.target.result; 
-      document.getElementById("pPreview").src = tempFoto; 
-      document.getElementById("pPreview").style.display="block"; 
-      document.getElementById("pCameraIcon").style.opacity="0"; 
-    }; 
-    r.readAsDataURL(input.files[0]); 
+async function localPreview(input) { 
+  if (input.files && input.files[0]) { 
+    const compressed = await compressImage(input.files[0]);
+    tempFoto = compressed; 
+    document.getElementById("pPreview").src = tempFoto; 
+    document.getElementById("pPreview").style.display = "block"; 
+    document.getElementById("pCameraIcon").style.opacity = "0"; 
   } 
 }
 
-// AUTENTICAÇÃO
+// ==================== AUTENTICAÇÃO (MANTIDA COM OTIMIZAÇÃO) ====================
 async function fazerLogin() {
     const e = document.getElementById('login-email').value.trim();
     const p = document.getElementById('login-password').value;
@@ -554,24 +1218,417 @@ async function recuperarSenha() {
     }
 }
 
+// ==================== FUNÇÕES DE UX ====================
+
+function showLoading(message = "Carregando...") {
+  let overlay = document.getElementById('loadingOverlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'loadingOverlay';
+    overlay.className = 'loading-overlay';
+    overlay.innerHTML = `
+      <div class="loading-content">
+        <div class="spinner" style="width:48px; height:48px; margin-bottom:20px;"></div>
+        <div style="color:var(--accent); font-size:18px; font-weight:600;">${message}</div>
+        <div style="color:#94a3b8; font-size:14px; margin-top:8px;">Aguarde um momento...</div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+  }
+  setTimeout(() => overlay.classList.add('active'), 10);
+}
+
+function hideLoading() {
+  const overlay = document.getElementById('loadingOverlay');
+  if (overlay) {
+    overlay.classList.remove('active');
+    setTimeout(() => {
+      if (overlay.parentNode && !overlay.classList.contains('active')) {
+        overlay.remove();
+      }
+    }, 300);
+  }
+}
+
+function showToast(message, type = 'info', duration = 3000) {
+  // Remove toast existente
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  
+  const icons = {
+    success: '✅',
+    error: '❌',
+    warning: '⚠️',
+    info: 'ℹ️'
+  };
+  
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.innerHTML = `
+    <span class="toast-icon">${icons[type] || icons.info}</span>
+    <span style="flex:1; font-size:14px;">${message}</span>
+  `;
+  
+  document.body.appendChild(toast);
+  
+  // Mostrar toast
+  setTimeout(() => toast.classList.add('show'), 10);
+  
+  // Auto-remover
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => {
+      if (toast.parentNode) toast.remove();
+    }, 400);
+  }, duration);
+}
+
+// Substituir popupAnimado por toast
+function popupAnimado(mensagem, tipo = 'default') {
+  const toastType = tipo === 'success' ? 'success' : 
+                   tipo === 'error' ? 'error' : 'info';
+  showToast(mensagem, toastType, 2500);
+}
+
+// ==================== FUNÇÃO PARA ESCONDER SKELETONS ====================
+
+function hideSkeletons() {
+  // Esconder skeletons do header
+  const fotoSkeleton = document.getElementById('hFotoSkeleton');
+  const foto = document.getElementById('hFoto');
+  if (fotoSkeleton && foto) {
+    fotoSkeleton.style.display = 'none';
+    foto.style.display = 'block';
+  }
+  
+  // Esconder skeletons das tarefas
+  const tarefasSkeleton = document.getElementById('tarefasSkeleton');
+  const homeTarefas = document.getElementById('homeTarefas');
+  if (tarefasSkeleton && homeTarefas) {
+    tarefasSkeleton.style.display = 'none';
+    homeTarefas.style.display = 'block';
+  }
+  
+  // Esconder skeletons dos hábitos
+  const habitosSkeleton = document.getElementById('habitosSkeleton');
+  const habitTable = document.querySelector('.habit-table');
+  if (habitosSkeleton && habitTable) {
+    habitosSkeleton.style.display = 'none';
+    habitTable.style.display = 'table';
+  }
+  
+  // Esconder skeletons das conquistas
+  const conquistasSkeleton = document.getElementById('conquistasSkeleton');
+  if (conquistasSkeleton) {
+    conquistasSkeleton.style.display = 'none';
+  }
+  
+  // Esconder skeletons mobile badges
+  const mobileBadgesSkeleton = document.getElementById('mobileBadgesSkeleton');
+  if (mobileBadgesSkeleton) {
+    mobileBadgesSkeleton.style.display = 'none';
+  }
+  
+  // Remover classes skeleton dos textos
+  document.querySelectorAll('.skeleton-line').forEach(el => {
+    el.style.background = 'transparent';
+    el.style.animation = 'none';
+  });
+}
+
+// ==================== ATUALIZAR AUTH STATE ====================
+
 auth.onAuthStateChanged(user => {
-    if(user) {
-        document.getElementById('login-screen').style.display = 'none';
-        db.collection("users").doc(user.uid).onSnapshot(doc => { 
-            if(doc.exists) { 
-                S = doc.data(); 
-                if(!S.badges_unlocked) S.badges_unlocked = [];
-                if(!S.hist) S.hist = [];
-                if(!S.categorias) S.categorias = [];
-                if(!S.tarefas) S.tarefas = [];
-                if(!S.habitos) S.habitos = [];
-                render(); 
-                sincronizarInputsPerfil(); 
-            } 
-        });
-    } else { 
-      document.getElementById('login-screen').style.display = 'flex'; 
+  if(user) {
+    document.getElementById('login-screen').style.display = 'none';
+    showLoading("Carregando seus dados...");
+    carregarSons(); // Carregar sons apenas após login
+    
+    db.collection("users").doc(user.uid).onSnapshot(doc => { 
+      if(doc.exists) { 
+        S = doc.data(); 
+        if(!S.badges_unlocked) S.badges_unlocked = [];
+        if(!S.hist) S.hist = [];
+        if(!S.categorias) S.categorias = [];
+        if(!S.tarefas) S.tarefas = [];
+        if(!S.habitos) S.habitos = [];
+        
+        // Renderização inicial completa
+        fullRender(); 
+        sincronizarInputsPerfil(); 
+        
+        // Esconder skeletons após carregar
+        setTimeout(hideSkeletons, 500);
+        setTimeout(hideLoading, 800);
+        
+        // Toast de boas-vindas
+        setTimeout(() => {
+          showToast(`Bem-vindo de volta, ${S.perfil.nome || 'Usuário'}!`, 'success', 2000);
+        }, 1000);
+      } 
+    }, error => {
+      console.error("Erro ao carregar dados:", error);
+      hideLoading();
+      showToast("Erro ao carregar dados. Tente novamente.", 'error');
+    });
+  } else { 
+    document.getElementById('login-screen').style.display = 'flex'; 
+  }
+});
+
+// ==================== ATUALIZAR FUNÇÕES COM FEEDBACK ====================
+
+async function fazerLogin() {
+  const e = document.getElementById('login-email').value.trim();
+  const p = document.getElementById('login-password').value;
+  if(!e || !p) {
+    showToast("Preencha todos os campos", 'warning');
+    return;
+  }
+  
+  showLoading("Entrando...");
+  try {
+    await auth.signInWithEmailAndPassword(e, p);
+  } catch(err) {
+    hideLoading();
+    showToast("Erro: " + err.message, 'error');
+  }
+}
+
+async function fazerRegistro() {
+  const e = document.getElementById('regEmail').value.trim();
+  const p = document.getElementById('regPassword').value;
+  const n = document.getElementById('regNome').value.trim();
+  
+  if(!e || !p || !n) {
+    showToast("Nome, Email e Senha são obrigatórios!", 'warning');
+    return;
+  }
+  if(p.length < 6) {
+    showToast("A senha deve ter no mínimo 6 caracteres", 'warning');
+    return;
+  }
+  
+  showLoading("Criando sua conta...");
+  try {
+    const cred = await auth.createUserWithEmailAndPassword(e, p);
+    const novosDados = { 
+      perfil: { 
+        nome: n, 
+        nascimento: document.getElementById('regNascimento').value, 
+        sexo: document.getElementById('regSexo').value, 
+        profissao: document.getElementById('regProfissao').value, 
+        frase: "Foco no progresso!", 
+        foto: tempFoto || "" 
+      }, 
+      categorias: [], 
+      tarefas: [], 
+      habitos: [], 
+      hist: [], 
+      xp: 0, 
+      badges_unlocked: [] 
+    };
+    await db.collection("users").doc(cred.user.uid).set(novosDados);
+    hideLoading();
+    showToast("Conta criada com sucesso! Faça login.", 'success');
+    toggleAuth('login');
+  } catch(err) { 
+    hideLoading();
+    showToast("Erro: " + err.message, 'error');
+  }
+}
+
+function salvar() { 
+  if(auth.currentUser) {
+    // Mostrar saving indicator
+    const saveIndicator = document.createElement('div');
+    saveIndicator.id = 'saveIndicator';
+    saveIndicator.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 12px;
+      color: var(--accent);
+      z-index: 1000;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s;
+    `;
+    saveIndicator.textContent = 'Salvando...';
+    document.body.appendChild(saveIndicator);
+    
+    setTimeout(() => {
+      saveIndicator.style.opacity = '1';
+      saveIndicator.style.transform = 'translateY(0)';
+    }, 10);
+    
+    db.collection("users").doc(auth.currentUser.uid).set(S).then(() => {
+      saveIndicator.textContent = 'Salvo ✓';
+      saveIndicator.style.borderColor = 'var(--success)';
+      saveIndicator.style.color = 'var(--success)';
+      
+      setTimeout(() => {
+        saveIndicator.style.opacity = '0';
+        saveIndicator.style.transform = 'translateY(10px)';
+        setTimeout(() => {
+          if (saveIndicator.parentNode) saveIndicator.remove();
+        }, 300);
+      }, 1000);
+    }).catch(err => {
+      console.error("Erro ao salvar:", err);
+      saveIndicator.textContent = 'Erro ao salvar';
+      saveIndicator.style.borderColor = 'var(--danger)';
+      saveIndicator.style.color = 'var(--danger)';
+      
+      setTimeout(() => {
+        saveIndicator.style.opacity = '0';
+        setTimeout(() => {
+          if (saveIndicator.parentNode) saveIndicator.remove();
+        }, 300);
+      }, 2000);
+    });
+  }
+}
+
+// ==================== ADICIONAR CONFIRMAÇÕES COM UX MELHOR ====================
+
+function confirmAction(message, confirmText = "Confirmar", cancelText = "Cancelar") {
+  return new Promise((resolve) => {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      animation: fadeIn 0.3s ease;
+    `;
+    
+    overlay.innerHTML = `
+      <div style="background: var(--card-bg); padding: 30px; border-radius: 16px; max-width: 400px; width: 90%; border: 2px solid var(--accent);">
+        <div style="font-size: 18px; color: #e5e7eb; margin-bottom: 20px; line-height: 1.5;">${message}</div>
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button class="btn-danger-outline" id="confirmCancel" style="width:auto; padding:10px 20px;">${cancelText}</button>
+          <button class="btn-primary" id="confirmOk" style="width:auto; padding:10px 20px;">${confirmText}</button>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(overlay);
+    
+    document.getElementById('confirmCancel').onclick = () => {
+      overlay.style.animation = 'fadeOut 0.3s ease';
+      setTimeout(() => overlay.remove(), 300);
+      resolve(false);
+    };
+    
+    document.getElementById('confirmOk').onclick = () => {
+      overlay.style.animation = 'fadeOut 0.3s ease';
+      setTimeout(() => overlay.remove(), 300);
+      resolve(true);
+    };
+  });
+}
+
+// Atualizar resetDia para usar nova confirmação
+async function resetDia() {
+  const confirmado = await confirmAction(
+    "Deseja realmente resetar TODO o progresso de hoje? Esta ação não pode ser desfeita.",
+    "Resetar Hoje",
+    "Manter Dados"
+  );
+  
+  if (!confirmado) return;
+  
+  showLoading("Resetando progresso...");
+  
+  const hoje = new Date().toLocaleDateString();
+  const atividadesDeHoje = S.hist.filter(x => x.data === hoje);
+  let xpParaRemover = 0;
+  
+  atividadesDeHoje.forEach(atv => {
+    xpParaRemover += (atv.xpGanhos || 0);
+    if(atv.tipo === 'H') {
+      const hab = S.habitos.find(h => h.nome === atv.nome);
+      if(hab && hab.streak > 0) hab.streak -= 1;
     }
+  });
+
+  S.xp = Math.max(0, S.xp - xpParaRemover);
+  S.hist = S.hist.filter(x => x.data !== hoje);
+  S.tarefas.forEach(t => t.status = 'pendente');
+  
+  // Recheca conquistas
+  const conquistasAntes = [...S.badges_unlocked];
+  S.badges_unlocked = S.badges_unlocked.filter(id => {
+    const b = BADGES.find(badge => badge.id === id);
+    return b ? b.req(S) : false;
+  });
+  
+  salvar();
+  
+  setTimeout(() => {
+    hideLoading();
+    fullRender();
+    
+    if(conquistasAntes.length !== S.badges_unlocked.length) {
+      showToast("Algumas conquistas foram perdidas", 'warning');
+    } else {
+      showToast("Progresso de hoje resetado!", 'success');
+    }
+  }, 1000);
+}
+
+// ==================== ADICIONAR ANIMAÇÃO DE CARREGAMENTO SUAVE ====================
+
+// Adicionar fade in para sections
+document.addEventListener('DOMContentLoaded', function() {
+  // Observar mudanças de seção para animações
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+        const target = mutation.target;
+        if (target.classList.contains('section') && target.classList.contains('active')) {
+          target.style.animation = 'fadeIn 0.4s ease';
+        }
+      }
+    });
+  });
+  
+  // Observar todas as sections
+  document.querySelectorAll('.section').forEach(section => {
+    observer.observe(section, { attributes: true });
+  });
+  
+  // Adicionar animação de entrada para elementos
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .animate-in {
+      animation: fadeInUp 0.5s ease forwards;
+    }
+    
+    .delay-1 { animation-delay: 0.1s; opacity: 0; }
+    .delay-2 { animation-delay: 0.2s; opacity: 0; }
+    .delay-3 { animation-delay: 0.3s; opacity: 0; }
+  `;
+  document.head.appendChild(style);
 });
 
 function salvar() { 
@@ -581,10 +1638,9 @@ function salvar() {
       popupAnimado("Erro ao salvar dados", 'error');
     });
   }
-  render(); 
 }
 
-// TOGGLE COLLAPSE
+// ==================== FUNÇÕES DE UI (MANTIDAS) ====================
 function toggleCollapse(id) {
     const el = document.getElementById(id);
     const icon = document.getElementById('icon-' + id);
@@ -594,7 +1650,6 @@ function toggleCollapse(id) {
     icon.innerText = colapsados[id] ? '▶' : '▼';
 }
 
-// CÁLCULO DE PROGRESSO DE CONQUISTA
 function calcularProgressoConquista(badge) {
   let atual = 0;
   let total = 0;
@@ -624,180 +1679,6 @@ function calcularProgressoConquista(badge) {
   return { atual: Math.min(atual, total), total, percent: total > 0 ? Math.min((atual / total) * 100, 100) : 0 };
 }
 
-// RENDER PRINCIPAL
-function render() {
-  const l = xpInfo(S.xp); 
-  const hoje = new Date().toLocaleDateString();
-  
-  // Detecta Level Up
-  if(window.nivelAnterior && window.nivelAnterior < l.n) {
-    setTimeout(() => {
-      tocarSom('levelUp', 0.7);
-      mostrarAnimacaoLevelUp(l.n);
-    }, 500);
-  }
-  window.nivelAnterior = l.n;
-  
-  // Perfil
-  document.getElementById("hNome").innerText = S.perfil.nome || "---";
-  document.getElementById("hIdade").innerText = calcularIdade(S.perfil.nascimento);
-  document.getElementById("hSexo").innerText = S.perfil.sexo || "---";
-  document.getElementById("hProfissao").innerText = S.perfil.profissao || "---";
-  document.getElementById("hFrase").innerText = S.perfil.frase ? `"${S.perfil.frase}"` : "---";
-  document.getElementById("hNivel").innerText = l.n;
-  document.getElementById("xpBar").style.width = l.p + "%";
-  document.getElementById("xpNumerico").innerText = `${Math.floor(l.cur)}/${Math.floor(l.max)} XP`;
-  
-  const fotoEl = document.getElementById("hFoto");
-  if(S.perfil.foto && fotoEl) { 
-    fotoEl.src = S.perfil.foto; 
-    fotoEl.style.display="block"; 
-  }
-
-  // Badges
-  checarConquistas();
-  let hBadge = "";
-  const ultimas5 = S.badges_unlocked.slice(-5);
-  ultimas5.forEach(id => {
-    const b = BADGES.find(badge => badge.id === id);
-    if(b) hBadge += `<div class="badge-mini" title="${b.title}: ${b.desc}">${b.icon}</div>`;
-  });
-  
-  const badgeHTML = hBadge || "<small style='color:#64748b'>Nenhuma conquista ainda</small>";
-  document.getElementById("homeBadges").innerHTML = badgeHTML;
-  document.getElementById("homeBadgesMobile").innerHTML = badgeHTML;
-
-  // Tarefas
-  let tarHtml = "";
-  S.categorias.forEach(cat => {
-    const ts = S.tarefas.filter(t => t.cat === cat);
-    const conc = ts.filter(t => t.status === 'concluido').length;
-    const isOpen = openCats[cat];
-    tarHtml += `<div class="cat-header ${conc>0 && conc===ts.length?'cat-done':''}" onclick="toggleCat('${cat}')">
-        <span>${cat}</span><span style="font-size:11px; margin-left:auto; margin-right:12px; font-weight:600">${conc}/${ts.length}</span><span>${isOpen?'▲':'▼'}</span>
-      </div>
-      <div class="task-container-wrapper ${isOpen?'open':''}">
-        ${ts.map(t => `<div style="display:flex; align-items:center; padding:12px 0; border-bottom:1px solid #1e293b44;">
-            <span style="font-size:14px; flex:1">${t.nome}</span>
-            <label class="switch"><input type="checkbox" ${t.status==='concluido'?'checked':''} onchange="toggleTarefa(${S.tarefas.indexOf(t)})"><span class="slider"></span></label>
-          </div>`).join("")}
-      </div>`;
-  });
-  document.getElementById("homeTarefas").innerHTML = tarHtml || "<p style='font-size:13px; color:#94a3b8; text-align:center; padding:20px 0;'>Nenhuma tarefa registrada. Crie uma na aba Registros!</p>";
-
-  // Hábitos
-  const diasS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-  const ultimos7 = [...Array(7)].map((_, i) => {
-      const d = new Date(); d.setDate(d.getDate() - (6 - i));
-      return { label: diasS[d.getDay()], data: d.toLocaleDateString(), num: d.getDate() };
-  });
-  
-  const hHead = document.getElementById("habitHead");
-  if(hHead) hHead.innerHTML = `<tr><th style="text-align:left; width:35%">Hábito</th>${ultimos7.map(d=>`<th>${d.label}<br><span style="font-size:11px">${d.num}</span></th>`).join("")}</tr>`;
-  
-  const hBody = document.getElementById("homeHabitos");
-  if(hBody) {
-    if(S.habitos.length === 0) {
-      hBody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:24px; color:#94a3b8;">Nenhum hábito configurado. Adicione um na aba Registros!</td></tr>`;
-    } else {
-      hBody.innerHTML = S.habitos.map((h, i) => `
-        <tr>
-          <td style="text-align:left">
-            <div class="habit-name">${h.nome}</div>
-            <div style="font-size:10px; color:var(--gold); margin-top:4px">🔥 ${h.streak||0} dias</div>
-          </td>
-          ${ultimos7.map(d => {
-              const feito = S.hist.some(r => r.nome === h.nome && r.data === d.data);
-              const isHoje = d.data === hoje;
-              let cl = 'habit-circle'; 
-              if(feito) cl += ' done'; 
-              return `<td><div class="${cl}" ${!feito && isHoje ? `data-habit-idx="${i}" data-habit-date="${d.data}"` : ''}>${feito?'✓':''}</div></td>`;
-          }).join("")}
-        </tr>`).join("");
-      
-      // Event listeners
-      document.querySelectorAll('[data-habit-idx]').forEach(el => {
-        el.addEventListener('click', function() {
-          concluirHabito(parseInt(this.getAttribute('data-habit-idx')), this.getAttribute('data-habit-date'));
-        });
-      });
-    }
-  }
-
-  // Estrutura
-  document.getElementById("regTarCat").innerHTML = S.categorias.length > 0 ? 
-    S.categorias.map(c=>`<option value="${c}">${c}</option>`).join("") :
-    "<option value=''>Crie uma categoria primeiro</option>";
-    
-  document.getElementById("listCats").innerHTML = S.categorias.map((c,i)=>`<div class="item"><span>${c}</span><button onclick="if(confirm('Remover categoria ${c}?')){S.categorias.splice(${i},1);salvar();}" style="color:var(--danger);border:none;background:none;cursor:pointer;font-size:18px">✖</button></div>`).join("") || "<small style='color:#64748b'>Nenhuma categoria</small>";
-  
-  document.getElementById("listTars").innerHTML = S.tarefas.map((t,i)=>`<div class="item"><span>${t.nome} <small style='color:#64748b'>(${t.cat})</small></span><button onclick="if(confirm('Remover tarefa?')){S.tarefas.splice(${i},1);salvar();}" style="color:var(--danger);border:none;background:none;cursor:pointer;font-size:18px">✖</button></div>`).join("") || "<small style='color:#64748b'>Nenhuma tarefa</small>";
-  
-  document.getElementById("listHabs").innerHTML = S.habitos.map((h,i)=>`<div class="item"><span>${h.nome}</span><button onclick="if(confirm('Remover hábito?')){S.habitos.splice(${i},1);salvar();}" style="color:var(--danger);border:none;background:none;cursor:pointer;font-size:18px">✖</button></div>`).join("") || "<small style='color:#64748b'>Nenhum hábito</small>";
-
-  // Mural de Conquistas
-  const mConquistas = document.getElementById("muralConquistas");
-  if(mConquistas) {
-    const categorias = ['Iniciante', 'Intermediário', 'Avançado', 'Lendário'];
-    let html = '';
-    
-    categorias.forEach(cat => {
-      const badgesCat = BADGES.filter(b => b.cat === cat);
-      const desbloqueadas = badgesCat.filter(b => S.badges_unlocked.includes(b.id)).length;
-      const cor = BADGE_COLORS[cat];
-      
-      html += `
-        <div class="badge-category">
-          <div class="badge-category-title" style="color:${cor}">
-            <span>${cat === 'Iniciante' ? '🌱' : cat === 'Intermediário' ? '⚡' : cat === 'Avançado' ? '🔥' : '👑'}</span>
-            <span>${cat}</span>
-            <span style="font-size:12px; color:#64748b; font-weight:400; margin-left:auto">${desbloqueadas}/${badgesCat.length}</span>
-          </div>
-          <div class="badge-grid">
-            ${badgesCat.map(b => {
-              const ok = S.badges_unlocked.includes(b.id);
-              const prog = calcularProgressoConquista(b);
-              return `
-                <div class="badge-card ${ok ? 'unlocked' : 'locked'}" title="${b.desc}">
-                  <span class="badge-icon">${b.icon}</span>
-                  <div class="badge-title">${b.title}</div>
-                  <div class="badge-desc">${b.desc}</div>
-                  ${!ok ? `
-                    <div class="badge-progress">
-                      <div style="font-size:9px; color:#64748b; margin-bottom:2px">${prog.atual}/${prog.total}</div>
-                      <div class="badge-progress-bar">
-                        <div class="badge-progress-fill" style="width:${prog.percent}%"></div>
-                      </div>
-                    </div>
-                  ` : '<div style="font-size:10px; color:var(--gold); margin-top:8px">✓ Desbloqueada</div>'}
-                </div>
-              `;
-            }).join("")}
-          </div>
-        </div>
-      `;
-    });
-    
-    mConquistas.innerHTML = html;
-  }
-  
-  // Histórico
-  const histEl = document.getElementById("listHist");
-  if(histEl) {
-    if(S.hist.length === 0) {
-      histEl.innerHTML = "<p style='color:#64748b; font-size:14px; text-align:center; padding:40px 0;'>Nenhuma atividade registrada ainda. Complete tarefas e hábitos para começar seu histórico!</p>";
-    } else {
-      histEl.innerHTML = S.hist.slice().reverse().map(h=>`
-        <div class="item">
-          <span>${h.tipo === 'T' ? '📋' : '🔁'} ${h.nome}</span>
-          <small style="color:#64748b">${h.data} • <span style="color:var(--accent);font-weight:600">+${h.xpGanhos}XP</span></small>
-        </div>
-      `).join("");
-    }
-  }
-}
-
-// FUNÇÕES DE UI
 function toggleSidebar() {
     const sidebar = document.querySelector('.sidebar');
     const menuToggle = document.querySelector('.menu-toggle');
@@ -859,7 +1740,7 @@ function xpInfo(xp) {
 function toggleCat(cat) { 
   openCats[cat] = !openCats[cat]; 
   localStorage.setItem('lifeDash_openCats', JSON.stringify(openCats)); 
-  render(); 
+  scheduleRender('tasks');
 }
 
 function calcularIdade(d) { 
@@ -896,53 +1777,141 @@ function salvarPerfilFirebase() {
   popupAnimado("Perfil atualizado com sucesso!", 'success');
 }
 
+// ==================== FUNÇÕES DE ADIÇÃO OTIMIZADAS ====================
 function addCat() { 
-  const i=document.getElementById("regCatNome"); 
+  const i = document.getElementById("regCatNome"); 
   const nome = i.value.trim();
-  if(nome){ 
-    if(S.categorias.includes(nome)) {
+  if (nome) { 
+    if (S.categorias.includes(nome)) {
       popupAnimado("Categoria já existe!", 'error');
       return;
     }
     S.categorias.push(nome); 
-    i.value=""; 
+    i.value = ""; 
     tocarSom('sucesso', 0.4);
     popupAnimado("Categoria criada!", 'success');
+    
+    scheduleRender('structure');
+    scheduleRender('tasks');
     salvar(); 
   } 
 }
 
 function addHab() { 
-  const i=document.getElementById("regHabNome"); 
+  const i = document.getElementById("regHabNome"); 
   const nome = i.value.trim();
-  if(nome){ 
-    if(S.habitos.some(h => h.nome === nome)) {
+  if (nome) { 
+    if (S.habitos.some(h => h.nome === nome)) {
       popupAnimado("Hábito já existe!", 'error');
       return;
     }
     S.habitos.push({nome, total:0, streak:0}); 
-    i.value=""; 
+    i.value = ""; 
     tocarSom('sucesso', 0.4);
     popupAnimado("Hábito adicionado!", 'success');
+    
+    scheduleRender('structure');
+    scheduleRender('habits');
     salvar(); 
   } 
 }
 
 function addTar() { 
-  const n=document.getElementById("regTarNome"), c=document.getElementById("regTarCat"); 
+  const n = document.getElementById("regTarNome");
+  const c = document.getElementById("regTarCat"); 
   const nome = n.value.trim();
-  if(nome && c.value){ 
+  if (nome && c.value) { 
     S.tarefas.push({nome, cat:c.value, status:'pendente'}); 
-    n.value=""; 
+    n.value = ""; 
     tocarSom('sucesso', 0.4);
     popupAnimado("Tarefa criada!", 'success');
+    
+    scheduleRender('structure');
+    scheduleRender('tasks');
     salvar(); 
-  } else if(!c.value) {
+  } else if (!c.value) {
     popupAnimado("Crie uma categoria primeiro!", 'error');
   }
 }
 
-// ANIMAÇÕES
+// ==================== FUNÇÕES DE TAREFA/HÁBITO OTIMIZADAS ====================
+function toggleTarefa(idx) {
+  const t = S.tarefas[idx]; 
+  const hoje = new Date().toLocaleDateString();
+
+  if (t.status === 'pendente') {
+    t.status = 'concluido'; 
+    S.xp = (S.xp || 0) + 10;
+    S.hist.push({
+      nome: t.nome, 
+      data: hoje, 
+      tipo: 'T', 
+      cat: t.cat, 
+      xpGanhos: 10, 
+      hora: new Date().getHours()
+    });
+    
+    tocarSom('tarefaConcluida', 0.5);
+    setTimeout(() => tocarSom('xpGanho', 0.3), 150);
+    
+    popupAnimado("+10 XP ✓", 'success');
+    scheduleRender('header');
+    scheduleRender('tasks');
+    scheduleRender('history');
+    checarConquistas();
+  } else {
+    t.status = 'pendente'; 
+    S.xp = Math.max(0, (S.xp || 0) - 10);
+    const hIdx = S.hist.findLastIndex(h => h.nome === t.nome && h.data === hoje);
+    if (hIdx > -1) S.hist.splice(hIdx, 1);
+    
+    tocarSom('erro', 0.3);
+    popupAnimado("-10 XP", 'error');
+    scheduleRender('header');
+    scheduleRender('tasks');
+    scheduleRender('history');
+    checarConquistas();
+  }
+
+  salvar();
+}
+
+function concluirHabito(habIdx, dataStr) {
+  const h = S.habitos[habIdx];
+  const hojeStr = new Date().toLocaleDateString();
+  
+  if (S.hist.some(r => r.nome === h.nome && r.data === dataStr)) return;
+  
+  h.total = (h.total || 0) + 1;
+  h.ultimaConclusao = dataStr;
+  
+  if (dataStr === hojeStr) {
+    h.streak = (h.streak || 0) + 1;
+  }
+
+  S.xp += 15;
+  S.hist.push({
+    nome: h.nome, 
+    data: dataStr, 
+    tipo: 'H', 
+    xpGanhos: 15,
+    hora: new Date().getHours()
+  });
+
+  tocarSom('habitoConcluido', 0.6);
+  setTimeout(() => tocarSom('xpGanho', 0.4), 200);
+  
+  popupAnimado("+15 XP! 🔥", 'success');
+  
+  scheduleRender('header');
+  scheduleRender('habits');
+  scheduleRender('history');
+  checarConquistas();
+  
+  salvar();
+}
+
+// ==================== ANIMAÇÕES (MANTIDAS) ====================
 function mostrarAnimacaoLevelUp(nivel) {
   const overlay = document.createElement('div');
   overlay.style.cssText = `
@@ -1028,6 +1997,7 @@ function popupAnimado(mensagem, tipo = 'default') {
   }, 2500);
 }
 
+// ==================== RESETS (MANTIDOS) ====================
 function resetDia() {
     if(!confirm("Deseja realmente resetar TODO o progresso de hoje? Esta ação não pode ser desfeita.")) return;
     
@@ -1061,6 +2031,7 @@ function resetDia() {
     salvar();
     tocarSom('sucesso', 0.4);
     popupAnimado("Progresso de hoje resetado!", 'success');
+    fullRender();
 }
 
 function resetGeral() {
@@ -1086,73 +2057,12 @@ function resetGeral() {
         db.collection("users").doc(auth.currentUser.uid).set(S).then(() => {
             tocarSom('sucesso', 0.5);
             popupAnimado("Sistema resetado com sucesso!", 'success');
-            setTimeout(() => location.reload(), 2000);
+            fullRender();
         });
     }
 }
 
-function concluirHabito(habIdx, dataStr) {
-    const h = S.habitos[habIdx];
-    const hojeStr = new Date().toLocaleDateString();
-    
-    if(S.hist.some(r => r.nome === h.nome && r.data === dataStr)) return;
-    
-    h.total = (h.total || 0) + 1;
-    h.ultimaConclusao = dataStr;
-    
-    if(dataStr === hojeStr) {
-        h.streak = (h.streak || 0) + 1;
-    }
-
-    S.xp += 15;
-    S.hist.push({
-        nome: h.nome, 
-        data: dataStr, 
-        tipo: 'H', 
-        xpGanhos: 15,
-        hora: new Date().getHours()
-    });
-
-    tocarSom('habitoConcluido', 0.6);
-    setTimeout(() => tocarSom('xpGanho', 0.4), 200);
-    
-    popupAnimado("+15 XP! 🔥", 'success');
-    salvar();
-}
-
-function toggleTarefa(idx) {
-    const t = S.tarefas[idx]; 
-    const hoje = new Date().toLocaleDateString();
-
-    if (t.status === 'pendente') {
-        t.status = 'concluido'; 
-        S.xp = (S.xp || 0) + 10;
-        S.hist.push({
-            nome: t.nome, 
-            data: hoje, 
-            tipo: 'T', 
-            cat: t.cat, 
-            xpGanhos: 10, 
-            hora: new Date().getHours()
-        });
-        
-        tocarSom('tarefaConcluida', 0.5);
-        setTimeout(() => tocarSom('xpGanho', 0.3), 150);
-        
-        popupAnimado("+10 XP ✓", 'success');
-    } else {
-        t.status = 'pendente'; 
-        S.xp = Math.max(0, (S.xp || 0) - 10);
-        const hIdx = S.hist.findLastIndex(h => h.nome === t.nome && h.data === hoje);
-        if (hIdx > -1) S.hist.splice(hIdx, 1);
-        
-        tocarSom('erro', 0.3);
-        popupAnimado("-10 XP", 'error');
-    }
-
-    salvar();
-}
-
+// ==================== CONQUISTAS (MANTIDO) ====================
 function checarConquistas() {
     let novasConquistas = false;
     BADGES.forEach(b => {
@@ -1165,7 +2075,11 @@ function checarConquistas() {
             }, 300);
         }
     });
-    if(novasConquistas) salvar();
+    if(novasConquistas) {
+      salvar();
+      scheduleRender('badges');
+      scheduleRender('header');
+    }
 }
 
 function fazerLogout() { 
@@ -1176,7 +2090,7 @@ function fazerLogout() {
     }); 
 }
 
-// SERVICE WORKER PARA PWA
+// ==================== SERVICE WORKER PARA PWA ====================
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
@@ -1184,6 +2098,23 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.log('Erro SW:', err));
   });
 }
+
+// ==================== INITIAL CACHE SETUP ====================
+document.addEventListener('DOMContentLoaded', function() {
+  // Pre-cache dos elementos mais usados
+  const ids = [
+    'hNome', 'hIdade', 'hSexo', 'hProfissao', 'hFrase',
+    'hNivel', 'xpBar', 'xpNumerico', 'hFoto',
+    'homeBadges', 'homeBadgesMobile',
+    'homeTarefas', 'habitHead', 'homeHabitos',
+    'regTarCat', 'listCats', 'listTars', 'listHabs',
+    'muralConquistas', 'listHist'
+  ];
+  
+  ids.forEach(id => {
+    DOMCache[id] = document.getElementById(id);
+  });
+});
 
 window.onload = () => {
     if(!auth.currentUser) {
