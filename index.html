@@ -156,6 +156,7 @@ input:focus, select:focus { outline: none; border-color: var(--accent); box-shad
   .card { padding: 20px; }
   h3 { font-size: 16px; }
   .badge-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; }
+
 }
 
 .mobile-badges-container { display: none; }
@@ -416,6 +417,65 @@ button:disabled {
   }
 }
 
+/* ==================== CORREÇÃO PARA HABITOS NO MOBILE ==================== */
+@media (max-width: 768px) {
+  .habit-circle {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+  }
+  
+  .habit-table th,
+  .habit-table td {
+    padding: 8px 2px !important;
+  }
+  
+  .habit-table th {
+    font-size: 9px !important;
+  }
+  
+  .habit-name {
+    font-size: 13px !important;
+  }
+}
+
+/* Garantir proporção dos círculos */
+.habit-circle {
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
+}
+
+/* ==================== CONTROLE DE VISIBILIDADE MOBILE/DESKTOP ==================== */
+
+/* Por padrão, esconder elementos mobile-only no desktop */
+.mobile-only {
+  display: none !important;
+}
+
+/* No mobile, mostrar elementos mobile-only e esconder desktop-only */
+@media (max-width: 768px) {
+  .mobile-only {
+    display: block !important;
+  }
+  
+  .desktop-only {
+    display: none !important;
+  }
+  
+  /* Esconder o card de conquistas recentes no mobile */
+  .card-slim:nth-child(2) {
+    display: none !important;
+  }
+}
+
+/* No desktop, garantir que o card de conquistas aparece */
+@media (min-width: 769px) {
+  .card-slim:nth-child(2) {
+    display: flex !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -480,11 +540,27 @@ button:disabled {
     <img id="hFoto" class="profile-img-slim" src="" style="display:none;">
     
     <div class="profile-info-slim">
-      <!-- Skeletons para informações -->
-      <div class="skeleton-line" style="width:70%; height:16px; margin-bottom:8px;"></div>
-      <div class="skeleton-line" style="width:60%; height:16px; margin-bottom:8px;"></div>
-      <div class="skeleton-line" style="width:50%; height:12px; margin-bottom:12px;"></div>
+      <!-- ELEMENTOS REAIS (escondidos inicialmente) -->
+      <div id="profileInfoReal" style="display: none;">
+        <p><strong>Nome:</strong> <span id="hNome">---</span> | <strong>Idade:</strong> <span id="hIdade">--</span></p>
+        <p><strong>Sexo:</strong> <span id="hSexo">---</span> | <strong>Profissão:</strong> <span id="hProfissao">---</span></p>
+        <p id="hFrase" class="phrase-slim">"---"</p>
+      </div>
       
+      <!-- Skeletons para informações -->
+      <div id="profileInfoSkeleton">
+        <div class="skeleton-line" style="width:70%; height:16px; margin-bottom:8px;"></div>
+        <div class="skeleton-line" style="width:60%; height:16px; margin-bottom:8px;"></div>
+        <div class="skeleton-line" style="width:50%; height:12px; margin-bottom:12px;"></div>
+      </div>
+      
+      <!-- ELEMENTOS REAIS para badges mobile -->
+      <!-- A classe "mobile-only" será usada para esconder no desktop -->
+      <div id="mobileBadgesReal" class="mobile-badges-container mobile-only" style="display: none;">
+        <div style="font-size: 11px; color: var(--accent); margin-bottom: 8px; font-weight: 700;">🏆 CONQUISTAS</div>
+      <div id="homeBadgesMobile" class="mini-conquistas"></div>
+    </div>
+
       <!-- Skeletons para badges mobile -->
       <div id="mobileBadgesSkeleton" class="mobile-badges-container">
         <div style="font-size: 11px; color: var(--accent); margin-bottom: 8px; font-weight: 700;">🏆 CONQUISTAS</div>
@@ -495,8 +571,19 @@ button:disabled {
         </div>
       </div>
       
+      <!-- ELEMENTOS REAIS para XP -->
+      <div id="xpInfoReal" class="xp-wrapper" style="display: none;">
+        <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--accent); font-weight:600">
+          <span>Nível <b id="hNivel">1</b></span>
+          <span id="xpNumerico">0/100 XP</span>
+        </div>
+        <div class="xp-container">
+          <div id="xpBar" class="xp-bar" style="width: 0%;"></div>
+        </div>
+      </div>
+      
       <!-- Skeleton para XP -->
-      <div class="xp-wrapper">
+      <div id="xpInfoSkeleton" class="xp-wrapper">
         <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
           <div class="skeleton-line" style="width:40px; height:12px;"></div>
           <div class="skeleton-line" style="width:60px; height:12px;"></div>
@@ -508,8 +595,17 @@ button:disabled {
 
   <!-- Card de Conquistas Recentes -->
   <div class="card-slim" style="flex-direction: column; align-items: flex-start; justify-content: center;">
+    <!-- Título real -->
+    <h3 style="margin-bottom: 12px; font-size: 15px; border:none; padding:0; cursor:default; display: none;" id="conquistasTitulo">🏆 Conquistas Recentes</h3>
+    
+    <!-- Skeleton do título -->
     <div class="skeleton-line" style="width:140px; height:18px; margin-bottom:12px;"></div>
-    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+    
+    <!-- ELEMENTOS REAIS para badges desktop -->
+    <div id="homeBadges" class="mini-conquistas" style="display: none;"></div>
+    
+    <!-- Skeletons para badges -->
+    <div id="badgesSkeleton" style="display:flex; gap:8px; flex-wrap:wrap;">
       <div class="skeleton-badge"></div>
       <div class="skeleton-badge"></div>
       <div class="skeleton-badge"></div>
@@ -682,6 +778,7 @@ button:disabled {
 <div id="popup"></div>
 
 <script>
+// ==================== CONFIGURAÇÃO FIREBASE ====================
 const firebaseConfig = {
   apiKey: "AIzaSyBkSJDH_aEVsp-LSNGm4XBqWoo_FUIJYNo",
   authDomain: "life-dash-e33f2.firebaseapp.com",
@@ -696,8 +793,6 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 
 // ==================== SISTEMA DE RENDERIZAÇÃO OTIMIZADO ====================
-
-// Sistema de renderização por partes (partial updates)
 let renderQueue = new Set();
 let renderTimeout = null;
 
@@ -707,7 +802,7 @@ function scheduleRender(component = 'all') {
   if (renderTimeout) clearTimeout(renderTimeout);
   renderTimeout = setTimeout(() => {
     performRender();
-  }, 50); // Debounce de 50ms
+  }, 50);
 }
 
 function performRender() {
@@ -723,29 +818,16 @@ function performRender() {
 function partialRender(components) {
   components.forEach(comp => {
     switch(comp) {
-      case 'header':
-        renderHeader();
-        break;
-      case 'tasks':
-        renderTasks();
-        break;
-      case 'habits':
-        renderHabits();
-        break;
-      case 'structure':
-        renderStructure();
-        break;
-      case 'badges':
-        renderBadges();
-        break;
-      case 'history':
-        renderHistory();
-        break;
+      case 'header': renderHeader(); break;
+      case 'tasks': renderTasks(); break;
+      case 'habits': renderHabits(); break;
+      case 'structure': renderStructure(); break;
+      case 'badges': renderBadges(); break;
+      case 'history': renderHistory(); break;
     }
   });
 }
 
-// ==================== CACHE DE ELEMENTOS DO DOM ====================
 const DOMCache = {};
 
 function getElement(id) {
@@ -755,70 +837,544 @@ function getElement(id) {
   return DOMCache[id];
 }
 
-// ==================== FUNÇÕES DE RENDER PARCIAL ====================
-
-function renderHeader() {
-  const l = xpInfo(S.xp);
-  const hoje = new Date().toLocaleDateString();
+// ==================== FUNÇÕES BÁSICAS ====================
+function xpInfo(xp) { 
+  let n=1, ac=0, pr=100; 
+  console.log("Calculando XP info para:", xp);
   
-  // Detecta Level Up
-  if (window.nivelAnterior && window.nivelAnterior < l.n) {
-    setTimeout(() => {
-      tocarSom('levelUp', 0.7);
-      mostrarAnimacaoLevelUp(l.n);
-    }, 500);
-  }
-  window.nivelAnterior = l.n;
+  while(xp>=pr){ 
+    n++; 
+    ac=pr; 
+    pr+=Math.floor(150*Math.pow(1.2,n-1)); 
+  } 
   
-  // Atualiza apenas elementos do header
-  const elementos = {
-    "hNome": S.perfil.nome || "---",
-    "hIdade": calcularIdade(S.perfil.nascimento),
-    "hSexo": S.perfil.sexo || "---",
-    "hProfissao": S.perfil.profissao || "---",
-    "hFrase": S.perfil.frase ? `"${S.perfil.frase}"` : "---",
-    "hNivel": l.n,
-    "xpNumerico": `${Math.floor(l.cur)}/${Math.floor(l.max)} XP`
+  const resultado = {
+    n, 
+    p:((xp-ac)/(pr-ac))*100, 
+    cur:xp-ac, 
+    max:pr-ac
   };
   
-  Object.entries(elementos).forEach(([id, value]) => {
-    const el = getElement(id);
-    if (el) el.textContent = value;
-  });
+  console.log("Resultado XP:", resultado);
+  return resultado;
+}
+function calcularIdade(d) { 
+  if(!d) return "--"; 
+  const h=new Date(), n=new Date(d); 
+  let i=h.getFullYear()-n.getFullYear(); 
+  if(h.getMonth()<n.getMonth() || (h.getMonth()===n.getMonth() && h.getDate()<n.getDate())) i--; 
+  return i; 
+}
+
+// ==================== FUNÇÕES DE UI ====================
+function toggleSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const menuToggle = document.querySelector('.menu-toggle');
+  const menuText = document.getElementById('menu-text');
   
-  // Barra de XP
-  const xpBar = getElement("xpBar");
-  if (xpBar) xpBar.style.width = l.p + "%";
+  sidebar.classList.toggle('open');
+
+  if (sidebar.classList.contains('open')) {
+    menuToggle.style.position = 'fixed';
+    setTimeout(() => menuText.classList.add('menu-text-active'), 100);
+  } else {
+    menuToggle.style.position = 'absolute';
+    menuText.classList.remove('menu-text-active');
+  }
+}
+
+document.addEventListener('click', function(event) {
+  const sidebar = document.querySelector('.sidebar');
+  const menuToggle = document.querySelector('.menu-toggle');
+  const menuText = document.getElementById('menu-text');
   
-  // Foto
-  const fotoEl = getElement("hFoto");
-  if (fotoEl && S.perfil.foto) {
-    fotoEl.src = S.perfil.foto;
-    fotoEl.style.display = "block";
+  if (sidebar.classList.contains('open')) {
+    if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
+      sidebar.classList.remove('open');
+      menuToggle.style.position = 'absolute';
+      menuText.classList.remove('menu-text-active');
+    }
+  }
+});
+
+function irPara(id, btn) { 
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active")); 
+  document.getElementById(id).classList.add("active"); 
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active")); 
+  btn.classList.add("active");
+  
+  if(window.innerWidth <= 768) {
+    document.querySelector('.sidebar').classList.remove('open');
+    document.querySelector('.menu-toggle').style.position = 'absolute';
+    document.getElementById('menu-text').classList.remove('menu-text-active');
+  }
+}
+
+function toggleAuth(m) { 
+  document.getElementById('auth-login').style.display = m==='login'?'block':'none'; 
+  document.getElementById('auth-register').style.display = m==='register'?'block':'none'; 
+}
+
+function toggleCollapse(id) {
+  const el = document.getElementById(id);
+  const icon = document.getElementById('icon-' + id);
+  if(!el || !icon) return;
+  const colapsados = window.colapsados || {};
+  colapsados[id] = !colapsados[id];
+  el.style.display = colapsados[id] ? 'none' : 'block';
+  icon.innerText = colapsados[id] ? '▶' : '▼';
+  window.colapsados = colapsados;
+}
+
+// ==================== AUTENTICAÇÃO ====================
+async function fazerLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const senha = document.getElementById('login-password').value;
+  
+  if (!email || !senha) {
+    showToast("Preencha todos os campos", 'warning');
+    return;
   }
   
-  // Badges
-  renderHomeBadges();
+  showLoading("Entrando...");
+  
+  try {
+    await auth.signInWithEmailAndPassword(email, senha);
+    // onAuthStateChanged vai lidar com o resto
+    
+  } catch (error) {
+    hideLoading();
+    
+    let mensagemErro = "Erro ao fazer login";
+    
+    switch(error.code) {
+      case 'auth/invalid-email': mensagemErro = "Email inválido"; break;
+      case 'auth/user-disabled': mensagemErro = "Conta desativada"; break;
+      case 'auth/user-not-found': mensagemErro = "Usuário não encontrado"; break;
+      case 'auth/wrong-password': mensagemErro = "Senha incorreta"; break;
+      case 'auth/too-many-requests': mensagemErro = "Muitas tentativas"; break;
+      default: mensagemErro = error.message;
+    }
+    
+    showToast(mensagemErro, 'error');
+  }
+}
+
+async function fazerRegistro() {
+  const email = document.getElementById('regEmail').value.trim();
+  const senha = document.getElementById('regPassword').value;
+  const nome = document.getElementById('regNome').value.trim();
+  
+  if (!email || !senha || !nome) {
+    showToast("Nome, Email e Senha são obrigatórios!", 'warning');
+    return;
+  }
+  
+  if (senha.length < 6) {
+    showToast("A senha deve ter no mínimo 6 caracteres", 'warning');
+    return;
+  }
+  
+  showLoading("Criando sua conta...");
+  
+  try {
+    const userCredential = await auth.createUserWithEmailAndPassword(email, senha);
+    
+    const dadosUsuario = {
+      perfil: {
+        nome: nome,
+        email: email,
+        nascimento: document.getElementById('regNascimento').value || '',
+        sexo: document.getElementById('regSexo').value || '',
+        profissao: document.getElementById('regProfissao').value || '',
+        frase: "Foco no progresso!",
+        foto: window.tempFoto || '',
+        dataCriacao: new Date().toISOString()
+      },
+      categorias: [],
+      tarefas: [],
+      habitos: [],
+      hist: [],
+      xp: 0,
+      badges_unlocked: []
+    };
+    
+    await db.collection("users").doc(userCredential.user.uid).set(dadosUsuario);
+    
+    hideLoading();
+    showToast("Conta criada com sucesso! 🎉", 'success', 3000);
+    
+  } catch (error) {
+    hideLoading();
+    
+    let mensagemErro = "Erro ao criar conta";
+    
+    switch(error.code) {
+      case 'auth/email-already-in-use': mensagemErro = "Email já em uso"; break;
+      case 'auth/invalid-email': mensagemErro = "Email inválido"; break;
+      case 'auth/weak-password': mensagemErro = "Senha muito fraca"; break;
+      default: mensagemErro = error.message;
+    }
+    
+    showToast(mensagemErro, 'error');
+  }
+}
+
+async function recuperarSenha() {
+  const email = document.getElementById('login-email').value.trim();
+  
+  if (!email) {
+    showToast("Digite seu e-mail", 'warning');
+    return;
+  }
+  
+  showLoading("Enviando e-mail...");
+  
+  try {
+    await auth.sendPasswordResetEmail(email);
+    hideLoading();
+    showToast("E-mail de recuperação enviado!", 'success', 4000);
+    
+  } catch (error) {
+    hideLoading();
+    
+    let mensagemErro = "Erro ao enviar e-mail";
+    
+    switch(error.code) {
+      case 'auth/invalid-email': mensagemErro = "Email inválido"; break;
+      case 'auth/user-not-found': mensagemErro = "Usuário não encontrado"; break;
+      default: mensagemErro = error.message;
+    }
+    
+    showToast(mensagemErro, 'error');
+  }
+}
+
+function fazerLogout() { 
+  if(!confirm("Tem certeza que deseja sair?")) return;
+  auth.signOut().then(() => {
+    localStorage.clear();
+    location.reload();
+  }); 
+}
+
+// ==================== ESTADO GLOBAL ====================
+let S = { 
+  perfil: {}, 
+  categorias: [], 
+  tarefas: [], 
+  habitos: [], 
+  hist: [], 
+  xp: 0, 
+  badges_unlocked: [] 
+};
+let openCats = JSON.parse(localStorage.getItem('lifeDash_openCats')) || {};
+
+// ==================== LISTENER DE AUTENTICAÇÃO ====================
+auth.onAuthStateChanged(async (user) => {
+  console.log("=== AUTH STATE CHANGED ===");
+  console.log("Usuário:", user ? user.uid : "null");
+  
+  if (user) {
+    document.getElementById('login-screen').style.display = 'none';
+    showLoading("Carregando seus dados...");
+    
+    // RESETAR o nivelAnterior quando fizer login
+    window.nivelAnterior = undefined;
+    window.jaDeuBoasVindas = false;
+    
+    try {
+      const doc = await db.collection("users").doc(user.uid).get();
+      
+      if (doc.exists) {
+        S = doc.data();
+        console.log("Dados carregados do Firestore:", S);
+        
+        // Garantir estrutura completa
+        S.perfil = S.perfil || {};
+        S.badges_unlocked = S.badges_unlocked || [];
+        S.hist = S.hist || [];
+        S.categorias = S.categorias || [];
+        S.tarefas = S.tarefas || [];
+        S.habitos = S.habitos || [];
+        S.xp = S.xp || 0;
+        
+        console.log("Estrutura após normalização:");
+        console.log("- Perfil:", S.perfil);
+        console.log("- Badges:", S.badges_unlocked);
+        console.log("- XP:", S.xp);
+        console.log("Estrutura após normalização:");
+        console.log("- Perfil:", S.perfil);
+        console.log("- Badges:", S.badges_unlocked);
+        console.log("- XP:", S.xp);
+  
+  // ========== ADICIONE ESTAS 2 LINHAS AQUI ==========
+  // CORRIGIR NÍVEL ANTES DE RENDERIZAR
+        if (S.xp !== undefined) {
+          const l = xpInfo(S.xp);
+          window.nivelAnterior = l.n;
+          console.log("Nível corrigido para:", window.nivelAnterior);
+        }
+  // ===================================================
+  
+  // Primeiro sincronizar inputs
+  sincronizarInputsPerfil();
+        
+        
+        // Depois renderizar
+        setTimeout(() => {
+          console.log("Chamando fullRender...");
+          fullRender();
+
+        // Forçar renderização das badges
+          setTimeout(() => renderHomeBadges(), 300);
+
+        // Debug imediato
+         setTimeout(() => {
+          debugPerfil();
+         }, 500);
+
+          setTimeout(() => {
+            hideSkeletons();
+            console.log("Skeletons escondidos");
+          }, 300);
+          
+          // Boas-vindas (apenas uma vez)
+          if (!window.jaDeuBoasVindas && S.perfil && S.perfil.nome) {
+            setTimeout(() => {
+              showToast(`Bem-vindo, ${S.perfil.nome}!`, 'success', 2000);
+              window.jaDeuBoasVindas = true;
+            }, 800);
+          }
+          
+          setTimeout(() => {
+            hideLoading();
+            console.log("Loading escondido");
+          }, 1000);
+          
+        }, 100);
+        
+      } else {
+        console.log("Documento não existe, criando novo...");
+        const novosDados = {
+          perfil: {
+            nome: "Novo Usuário",
+            email: user.email,
+            frase: "Foco no progresso!",
+            dataCriacao: new Date().toISOString()
+          },
+          categorias: [],
+          tarefas: [],
+          habitos: [],
+          hist: [],
+          xp: 0,
+          badges_unlocked: []
+        };
+        
+        await db.collection("users").doc(user.uid).set(novosDados);
+        S = novosDados;
+        
+        fullRender();
+        hideSkeletons();
+        hideLoading();
+        showToast("Perfil criado com sucesso!", 'success');
+      }
+      
+    } catch (error) {
+      console.error("Erro ao carregar dados:", error);
+      hideLoading();
+      showToast("Erro ao carregar dados. Tente recarregar.", 'error');
+    }
+    
+  } else {
+    console.log("Usuário não logado");
+    document.getElementById('login-screen').style.display = 'flex';
+    window.jaDeuBoasVindas = false;
+    window.nivelAnterior = undefined;
+  }
+});
+
+// ==================== FUNÇÕES DE RENDER ====================
+function renderHeader() {
+  console.log("🔧 RENDER HEADER INICIADO");
+  
+  // Verificar dados
+  if (!S || !S.perfil) {
+    console.error("❌ ERRO: Sem dados do perfil");
+    return;
+  }
+  
+  // Calcular nível
+  const xpAtual = S.xp || 0;
+  const nivel = xpInfo(xpAtual);
+  
+  // ATUALIZAR CADA ELEMENTO MANUALMENTE
+  // 1. Nome
+  const hNome = document.getElementById("hNome");
+  if (hNome) hNome.textContent = S.perfil.nome || "---";
+  
+  // 2. Idade
+  const hIdade = document.getElementById("hIdade");
+  if (hIdade) hIdade.textContent = calcularIdade(S.perfil.nascimento);
+  
+  // 3. Sexo
+  const hSexo = document.getElementById("hSexo");
+  if (hSexo) hSexo.textContent = S.perfil.sexo || "---";
+  
+  // 4. Profissão
+  const hProfissao = document.getElementById("hProfissao");
+  if (hProfissao) hProfissao.textContent = S.perfil.profissao || "---";
+  
+  // 5. Frase
+  const hFrase = document.getElementById("hFrase");
+  if (hFrase) hFrase.textContent = S.perfil.frase ? `"${S.perfil.frase}"` : `"Foco no progresso!"`;
+  
+  // 6. Nível
+  const hNivel = document.getElementById("hNivel");
+  if (hNivel) hNivel.textContent = nivel.n;
+  
+  // 7. XP numérico
+  const xpNumerico = document.getElementById("xpNumerico");
+  if (xpNumerico) xpNumerico.textContent = `${Math.floor(nivel.cur)}/${Math.floor(nivel.max)} XP`;
+  
+  // 8. Barra de XP
+  const xpBar = document.getElementById("xpBar");
+  if (xpBar) xpBar.style.width = nivel.p + "%";
+  
+  // 9. Foto
+  const hFoto = document.getElementById("hFoto");
+  if (hFoto && S.perfil.foto) {
+    hFoto.src = S.perfil.foto;
+    hFoto.style.display = "block";
+  }
+  
+  console.log("✅ RENDER HEADER CONCLUÍDO");
 }
 
 function renderHomeBadges() {
-  let hBadge = "";
-  const ultimas5 = S.badges_unlocked.slice(-5);
-  ultimas5.forEach(id => {
-    const b = BADGES.find(badge => badge.id === id);
-    if (b) hBadge += `<div class="badge-mini" title="${b.title}: ${b.desc}">${b.icon}</div>`;
-  });
+  console.log("🏆 RENDER HOME BADGES INICIADO");
   
-  const badgeHTML = hBadge || "<small style='color:#64748b'>Nenhuma conquista ainda</small>";
+  // 1. Verificar se temos dados
+  if (!S || !S.badges_unlocked || !Array.isArray(S.badges_unlocked)) {
+    console.error("❌ ERRO: badges_unlocked não é array ou não existe");
+    console.log("S:", S);
+    console.log("S.badges_unlocked:", S ? S.badges_unlocked : "S é undefined");
+    
+    // Mostrar mensagem de erro
+    const erroHTML = '<small style="color:#ef4444; font-size:12px;">Erro ao carregar conquistas</small>';
+    
+    const homeBadges = document.getElementById("homeBadges");
+    const homeBadgesMobile = document.getElementById("homeBadgesMobile");
+    
+    if (homeBadges) homeBadges.innerHTML = erroHTML;
+    if (homeBadgesMobile) homeBadgesMobile.innerHTML = erroHTML;
+    
+    return;
+  }
   
-  const homeBadges = getElement("homeBadges");
-  const homeBadgesMobile = getElement("homeBadgesMobile");
+  // 2. Pegar as badges
+  const badges = S.badges_unlocked;
+  console.log(`✅ Temos ${badges.length} conquistas desbloqueadas:`, badges);
   
-  if (homeBadges) homeBadges.innerHTML = badgeHTML;
-  if (homeBadgesMobile) homeBadgesMobile.innerHTML = badgeHTML;
+  // 3. Criar HTML
+  let html = "";
+  const ultimas5 = badges.slice(-5); // Últimas 5 conquistas
+  
+  console.log(`📋 Últimas 5 conquistas:`, ultimas5);
+  
+  if (ultimas5.length > 0) {
+    ultimas5.forEach((badgeId, index) => {
+      console.log(`🔍 Procurando badge ID: ${badgeId} (${index + 1}/${ultimas5.length})`);
+      
+      // Encontrar a badge na lista BADGES
+      const badge = BADGES.find(b => b.id === badgeId);
+      
+      if (badge) {
+        console.log(`✅ Encontrada: ${badge.title} (${badge.icon})`);
+        html += `<div class="badge-mini" title="${badge.title}: ${badge.desc}" style="animation-delay: ${index * 0.1}s;">${badge.icon}</div>`;
+      } else {
+        console.warn(`⚠️ Badge ID ${badgeId} não encontrada na lista BADGES`);
+        // Ícone padrão para badges não encontradas
+        html += `<div class="badge-mini" title="Conquista desconhecida" style="border-color: #64748b;">❓</div>`;
+      }
+    });
+  } else {
+    console.log("📭 Nenhuma conquista desbloqueada ainda");
+    html = '<small style="color:#64748b; font-size:12px;">Nenhuma conquista ainda</small>';
+  }
+  
+  console.log("🎨 HTML gerado:", html);
+  
+  // 4. Atualizar elementos COM CONTROLE DE VISIBILIDADE
+  const homeBadges = document.getElementById("homeBadges"); // Desktop (card direito)
+  const homeBadgesMobile = document.getElementById("homeBadgesMobile"); // Mobile (no perfil)
+  
+  console.log("📍 Procurando elementos...");
+  console.log("homeBadges (desktop):", homeBadges ? "ENCONTRADO" : "NÃO ENCONTRADO");
+  console.log("homeBadgesMobile (mobile):", homeBadgesMobile ? "ENCONTRADO" : "NÃO ENCONTRADO");
+  
+  // 4.1. Atualizar BADGES DESKTOP (sempre no card da direita)
+  if (homeBadges) {
+    homeBadges.innerHTML = html;
+    console.log("✅ homeBadges (desktop) atualizado");
+    
+    // Estilos para desktop
+    homeBadges.style.display = "flex";
+    homeBadges.style.gap = "8px";
+    homeBadges.style.flexWrap = "wrap";
+    homeBadges.style.justifyContent = "flex-start";
+  } else {
+    console.error("❌ homeBadges (desktop) NÃO ENCONTRADO!");
+  }
+  
+  // 4.2. Atualizar BADGES MOBILE (só aparecem no mobile)
+  if (homeBadgesMobile) {
+    homeBadgesMobile.innerHTML = html;
+    console.log("✅ homeBadgesMobile (mobile) atualizado");
+    
+    // Estilos para mobile
+    homeBadgesMobile.style.display = "flex";
+    homeBadgesMobile.style.gap = "8px";
+    homeBadgesMobile.style.flexWrap = "wrap";
+    homeBadgesMobile.style.justifyContent = "flex-start";
+    
+    // Verificar se estamos no mobile para mostrar
+    const isMobile = window.innerWidth <= 768;
+    console.log(`📱 É mobile? ${isMobile} (largura: ${window.innerWidth}px)`);
+    
+    if (isMobile) {
+      // No mobile: mostrar badges no perfil
+      homeBadgesMobile.style.display = "flex";
+      
+      // Esconder o card de conquistas do desktop
+      const conquistasDesktop = document.querySelector('.card-slim:nth-child(2)');
+      if (conquistasDesktop) {
+        conquistasDesktop.style.display = "none";
+      }
+    } else {
+      // No desktop: esconder badges no perfil
+      homeBadgesMobile.style.display = "none";
+      
+      // Mostrar o card de conquistas do desktop
+      const conquistasDesktop = document.querySelector('.card-slim:nth-child(2)');
+      if (conquistasDesktop) {
+        conquistasDesktop.style.display = "flex";
+      }
+    }
+  } else {
+    console.error("❌ homeBadgesMobile (mobile) NÃO ENCONTRADO!");
+  }
+
+  console.log("✅ RENDER HOME BADGES CONCLUÍDO");
+
+    // Atualizar visibilidade baseada no tamanho da tela
+  setTimeout(atualizarVisibilidadeBadges, 100);
 }
 
 function renderTasks() {
+  console.log("📋 RENDER TASKS INICIADO");
+  console.log("Categorias:", S.categorias);
+  console.log("Tarefas:", S.tarefas);
   let tarHtml = "";
   S.categorias.forEach(cat => {
     const ts = S.tarefas.filter(t => t.cat === cat);
@@ -838,16 +1394,19 @@ function renderTasks() {
   
   const homeTarefas = getElement("homeTarefas");
   if (homeTarefas) {
-  homeTarefas.innerHTML = tarHtml || 
-    `<div class="empty-state">
-      <div class="empty-state-icon">📝</div>
-      <div class="empty-state-title">Nenhuma tarefa registrada</div>
-      <div class="empty-state-description">Crie sua primeira tarefa na aba Registros para começar!</div>
-    </div>`;
+    homeTarefas.innerHTML = tarHtml || 
+      `<div class="empty-state">
+        <div class="empty-state-icon">📝</div>
+        <div class="empty-state-title">Nenhuma tarefa registrada</div>
+        <div class="empty-state-description">Crie sua primeira tarefa na aba Registros!</div>
+      </div>`;
   }
 }
 
 function renderHabits() {
+  console.log("🔁 RENDER HABITS INICIADO");
+  console.log("Hábitos:", S.habitos);
+  console.log("Histórico:", S.hist);
   const diasS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
   const hoje = new Date().toLocaleDateString();
   const ultimos7 = [...Array(7)].map((_, i) => {
@@ -860,23 +1419,21 @@ function renderHabits() {
     };
   });
   
-  // Cabeçalho
   const hHead = getElement("habitHead");
   if (hHead) {
     hHead.innerHTML = `<tr><th style="text-align:left; width:35%">Hábito</th>${ultimos7.map(d=>`<th>${d.label}<br><span style="font-size:11px">${d.num}</span></th>`).join("")}</tr>`;
   }
   
-  // Corpo
   const hBody = getElement("homeHabitos");
   if (hBody) {
-  if (S.habitos.length === 0) {
-    hBody.innerHTML = `<tr><td colspan="8">
-      <div class="empty-state" style="padding:40px 20px;">
-        <div class="empty-state-icon">🔁</div>
-        <div class="empty-state-title">Nenhum hábito configurado</div>
-        <div class="empty-state-description">Adicione hábitos na aba Registros para acompanhar sua rotina!</div>
-      </div>
-    </td></tr>`;
+    if (S.habitos.length === 0) {
+      hBody.innerHTML = `<tr><td colspan="8">
+        <div class="empty-state" style="padding:40px 20px;">
+          <div class="empty-state-icon">🔁</div>
+          <div class="empty-state-title">Nenhum hábito configurado</div>
+          <div class="empty-state-description">Adicione hábitos na aba Registros!</div>
+        </div>
+      </td></tr>`;
     } else {
       hBody.innerHTML = S.habitos.map((h, i) => `
         <tr>
@@ -893,7 +1450,6 @@ function renderHabits() {
           }).join("")}
         </tr>`).join("");
       
-      // Reatribuir event listeners
       setTimeout(() => {
         document.querySelectorAll('[data-habit-idx]').forEach(el => {
           el.addEventListener('click', function() {
@@ -906,7 +1462,6 @@ function renderHabits() {
 }
 
 function renderStructure() {
-  // Categorias no dropdown
   const regTarCat = getElement("regTarCat");
   if (regTarCat) {
     regTarCat.innerHTML = S.categorias.length > 0 ? 
@@ -914,7 +1469,6 @@ function renderStructure() {
       "<option value=''>Crie uma categoria primeiro</option>";
   }
   
-  // Lista de categorias
   const listCats = getElement("listCats");
   if (listCats) {
     listCats.innerHTML = S.categorias.map((c,i) => 
@@ -922,7 +1476,6 @@ function renderStructure() {
     ).join("") || "<small style='color:#64748b'>Nenhuma categoria</small>";
   }
   
-  // Lista de tarefas
   const listTars = getElement("listTars");
   if (listTars) {
     listTars.innerHTML = S.tarefas.map((t,i) => 
@@ -930,7 +1483,6 @@ function renderStructure() {
     ).join("") || "<small style='color:#64748b'>Nenhuma tarefa</small>";
   }
   
-  // Lista de hábitos
   const listHabs = getElement("listHabs");
   if (listHabs) {
     listHabs.innerHTML = S.habitos.map((h,i) => 
@@ -942,6 +1494,11 @@ function renderStructure() {
 function renderBadges() {
   const mConquistas = getElement("muralConquistas");
   if (!mConquistas) return;
+  
+  if (!S.badges_unlocked) {
+    mConquistas.innerHTML = "<p style='color:#64748b; padding:20px; text-align:center;'>Carregando conquistas...</p>";
+    return;
+  }
   
   const categorias = ['Iniciante', 'Intermediário', 'Avançado', 'Lendário'];
   let html = '';
@@ -991,12 +1548,12 @@ function renderHistory() {
   if (!histEl) return;
   
   if (S.hist.length === 0) {
-  histEl.innerHTML = `
-    <div class="empty-state">
-      <div class="empty-state-icon">📜</div>
-      <div class="empty-state-title">Histórico vazio</div>
-      <div class="empty-state-description">Complete tarefas e hábitos para começar seu histórico de conquistas!</div>
-    </div>`;
+    histEl.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">📜</div>
+        <div class="empty-state-title">Histórico vazio</div>
+        <div class="empty-state-description">Complete tarefas e hábitos para começar!</div>
+      </div>`;
   } else {
     histEl.innerHTML = S.hist.slice().reverse().map(h => `
       <div class="item">
@@ -1007,8 +1564,35 @@ function renderHistory() {
   }
 }
 
-// Função fullRender mantida para compatibilidade
 function fullRender() {
+  console.log("=== FULL RENDER INICIADO ===");
+  console.log("Estado S:", S);
+  
+  if (!S || !S.perfil || Object.keys(S.perfil).length === 0) {
+    console.log("AVISO: Perfil vazio, pulando render");
+    return;
+  }
+  
+  console.log("Chamando renderHeader...");
+  renderHeader();
+  
+  console.log("Chamando renderTasks...");
+  renderTasks();
+  
+  console.log("Chamando renderHabits...");
+  renderHabits();
+  
+  console.log("Chamando renderStructure...");
+  renderStructure();
+  
+  console.log("Chamando renderBadges...");
+  renderBadges();
+  
+  console.log("Chamando renderHistory...");
+  renderHistory();
+  
+  console.log("=== FULL RENDER CONCLUÍDO ===");
+  
   renderHeader();
   renderTasks();
   renderHabits();
@@ -1017,740 +1601,11 @@ function fullRender() {
   renderHistory();
 }
 
-// Substituir a função render() original
 function render() {
   scheduleRender('all');
 }
 
-// ==================== SISTEMA DE SONS OTIMIZADO ====================
-const SONS = {};
-
-function carregarSons() {
-  if (Object.keys(SONS).length === 0) {
-    SONS.tarefaConcluida = new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3');
-    SONS.habitoConcluido = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
-    SONS.xpGanho = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-    SONS.conquistaDesbloqueada = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
-    SONS.levelUp = new Audio('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3');
-    SONS.erro = new Audio('https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3');
-    SONS.sucesso = new Audio('https://assets.mixkit.co/active_storage/sfx/2001/2001-preview.mp3');
-    
-    // Pré-carregar os primeiros segundos
-    Object.values(SONS).forEach(som => {
-      som.preload = 'auto';
-      som.load();
-    });
-  }
-}
-
-function tocarSom(tipo, vol = 0.5) {
-  try {
-    const som = SONS[tipo];
-    if (som) {
-      som.volume = vol;
-      som.currentTime = 0;
-      som.play().catch(e => console.log('Autoplay bloqueado'));
-    }
-  } catch(e) { console.log('Erro som:', e); }
-}
-
-// ==================== SISTEMA DE CONQUISTAS (MANTIDO) ====================
-const BADGES = [
-  // 🌱 INICIANTE (Verde)
-  {id:'1', icon:'👋', title:'Primeiro Passo', desc:'Crie sua primeira tarefa', cat:'Iniciante', req:(s)=> s.tarefas.length >= 1},
-  {id:'2', icon:'🌱', title:'Plantando Hábitos', desc:'Adicione seu primeiro hábito', cat:'Iniciante', req:(s)=> s.habitos.length >= 1},
-  {id:'3', icon:'✅', title:'Primeira Vitória', desc:'Complete sua primeira tarefa', cat:'Iniciante', req:(s)=> s.hist.filter(h=>h.tipo==='T').length >= 1},
-  {id:'4', icon:'🎯', title:'Focado', desc:'Complete 5 tarefas', cat:'Iniciante', req:(s)=> s.hist.filter(h=>h.tipo==='T').length >= 5},
-  
-  // ⚡ INTERMEDIÁRIO (Azul)
-  {id:'5', icon:'🚀', title:'Decolagem', desc:'Alcance o nível 2', cat:'Intermediário', req:(s)=> xpInfo(S.xp).n >= 2},
-  {id:'6', icon:'💪', title:'Determinado', desc:'Complete 20 tarefas', cat:'Intermediário', req:(s)=> s.hist.filter(h=>h.tipo==='T').length >= 20},
-  {id:'7', icon:'🔥', title:'Em Chamas', desc:'Mantenha 3 dias de sequência em um hábito', cat:'Intermediário', req:(s)=> s.habitos.some(h=>h.streak >= 3)},
-  {id:'8', icon:'📚', title:'Organizado', desc:'Crie 3 categorias diferentes', cat:'Intermediário', req:(s)=> s.categorias.length >= 3},
-  {id:'9', icon:'⏰', title:'Pontual', desc:'Complete 10 hábitos', cat:'Intermediário', req:(s)=> s.hist.filter(h=>h.tipo==='H').length >= 10},
-  {id:'10', icon:'🦉', title:'Coruja', desc:'Complete 5 tarefas após às 20h', cat:'Intermediário', req:(s)=> s.hist.filter(h=>h.tipo==='T' && parseInt(h.hora)>=20).length >= 5},
-  
-  // 🔥 AVANÇADO (Roxo)
-  {id:'11', icon:'🏃', title:'Maratonista', desc:'Complete 50 tarefas', cat:'Avançado', req:(s)=> s.hist.filter(h=>h.tipo==='T').length >= 50},
-  {id:'12', icon:'🌟', title:'Estrela Cadente', desc:'Alcance o nível 5', cat:'Avançado', req:(s)=> xpInfo(S.xp).n >= 5},
-  {id:'13', icon:'💎', title:'Consistente', desc:'7 dias de sequência em um hábito', cat:'Avançado', req:(s)=> s.habitos.some(h=>h.streak >= 7)},
-  {id:'14', icon:'🎨', title:'Multitarefa', desc:'Tenha 5 hábitos ativos', cat:'Avançado', req:(s)=> s.habitos.length >= 5},
-  {id:'15', icon:'📈', title:'Produtivo', desc:'Acumule 500 XP', cat:'Avançado', req:(s)=> s.xp >= 500},
-  {id:'16', icon:'🧠', title:'Estrategista', desc:'Complete todas as tarefas de uma categoria', cat:'Avançado', req:(s)=> s.categorias.some(cat => {
-    const tarefas = s.tarefas.filter(t => t.cat === cat);
-    return tarefas.length > 0 && tarefas.every(t => t.status === 'concluido');
-  })},
-  
-  // 👑 LENDÁRIO (Dourado)
-  {id:'17', icon:'👑', title:'Lenda', desc:'Alcance o nível 10', cat:'Lendário', req:(s)=> xpInfo(S.xp).n >= 10},
-  {id:'18', icon:'🔱', title:'Imparável', desc:'Complete 100 tarefas', cat:'Lendário', req:(s)=> s.hist.filter(h=>h.tipo==='T').length >= 100},
-  {id:'19', icon:'⚡', title:'Super-Humano', desc:'30 dias de sequência em um hábito', cat:'Lendário', req:(s)=> s.habitos.some(h=>h.streak >= 30)},
-  {id:'20', icon:'🏆', title:'Mestre da Produtividade', desc:'1000 XP acumulados', cat:'Lendário', req:(s)=> s.xp >= 1000},
-  {id:'21', icon:'💫', title:'Perfeição', desc:'Complete 50 hábitos', cat:'Lendário', req:(s)=> s.hist.filter(h=>h.tipo==='H').length >= 50},
-  {id:'22', icon:'🌈', title:'Arco-Íris', desc:'Desbloqueie 15 conquistas', cat:'Lendário', req:(s)=> s.badges_unlocked.length >= 15},
-];
-
-const BADGE_COLORS = {
-  'Iniciante': '#22c55e',
-  'Intermediário': '#38bdf8',
-  'Avançado': '#a855f7',
-  'Lendário': '#f59e0b'
-};
-
-// ==================== ESTADO GLOBAL (MANTIDO) ====================
-let S = { perfil: {}, categorias: [], tarefas: [], habitos: [], hist: [], xp: 0, badges_unlocked: [] };
-let openCats = JSON.parse(localStorage.getItem('lifeDash_openCats')) || {};
-let colapsados = { homeTarefasCont: false, homeHabitosCont: false };
-let tempFoto = "";
-
-// ==================== COMPRESSÃO DE FOTOS ====================
-function compressImage(file, maxWidth = 400, quality = 0.7) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = (e) => {
-      const img = new Image();
-      img.src = e.target.result;
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        let width = img.width;
-        let height = img.height;
-        
-        if (width > maxWidth) {
-          height = (height * maxWidth) / width;
-          width = maxWidth;
-        }
-        
-        canvas.width = width;
-        canvas.height = height;
-        ctx.drawImage(img, 0, 0, width, height);
-        
-        canvas.toBlob((blob) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(blob);
-          reader.onload = (e) => {
-            resolve(e.target.result);
-          };
-        }, 'image/jpeg', quality);
-      };
-      img.onerror = reject;
-    };
-    reader.onerror = reject;
-  });
-}
-
-// ==================== PREVIEW DE FOTO COM COMPRESSÃO ====================
-async function previewRegistro(input) { 
-  if (input.files && input.files[0]) { 
-    const compressed = await compressImage(input.files[0]);
-    tempFoto = compressed; 
-    document.getElementById("regPreview").src = tempFoto; 
-    document.getElementById("regPreview").style.display = "block"; 
-  } 
-}
-
-async function localPreview(input) { 
-  if (input.files && input.files[0]) { 
-    const compressed = await compressImage(input.files[0]);
-    tempFoto = compressed; 
-    document.getElementById("pPreview").src = tempFoto; 
-    document.getElementById("pPreview").style.display = "block"; 
-    document.getElementById("pCameraIcon").style.opacity = "0"; 
-  } 
-}
-
-// ==================== AUTENTICAÇÃO (MANTIDA COM OTIMIZAÇÃO) ====================
-async function fazerLogin() {
-    const e = document.getElementById('login-email').value.trim();
-    const p = document.getElementById('login-password').value;
-    if(!e || !p) return alert("Preencha todos os campos");
-    try {
-      await auth.signInWithEmailAndPassword(e, p);
-    } catch(err) {
-      alert("Erro: " + err.message);
-    }
-}
-
-async function fazerRegistro() {
-    const e = document.getElementById('regEmail').value.trim();
-    const p = document.getElementById('regPassword').value;
-    const n = document.getElementById('regNome').value.trim();
-    
-    if(!e || !p || !n) return alert("Nome, Email e Senha são obrigatórios!");
-    if(p.length < 6) return alert("A senha deve ter no mínimo 6 caracteres");
-    
-    try {
-        const cred = await auth.createUserWithEmailAndPassword(e, p);
-        const novosDados = { 
-          perfil: { 
-            nome: n, 
-            nascimento: document.getElementById('regNascimento').value, 
-            sexo: document.getElementById('regSexo').value, 
-            profissao: document.getElementById('regProfissao').value, 
-            frase: "Foco no progresso!", 
-            foto: tempFoto || "" 
-          }, 
-          categorias: [], 
-          tarefas: [], 
-          habitos: [], 
-          hist: [], 
-          xp: 0, 
-          badges_unlocked: [] 
-        };
-        await db.collection("users").doc(cred.user.uid).set(novosDados);
-        alert("Conta criada com sucesso! Faça login.");
-        toggleAuth('login');
-    } catch(err) { 
-      alert("Erro: " + err.message); 
-    }
-}
-
-async function recuperarSenha() {
-    const email = document.getElementById('login-email').value.trim();
-    if(!email) return alert("Digite seu e-mail no campo de login primeiro!");
-    try { 
-      await auth.sendPasswordResetEmail(email); 
-      alert("E-mail de recuperação enviado! Verifique sua caixa de entrada."); 
-    } catch (err) { 
-      alert("Erro: " + err.message); 
-    }
-}
-
-// ==================== FUNÇÕES DE UX ====================
-
-function showLoading(message = "Carregando...") {
-  let overlay = document.getElementById('loadingOverlay');
-  if (!overlay) {
-    overlay = document.createElement('div');
-    overlay.id = 'loadingOverlay';
-    overlay.className = 'loading-overlay';
-    overlay.innerHTML = `
-      <div class="loading-content">
-        <div class="spinner" style="width:48px; height:48px; margin-bottom:20px;"></div>
-        <div style="color:var(--accent); font-size:18px; font-weight:600;">${message}</div>
-        <div style="color:#94a3b8; font-size:14px; margin-top:8px;">Aguarde um momento...</div>
-      </div>
-    `;
-    document.body.appendChild(overlay);
-  }
-  setTimeout(() => overlay.classList.add('active'), 10);
-}
-
-function hideLoading() {
-  const overlay = document.getElementById('loadingOverlay');
-  if (overlay) {
-    overlay.classList.remove('active');
-    setTimeout(() => {
-      if (overlay.parentNode && !overlay.classList.contains('active')) {
-        overlay.remove();
-      }
-    }, 300);
-  }
-}
-
-function showToast(message, type = 'info', duration = 3000) {
-  // Remove toast existente
-  const existing = document.querySelector('.toast');
-  if (existing) existing.remove();
-  
-  const icons = {
-    success: '✅',
-    error: '❌',
-    warning: '⚠️',
-    info: 'ℹ️'
-  };
-  
-  const toast = document.createElement('div');
-  toast.className = `toast toast-${type}`;
-  toast.innerHTML = `
-    <span class="toast-icon">${icons[type] || icons.info}</span>
-    <span style="flex:1; font-size:14px;">${message}</span>
-  `;
-  
-  document.body.appendChild(toast);
-  
-  // Mostrar toast
-  setTimeout(() => toast.classList.add('show'), 10);
-  
-  // Auto-remover
-  setTimeout(() => {
-    toast.classList.remove('show');
-    setTimeout(() => {
-      if (toast.parentNode) toast.remove();
-    }, 400);
-  }, duration);
-}
-
-// Substituir popupAnimado por toast
-function popupAnimado(mensagem, tipo = 'default') {
-  const toastType = tipo === 'success' ? 'success' : 
-                   tipo === 'error' ? 'error' : 'info';
-  showToast(mensagem, toastType, 2500);
-}
-
-// ==================== FUNÇÃO PARA ESCONDER SKELETONS ====================
-
-function hideSkeletons() {
-  // Esconder skeletons do header
-  const fotoSkeleton = document.getElementById('hFotoSkeleton');
-  const foto = document.getElementById('hFoto');
-  if (fotoSkeleton && foto) {
-    fotoSkeleton.style.display = 'none';
-    foto.style.display = 'block';
-  }
-  
-  // Esconder skeletons das tarefas
-  const tarefasSkeleton = document.getElementById('tarefasSkeleton');
-  const homeTarefas = document.getElementById('homeTarefas');
-  if (tarefasSkeleton && homeTarefas) {
-    tarefasSkeleton.style.display = 'none';
-    homeTarefas.style.display = 'block';
-  }
-  
-  // Esconder skeletons dos hábitos
-  const habitosSkeleton = document.getElementById('habitosSkeleton');
-  const habitTable = document.querySelector('.habit-table');
-  if (habitosSkeleton && habitTable) {
-    habitosSkeleton.style.display = 'none';
-    habitTable.style.display = 'table';
-  }
-  
-  // Esconder skeletons das conquistas
-  const conquistasSkeleton = document.getElementById('conquistasSkeleton');
-  if (conquistasSkeleton) {
-    conquistasSkeleton.style.display = 'none';
-  }
-  
-  // Esconder skeletons mobile badges
-  const mobileBadgesSkeleton = document.getElementById('mobileBadgesSkeleton');
-  if (mobileBadgesSkeleton) {
-    mobileBadgesSkeleton.style.display = 'none';
-  }
-  
-  // Remover classes skeleton dos textos
-  document.querySelectorAll('.skeleton-line').forEach(el => {
-    el.style.background = 'transparent';
-    el.style.animation = 'none';
-  });
-}
-
-// ==================== ATUALIZAR AUTH STATE ====================
-
-auth.onAuthStateChanged(user => {
-  if(user) {
-    document.getElementById('login-screen').style.display = 'none';
-    showLoading("Carregando seus dados...");
-    carregarSons(); // Carregar sons apenas após login
-    
-    db.collection("users").doc(user.uid).onSnapshot(doc => { 
-      if(doc.exists) { 
-        S = doc.data(); 
-        if(!S.badges_unlocked) S.badges_unlocked = [];
-        if(!S.hist) S.hist = [];
-        if(!S.categorias) S.categorias = [];
-        if(!S.tarefas) S.tarefas = [];
-        if(!S.habitos) S.habitos = [];
-        
-        // Renderização inicial completa
-        fullRender(); 
-        sincronizarInputsPerfil(); 
-        
-        // Esconder skeletons após carregar
-        setTimeout(hideSkeletons, 500);
-        setTimeout(hideLoading, 800);
-        
-        // Toast de boas-vindas
-        setTimeout(() => {
-          showToast(`Bem-vindo de volta, ${S.perfil.nome || 'Usuário'}!`, 'success', 2000);
-        }, 1000);
-      } 
-    }, error => {
-      console.error("Erro ao carregar dados:", error);
-      hideLoading();
-      showToast("Erro ao carregar dados. Tente novamente.", 'error');
-    });
-  } else { 
-    document.getElementById('login-screen').style.display = 'flex'; 
-  }
-});
-
-// ==================== ATUALIZAR FUNÇÕES COM FEEDBACK ====================
-
-async function fazerLogin() {
-  const e = document.getElementById('login-email').value.trim();
-  const p = document.getElementById('login-password').value;
-  if(!e || !p) {
-    showToast("Preencha todos os campos", 'warning');
-    return;
-  }
-  
-  showLoading("Entrando...");
-  try {
-    await auth.signInWithEmailAndPassword(e, p);
-  } catch(err) {
-    hideLoading();
-    showToast("Erro: " + err.message, 'error');
-  }
-}
-
-async function fazerRegistro() {
-  const e = document.getElementById('regEmail').value.trim();
-  const p = document.getElementById('regPassword').value;
-  const n = document.getElementById('regNome').value.trim();
-  
-  if(!e || !p || !n) {
-    showToast("Nome, Email e Senha são obrigatórios!", 'warning');
-    return;
-  }
-  if(p.length < 6) {
-    showToast("A senha deve ter no mínimo 6 caracteres", 'warning');
-    return;
-  }
-  
-  showLoading("Criando sua conta...");
-  try {
-    const cred = await auth.createUserWithEmailAndPassword(e, p);
-    const novosDados = { 
-      perfil: { 
-        nome: n, 
-        nascimento: document.getElementById('regNascimento').value, 
-        sexo: document.getElementById('regSexo').value, 
-        profissao: document.getElementById('regProfissao').value, 
-        frase: "Foco no progresso!", 
-        foto: tempFoto || "" 
-      }, 
-      categorias: [], 
-      tarefas: [], 
-      habitos: [], 
-      hist: [], 
-      xp: 0, 
-      badges_unlocked: [] 
-    };
-    await db.collection("users").doc(cred.user.uid).set(novosDados);
-    hideLoading();
-    showToast("Conta criada com sucesso! Faça login.", 'success');
-    toggleAuth('login');
-  } catch(err) { 
-    hideLoading();
-    showToast("Erro: " + err.message, 'error');
-  }
-}
-
-function salvar() { 
-  if(auth.currentUser) {
-    // Mostrar saving indicator
-    const saveIndicator = document.createElement('div');
-    saveIndicator.id = 'saveIndicator';
-    saveIndicator.style.cssText = `
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: var(--card-bg);
-      border: 1px solid var(--accent);
-      border-radius: 8px;
-      padding: 8px 16px;
-      font-size: 12px;
-      color: var(--accent);
-      z-index: 1000;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: all 0.3s;
-    `;
-    saveIndicator.textContent = 'Salvando...';
-    document.body.appendChild(saveIndicator);
-    
-    setTimeout(() => {
-      saveIndicator.style.opacity = '1';
-      saveIndicator.style.transform = 'translateY(0)';
-    }, 10);
-    
-    db.collection("users").doc(auth.currentUser.uid).set(S).then(() => {
-      saveIndicator.textContent = 'Salvo ✓';
-      saveIndicator.style.borderColor = 'var(--success)';
-      saveIndicator.style.color = 'var(--success)';
-      
-      setTimeout(() => {
-        saveIndicator.style.opacity = '0';
-        saveIndicator.style.transform = 'translateY(10px)';
-        setTimeout(() => {
-          if (saveIndicator.parentNode) saveIndicator.remove();
-        }, 300);
-      }, 1000);
-    }).catch(err => {
-      console.error("Erro ao salvar:", err);
-      saveIndicator.textContent = 'Erro ao salvar';
-      saveIndicator.style.borderColor = 'var(--danger)';
-      saveIndicator.style.color = 'var(--danger)';
-      
-      setTimeout(() => {
-        saveIndicator.style.opacity = '0';
-        setTimeout(() => {
-          if (saveIndicator.parentNode) saveIndicator.remove();
-        }, 300);
-      }, 2000);
-    });
-  }
-}
-
-// ==================== ADICIONAR CONFIRMAÇÕES COM UX MELHOR ====================
-
-function confirmAction(message, confirmText = "Confirmar", cancelText = "Cancelar") {
-  return new Promise((resolve) => {
-    const overlay = document.createElement('div');
-    overlay.style.cssText = `
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-      animation: fadeIn 0.3s ease;
-    `;
-    
-    overlay.innerHTML = `
-      <div style="background: var(--card-bg); padding: 30px; border-radius: 16px; max-width: 400px; width: 90%; border: 2px solid var(--accent);">
-        <div style="font-size: 18px; color: #e5e7eb; margin-bottom: 20px; line-height: 1.5;">${message}</div>
-        <div style="display: flex; gap: 12px; justify-content: flex-end;">
-          <button class="btn-danger-outline" id="confirmCancel" style="width:auto; padding:10px 20px;">${cancelText}</button>
-          <button class="btn-primary" id="confirmOk" style="width:auto; padding:10px 20px;">${confirmText}</button>
-        </div>
-      </div>
-    `;
-    
-    document.body.appendChild(overlay);
-    
-    document.getElementById('confirmCancel').onclick = () => {
-      overlay.style.animation = 'fadeOut 0.3s ease';
-      setTimeout(() => overlay.remove(), 300);
-      resolve(false);
-    };
-    
-    document.getElementById('confirmOk').onclick = () => {
-      overlay.style.animation = 'fadeOut 0.3s ease';
-      setTimeout(() => overlay.remove(), 300);
-      resolve(true);
-    };
-  });
-}
-
-// Atualizar resetDia para usar nova confirmação
-async function resetDia() {
-  const confirmado = await confirmAction(
-    "Deseja realmente resetar TODO o progresso de hoje? Esta ação não pode ser desfeita.",
-    "Resetar Hoje",
-    "Manter Dados"
-  );
-  
-  if (!confirmado) return;
-  
-  showLoading("Resetando progresso...");
-  
-  const hoje = new Date().toLocaleDateString();
-  const atividadesDeHoje = S.hist.filter(x => x.data === hoje);
-  let xpParaRemover = 0;
-  
-  atividadesDeHoje.forEach(atv => {
-    xpParaRemover += (atv.xpGanhos || 0);
-    if(atv.tipo === 'H') {
-      const hab = S.habitos.find(h => h.nome === atv.nome);
-      if(hab && hab.streak > 0) hab.streak -= 1;
-    }
-  });
-
-  S.xp = Math.max(0, S.xp - xpParaRemover);
-  S.hist = S.hist.filter(x => x.data !== hoje);
-  S.tarefas.forEach(t => t.status = 'pendente');
-  
-  // Recheca conquistas
-  const conquistasAntes = [...S.badges_unlocked];
-  S.badges_unlocked = S.badges_unlocked.filter(id => {
-    const b = BADGES.find(badge => badge.id === id);
-    return b ? b.req(S) : false;
-  });
-  
-  salvar();
-  
-  setTimeout(() => {
-    hideLoading();
-    fullRender();
-    
-    if(conquistasAntes.length !== S.badges_unlocked.length) {
-      showToast("Algumas conquistas foram perdidas", 'warning');
-    } else {
-      showToast("Progresso de hoje resetado!", 'success');
-    }
-  }, 1000);
-}
-
-// ==================== ADICIONAR ANIMAÇÃO DE CARREGAMENTO SUAVE ====================
-
-// Adicionar fade in para sections
-document.addEventListener('DOMContentLoaded', function() {
-  // Observar mudanças de seção para animações
-  const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-        const target = mutation.target;
-        if (target.classList.contains('section') && target.classList.contains('active')) {
-          target.style.animation = 'fadeIn 0.4s ease';
-        }
-      }
-    });
-  });
-  
-  // Observar todas as sections
-  document.querySelectorAll('.section').forEach(section => {
-    observer.observe(section, { attributes: true });
-  });
-  
-  // Adicionar animação de entrada para elementos
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    .animate-in {
-      animation: fadeInUp 0.5s ease forwards;
-    }
-    
-    .delay-1 { animation-delay: 0.1s; opacity: 0; }
-    .delay-2 { animation-delay: 0.2s; opacity: 0; }
-    .delay-3 { animation-delay: 0.3s; opacity: 0; }
-  `;
-  document.head.appendChild(style);
-});
-
-function salvar() { 
-  if(auth.currentUser) {
-    db.collection("users").doc(auth.currentUser.uid).set(S).catch(err => {
-      console.error("Erro ao salvar:", err);
-      popupAnimado("Erro ao salvar dados", 'error');
-    });
-  }
-}
-
-// ==================== FUNÇÕES DE UI (MANTIDAS) ====================
-function toggleCollapse(id) {
-    const el = document.getElementById(id);
-    const icon = document.getElementById('icon-' + id);
-    if(!el || !icon) return;
-    colapsados[id] = !colapsados[id];
-    el.style.display = colapsados[id] ? 'none' : 'block';
-    icon.innerText = colapsados[id] ? '▶' : '▼';
-}
-
-function calcularProgressoConquista(badge) {
-  let atual = 0;
-  let total = 0;
-  
-  if(badge.id === '1') { atual = S.tarefas.length; total = 1; }
-  else if(badge.id === '2') { atual = S.habitos.length; total = 1; }
-  else if(badge.id === '3') { atual = S.hist.filter(h=>h.tipo==='T').length; total = 1; }
-  else if(badge.id === '4') { atual = S.hist.filter(h=>h.tipo==='T').length; total = 5; }
-  else if(badge.id === '5') { atual = xpInfo(S.xp).n; total = 2; }
-  else if(badge.id === '6') { atual = S.hist.filter(h=>h.tipo==='T').length; total = 20; }
-  else if(badge.id === '7') { atual = Math.max(...S.habitos.map(h=>h.streak||0), 0); total = 3; }
-  else if(badge.id === '8') { atual = S.categorias.length; total = 3; }
-  else if(badge.id === '9') { atual = S.hist.filter(h=>h.tipo==='H').length; total = 10; }
-  else if(badge.id === '10') { atual = S.hist.filter(h=>h.tipo==='T' && parseInt(h.hora)>=20).length; total = 5; }
-  else if(badge.id === '11') { atual = S.hist.filter(h=>h.tipo==='T').length; total = 50; }
-  else if(badge.id === '12') { atual = xpInfo(S.xp).n; total = 5; }
-  else if(badge.id === '13') { atual = Math.max(...S.habitos.map(h=>h.streak||0), 0); total = 7; }
-  else if(badge.id === '14') { atual = S.habitos.length; total = 5; }
-  else if(badge.id === '15') { atual = S.xp; total = 500; }
-  else if(badge.id === '17') { atual = xpInfo(S.xp).n; total = 10; }
-  else if(badge.id === '18') { atual = S.hist.filter(h=>h.tipo==='T').length; total = 100; }
-  else if(badge.id === '19') { atual = Math.max(...S.habitos.map(h=>h.streak||0), 0); total = 30; }
-  else if(badge.id === '20') { atual = S.xp; total = 1000; }
-  else if(badge.id === '21') { atual = S.hist.filter(h=>h.tipo==='H').length; total = 50; }
-  else if(badge.id === '22') { atual = S.badges_unlocked.length; total = 15; }
-  
-  return { atual: Math.min(atual, total), total, percent: total > 0 ? Math.min((atual / total) * 100, 100) : 0 };
-}
-
-function toggleSidebar() {
-    const sidebar = document.querySelector('.sidebar');
-    const menuToggle = document.querySelector('.menu-toggle');
-    const menuText = document.getElementById('menu-text');
-    
-    sidebar.classList.toggle('open');
-
-    if (sidebar.classList.contains('open')) {
-        menuToggle.style.position = 'fixed';
-        setTimeout(() => menuText.classList.add('menu-text-active'), 100);
-    } else {
-        menuToggle.style.position = 'absolute';
-        menuText.classList.remove('menu-text-active');
-    }
-}
-
-document.addEventListener('click', function(event) {
-    const sidebar = document.querySelector('.sidebar');
-    const menuToggle = document.querySelector('.menu-toggle');
-    const menuText = document.getElementById('menu-text');
-    
-    if (sidebar.classList.contains('open')) {
-        if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
-            sidebar.classList.remove('open');
-            menuToggle.style.position = 'absolute';
-            menuText.classList.remove('menu-text-active');
-        }
-    }
-});
-
-function irPara(id, btn) { 
-  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active")); 
-  document.getElementById(id).classList.add("active"); 
-  document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active")); 
-  btn.classList.add("active");
-  
-  if(window.innerWidth <= 768) {
-    document.querySelector('.sidebar').classList.remove('open');
-    document.querySelector('.menu-toggle').style.position = 'absolute';
-    document.getElementById('menu-text').classList.remove('menu-text-active');
-  }
-}
-
-function toggleAuth(m) { 
-  document.getElementById('auth-login').style.display = m==='login'?'block':'none'; 
-  document.getElementById('auth-register').style.display = m==='register'?'block':'none'; 
-}
-
-function xpInfo(xp) { 
-  let n=1, ac=0, pr=100; 
-  while(xp>=pr){ 
-    n++; 
-    ac=pr; 
-    pr+=Math.floor(150*Math.pow(1.2,n-1)); 
-  } 
-  return {n, p:((xp-ac)/(pr-ac))*100, cur:xp-ac, max:pr-ac}; 
-}
-
-function toggleCat(cat) { 
-  openCats[cat] = !openCats[cat]; 
-  localStorage.setItem('lifeDash_openCats', JSON.stringify(openCats)); 
-  scheduleRender('tasks');
-}
-
-function calcularIdade(d) { 
-  if(!d) return "--"; 
-  const h=new Date(), n=new Date(d); 
-  let i=h.getFullYear()-n.getFullYear(); 
-  if(h.getMonth()<n.getMonth() || (h.getMonth()===n.getMonth() && h.getDate()<n.getDate())) i--; 
-  return i; 
-}
-
+// ==================== OUTRAS FUNÇÕES ====================
 function sincronizarInputsPerfil() {
   document.getElementById("pNome").value = S.perfil.nome || "";
   document.getElementById("pNascimento").value = S.perfil.nascimento || "";
@@ -1771,25 +1626,22 @@ function salvarPerfilFirebase() {
   S.perfil.profissao = document.getElementById("pProfissao").value.trim();
   S.perfil.sexo = document.getElementById("pSexo").value;
   S.perfil.frase = document.getElementById("pFrase").value.trim();
-  if(tempFoto) S.perfil.foto = tempFoto;
+  if(window.tempFoto) S.perfil.foto = window.tempFoto;
   salvar(); 
-  tocarSom('sucesso', 0.5);
-  popupAnimado("Perfil atualizado com sucesso!", 'success');
+  showToast("Perfil atualizado com sucesso!", 'success');
 }
 
-// ==================== FUNÇÕES DE ADIÇÃO OTIMIZADAS ====================
 function addCat() { 
   const i = document.getElementById("regCatNome"); 
   const nome = i.value.trim();
   if (nome) { 
     if (S.categorias.includes(nome)) {
-      popupAnimado("Categoria já existe!", 'error');
+      showToast("Categoria já existe!", 'error');
       return;
     }
     S.categorias.push(nome); 
     i.value = ""; 
-    tocarSom('sucesso', 0.4);
-    popupAnimado("Categoria criada!", 'success');
+    showToast("Categoria criada!", 'success');
     
     scheduleRender('structure');
     scheduleRender('tasks');
@@ -1802,13 +1654,12 @@ function addHab() {
   const nome = i.value.trim();
   if (nome) { 
     if (S.habitos.some(h => h.nome === nome)) {
-      popupAnimado("Hábito já existe!", 'error');
+      showToast("Hábito já existe!", 'error');
       return;
     }
     S.habitos.push({nome, total:0, streak:0}); 
     i.value = ""; 
-    tocarSom('sucesso', 0.4);
-    popupAnimado("Hábito adicionado!", 'success');
+    showToast("Hábito adicionado!", 'success');
     
     scheduleRender('structure');
     scheduleRender('habits');
@@ -1823,18 +1674,16 @@ function addTar() {
   if (nome && c.value) { 
     S.tarefas.push({nome, cat:c.value, status:'pendente'}); 
     n.value = ""; 
-    tocarSom('sucesso', 0.4);
-    popupAnimado("Tarefa criada!", 'success');
+    showToast("Tarefa criada!", 'success');
     
     scheduleRender('structure');
     scheduleRender('tasks');
     salvar(); 
   } else if (!c.value) {
-    popupAnimado("Crie uma categoria primeiro!", 'error');
+    showToast("Crie uma categoria primeiro!", 'error');
   }
 }
 
-// ==================== FUNÇÕES DE TAREFA/HÁBITO OTIMIZADAS ====================
 function toggleTarefa(idx) {
   const t = S.tarefas[idx]; 
   const hoje = new Date().toLocaleDateString();
@@ -1851,10 +1700,7 @@ function toggleTarefa(idx) {
       hora: new Date().getHours()
     });
     
-    tocarSom('tarefaConcluida', 0.5);
-    setTimeout(() => tocarSom('xpGanho', 0.3), 150);
-    
-    popupAnimado("+10 XP ✓", 'success');
+    showToast("+10 XP ✓", 'success');
     scheduleRender('header');
     scheduleRender('tasks');
     scheduleRender('history');
@@ -1865,8 +1711,7 @@ function toggleTarefa(idx) {
     const hIdx = S.hist.findLastIndex(h => h.nome === t.nome && h.data === hoje);
     if (hIdx > -1) S.hist.splice(hIdx, 1);
     
-    tocarSom('erro', 0.3);
-    popupAnimado("-10 XP", 'error');
+    showToast("-10 XP", 'error');
     scheduleRender('header');
     scheduleRender('tasks');
     scheduleRender('history');
@@ -1898,10 +1743,7 @@ function concluirHabito(habIdx, dataStr) {
     hora: new Date().getHours()
   });
 
-  tocarSom('habitoConcluido', 0.6);
-  setTimeout(() => tocarSom('xpGanho', 0.4), 200);
-  
-  popupAnimado("+15 XP! 🔥", 'success');
+  showToast("+15 XP! 🔥", 'success');
   
   scheduleRender('header');
   scheduleRender('habits');
@@ -1911,7 +1753,308 @@ function concluirHabito(habIdx, dataStr) {
   salvar();
 }
 
-// ==================== ANIMAÇÕES (MANTIDAS) ====================
+function toggleCat(cat) { 
+  openCats[cat] = !openCats[cat]; 
+  localStorage.setItem('lifeDash_openCats', JSON.stringify(openCats)); 
+  scheduleRender('tasks');
+}
+
+// ==================== CONQUISTAS ====================
+const BADGES = [
+  {id:'1', icon:'👋', title:'Primeiro Passo', desc:'Crie sua primeira tarefa', cat:'Iniciante', req:(s)=> s.tarefas.length >= 1},
+  {id:'2', icon:'🌱', title:'Plantando Hábitos', desc:'Adicione seu primeiro hábito', cat:'Iniciante', req:(s)=> s.habitos.length >= 1},
+  {id:'3', icon:'✅', title:'Primeira Vitória', desc:'Complete sua primeira tarefa', cat:'Iniciante', req:(s)=> s.hist.filter(h=>h.tipo==='T').length >= 1},
+  {id:'4', icon:'🎯', title:'Focado', desc:'Complete 5 tarefas', cat:'Iniciante', req:(s)=> s.hist.filter(h=>h.tipo==='T').length >= 5},
+  {id:'5', icon:'🚀', title:'Decolagem', desc:'Alcance o nível 2', cat:'Intermediário', req:(s)=> xpInfo(s.xp).n >= 2},
+  {id:'6', icon:'💪', title:'Determinado', desc:'Complete 20 tarefas', cat:'Intermediário', req:(s)=> s.hist.filter(h=>h.tipo==='T').length >= 20},
+  {id:'7', icon:'🔥', title:'Em Chamas', desc:'Mantenha 3 dias de sequência em um hábito', cat:'Intermediário', req:(s)=> s.habitos.some(h=>h.streak >= 3)},
+  {id:'8', icon:'📚', title:'Organizado', desc:'Crie 3 categorias diferentes', cat:'Intermediário', req:(s)=> s.categorias.length >= 3},
+  {id:'9', icon:'⏰', title:'Pontual', desc:'Complete 10 hábitos', cat:'Intermediário', req:(s)=> s.hist.filter(h=>h.tipo==='H').length >= 10},
+  {id:'10', icon:'🦉', title:'Coruja', desc:'Complete 5 tarefas após às 20h', cat:'Intermediário', req:(s)=> s.hist.filter(h=>h.tipo==='T' && parseInt(h.hora)>=20).length >= 5},
+  {id:'11', icon:'🏃', title:'Maratonista', desc:'Complete 50 tarefas', cat:'Avançado', req:(s)=> s.hist.filter(h=>h.tipo==='T').length >= 50},
+  {id:'12', icon:'🌟', title:'Estrela Cadente', desc:'Alcance o nível 5', cat:'Avançado', req:(s)=> xpInfo(s.xp).n >= 5},
+  {id:'13', icon:'💎', title:'Consistente', desc:'7 dias de sequência em um hábito', cat:'Avançado', req:(s)=> s.habitos.some(h=>h.streak >= 7)},
+  {id:'14', icon:'🎨', title:'Multitarefa', desc:'Tenha 5 hábitos ativos', cat:'Avançado', req:(s)=> s.habitos.length >= 5},
+  {id:'15', icon:'📈', title:'Produtivo', desc:'Acumule 500 XP', cat:'Avançado', req:(s)=> s.xp >= 500},
+  {id:'16', icon:'🧠', title:'Estrategista', desc:'Complete todas as tarefas de uma categoria', cat:'Avançado', req:(s)=> s.categorias.some(cat => {
+    const tarefas = s.tarefas.filter(t => t.cat === cat);
+    return tarefas.length > 0 && tarefas.every(t => t.status === 'concluido');
+  })},
+  {id:'17', icon:'👑', title:'Lenda', desc:'Alcance o nível 10', cat:'Lendário', req:(s)=> xpInfo(s.xp).n >= 10},
+  {id:'18', icon:'🔱', title:'Imparável', desc:'Complete 100 tarefas', cat:'Lendário', req:(s)=> s.hist.filter(h=>h.tipo==='T').length >= 100},
+  {id:'19', icon:'⚡', title:'Super-Humano', desc:'30 dias de sequência em um hábito', cat:'Lendário', req:(s)=> s.habitos.some(h=>h.streak >= 30)},
+  {id:'20', icon:'🏆', title:'Mestre da Produtividade', desc:'1000 XP acumulados', cat:'Lendário', req:(s)=> s.xp >= 1000},
+  {id:'21', icon:'💫', title:'Perfeição', desc:'Complete 50 hábitos', cat:'Lendário', req:(s)=> s.hist.filter(h=>h.tipo==='H').length >= 50},
+  {id:'22', icon:'🌈', title:'Arco-Íris', desc:'Desbloqueie 15 conquistas', cat:'Lendário', req:(s)=> s.badges_unlocked.length >= 15},
+];
+
+const BADGE_COLORS = {
+  'Iniciante': '#22c55e',
+  'Intermediário': '#38bdf8',
+  'Avançado': '#a855f7',
+  'Lendário': '#f59e0b'
+};
+
+function calcularProgressoConquista(badge) {
+  let atual = 0;
+  let total = 0;
+  
+  if(badge.id === '1') { atual = S.tarefas.length; total = 1; }
+  else if(badge.id === '2') { atual = S.habitos.length; total = 1; }
+  else if(badge.id === '3') { atual = S.hist.filter(h=>h.tipo==='T').length; total = 1; }
+  else if(badge.id === '4') { atual = S.hist.filter(h=>h.tipo==='T').length; total = 5; }
+  else if(badge.id === '5') { atual = xpInfo(S.xp).n; total = 2; }
+  else if(badge.id === '6') { atual = S.hist.filter(h=>h.tipo==='T').length; total = 20; }
+  else if(badge.id === '7') { atual = Math.max(...S.habitos.map(h=>h.streak||0), 0); total = 3; }
+  else if(badge.id === '8') { atual = S.categorias.length; total = 3; }
+  else if(badge.id === '9') { atual = S.hist.filter(h=>h.tipo==='H').length; total = 10; }
+  else if(badge.id === '10') { atual = S.hist.filter(h=>h.tipo==='T' && parseInt(h.hora)>=20).length; total = 5; }
+  else if(badge.id === '11') { atual = S.hist.filter(h=>h.tipo==='T').length; total = 50; }
+  else if(badge.id === '12') { atual = xpInfo(S.xp).n; total = 5; }
+  else if(badge.id === '13') { atual = Math.max(...S.habitos.map(h=>h.streak||0), 0); total = 7; }
+  else if(badge.id === '14') { atual = S.habitos.length; total = 5; }
+  else if(badge.id === '15') { atual = S.xp; total = 500; }
+  else if(badge.id === '17') { atual = xpInfo(S.xp).n; total = 10; }
+  else if(badge.id === '18') { atual = S.hist.filter(h=>h.tipo==='T').length; total = 100; }
+  else if(badge.id === '19') { atual = Math.max(...S.habitos.map(h=>h.streak||0), 0); total = 30; }
+  else if(badge.id === '20') { atual = S.xp; total = 1000; }
+  else if(badge.id === '21') { atual = S.hist.filter(h=>h.tipo==='H').length; total = 50; }
+  else if(badge.id === '22') { atual = S.badges_unlocked.length; total = 15; }
+  
+  return { atual: Math.min(atual, total), total, percent: total > 0 ? Math.min((atual / total) * 100, 100) : 0 };
+}
+
+function checarConquistas() {
+  let novasConquistas = false;
+  BADGES.forEach(b => {
+    if(!S.badges_unlocked.includes(b.id) && b.req(S)) {
+      S.badges_unlocked.push(b.id);
+      novasConquistas = true;
+      setTimeout(() => {
+        mostrarAnimacaoConquista(b);
+      }, 300);
+    }
+  });
+  if(novasConquistas) {
+    salvar();
+    scheduleRender('badges');
+    scheduleRender('header');
+  }
+}
+
+// ==================== FUNÇÕES DE UX ====================
+function showLoading(message = "Carregando...") {
+  let overlay = document.getElementById('loadingOverlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'loadingOverlay';
+    overlay.className = 'loading-overlay';
+    overlay.innerHTML = `
+      <div class="loading-content">
+        <div class="spinner" style="width:48px; height:48px; margin-bottom:20px;"></div>
+        <div style="color:var(--accent); font-size:18px; font-weight:600;">${message}</div>
+        <div style="color:#94a3b8; font-size:14px; margin-top:8px;">Aguarde um momento...</div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+  }
+  setTimeout(() => overlay.classList.add('active'), 10);
+}
+
+function hideLoading() {
+  const overlay = document.getElementById('loadingOverlay');
+  if (overlay) {
+    overlay.classList.remove('active');
+    setTimeout(() => {
+      if (overlay.parentNode && !overlay.classList.contains('active')) {
+        overlay.remove();
+      }
+    }, 300);
+  }
+}
+
+function showToast(message, type = 'info', duration = 3000) {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  
+  const icons = {
+    success: '✅',
+    error: '❌',
+    warning: '⚠️',
+    info: 'ℹ️'
+  };
+  
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.innerHTML = `
+    <span class="toast-icon">${icons[type] || icons.info}</span>
+    <span style="flex:1; font-size:14px;">${message}</span>
+  `;
+  
+  document.body.appendChild(toast);
+  
+  setTimeout(() => toast.classList.add('show'), 10);
+  
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => {
+      if (toast.parentNode) toast.remove();
+    }, 400);
+  }, duration);
+}
+
+function hideSkeletons() {
+  console.log("🎭 ESCONDENDO SKELETONS E MOSTRANDO DADOS REAIS");
+  
+  // 1. Foto
+  const fotoSkeleton = document.getElementById("hFotoSkeleton");
+  const foto = document.getElementById("hFoto");
+  if (fotoSkeleton) fotoSkeleton.style.display = "none";
+  if (foto) foto.style.display = "block";
+  
+  // 2. Informações do perfil
+  const profileInfoSkeleton = document.getElementById("profileInfoSkeleton");
+  const profileInfoReal = document.getElementById("profileInfoReal");
+  if (profileInfoSkeleton) profileInfoSkeleton.style.display = "none";
+  if (profileInfoReal) profileInfoReal.style.display = "block";
+  
+  // 3. Badges mobile - usar a função de responsividade
+  const mobileBadgesSkeleton = document.getElementById("mobileBadgesSkeleton");
+  const mobileBadgesReal = document.getElementById("mobileBadgesReal");
+  if (mobileBadgesSkeleton) mobileBadgesSkeleton.style.display = "none";
+  if (mobileBadgesReal) {
+    mobileBadgesReal.style.display = "block";
+    // Chamar função de responsividade para decidir se mostra ou não
+    setTimeout(atualizarVisibilidadeBadges, 50);
+  }
+  
+  // 4. XP
+  const xpInfoSkeleton = document.getElementById("xpInfoSkeleton");
+  const xpInfoReal = document.getElementById("xpInfoReal");
+  if (xpInfoSkeleton) xpInfoSkeleton.style.display = "none";
+  if (xpInfoReal) xpInfoReal.style.display = "block";
+  
+  // 5. Badges desktop
+  const badgesSkeleton = document.getElementById("badgesSkeleton");
+  const homeBadges = document.getElementById("homeBadges");
+  const conquistasTitulo = document.getElementById("conquistasTitulo");
+  if (badgesSkeleton) badgesSkeleton.style.display = "none";
+  if (homeBadges) homeBadges.style.display = "flex";
+  if (conquistasTitulo) conquistasTitulo.style.display = "block";
+  
+  // 6. Remover classes skeleton dos textos (se houver)
+  document.querySelectorAll('.skeleton-line').forEach(el => {
+    el.style.display = 'none';
+  });
+
+    // 7. Tarefas
+  const tarefasSkeleton = document.getElementById("tarefasSkeleton");
+  const homeTarefas = document.getElementById("homeTarefas");
+  if (tarefasSkeleton) tarefasSkeleton.style.display = "none";
+  if (homeTarefas) homeTarefas.style.display = "block";
+  
+  // 8. Hábitos
+  const habitosSkeleton = document.getElementById("habitosSkeleton");
+  const habitTable = document.querySelector(".habit-table");
+  if (habitosSkeleton) habitosSkeleton.style.display = "none";
+  if (habitTable) habitTable.style.display = "table";
+  
+  console.log("✅ Skeletons escondidos, dados reais mostrados");
+}
+
+// ==================== FUNÇÕES DE FOTO ====================
+function previewRegistro(input) { 
+  if(input.files && input.files[0]){ 
+    const r = new FileReader(); 
+    r.onload = (e) => { 
+      window.tempFoto = e.target.result; 
+      document.getElementById("regPreview").src = window.tempFoto; 
+      document.getElementById("regPreview").style.display="block"; 
+    }; 
+    r.readAsDataURL(input.files[0]); 
+  } 
+}
+
+function localPreview(input) { 
+  if(input.files && input.files[0]){ 
+    const r = new FileReader(); 
+    r.onload = (e) => { 
+      window.tempFoto = e.target.result; 
+      document.getElementById("pPreview").src = window.tempFoto; 
+      document.getElementById("pPreview").style.display="block"; 
+      document.getElementById("pCameraIcon").style.opacity="0"; 
+    }; 
+    r.readAsDataURL(input.files[0]); 
+  } 
+}
+
+// ==================== OUTRAS FUNÇÕES ====================
+function salvar() { 
+  if(auth.currentUser) {
+    db.collection("users").doc(auth.currentUser.uid).set(S).catch(err => {
+      console.error("Erro ao salvar:", err);
+      showToast("Erro ao salvar dados", 'error');
+    });
+  }
+}
+
+function resetDia() {
+  if(!confirm("Deseja realmente resetar TODO o progresso de hoje?")) return;
+  
+  const hoje = new Date().toLocaleDateString();
+  const atividadesDeHoje = S.hist.filter(x => x.data === hoje);
+  let xpParaRemover = 0;
+  
+  atividadesDeHoje.forEach(atv => {
+    xpParaRemover += (atv.xpGanhos || 0);
+    if(atv.tipo === 'H') {
+      const hab = S.habitos.find(h => h.nome === atv.nome);
+      if(hab && hab.streak > 0) hab.streak -= 1;
+    }
+  });
+
+  S.xp = Math.max(0, S.xp - xpParaRemover);
+  S.hist = S.hist.filter(x => x.data !== hoje);
+  S.tarefas.forEach(t => t.status = 'pendente');
+  
+  const conquistasAntes = [...S.badges_unlocked];
+  S.badges_unlocked = S.badges_unlocked.filter(id => {
+    const b = BADGES.find(badge => badge.id === id);
+    return b ? b.req(S) : false;
+  });
+  
+  salvar();
+  showToast("Progresso de hoje resetado!", 'success');
+  fullRender();
+}
+
+function resetGeral() {
+  if(!confirm("⚠️ ATENÇÃO! Isso apagará PERMANENTEMENTE todos os dados exceto seu perfil.")) return;
+  if(!confirm("ÚLTIMA CONFIRMAÇÃO: Esta ação é IRREVERSÍVEL!")) return;
+  
+  S = { 
+    perfil: S.perfil, 
+    categorias: [], 
+    tarefas: [], 
+    habitos: [], 
+    hist: [], 
+    xp: 0, 
+    badges_unlocked: [] 
+  }; 
+  
+  localStorage.removeItem('lifeDash_openCats');
+  openCats = {};
+  window.nivelAnterior = 1;
+
+  if(auth.currentUser) {
+    db.collection("users").doc(auth.currentUser.uid).set(S).then(() => {
+      showToast("Sistema resetado com sucesso!", 'success');
+      fullRender();
+    });
+  }
+}
+
+// ==================== ANIMAÇÕES ====================
 function mostrarAnimacaoLevelUp(nivel) {
   const overlay = document.createElement('div');
   overlay.style.cssText = `
@@ -1962,9 +2105,6 @@ function mostrarAnimacaoConquista(badge) {
       <h2 style="color: ${cor}; font-size: 42px; margin: 0; text-shadow: 0 0 20px ${cor}; font-weight:700">🏆 CONQUISTA!</h2>
       <p style="color: white; font-size: 32px; margin: 20px 0; font-weight: 700;">${badge.title}</p>
       <p style="color: var(--accent); font-size: 18px; line-height:1.5">${badge.desc}</p>
-      <div style="margin-top:24px; padding:12px 24px; background:rgba(255,255,255,0.1); border-radius:12px; display:inline-block">
-        <span style="color:${cor}; font-size:14px; font-weight:600">${badge.cat}</span>
-      </div>
     </div>
   `;
   
@@ -1975,133 +2115,41 @@ function mostrarAnimacaoConquista(badge) {
   }, 4000);
 }
 
-function popupAnimado(mensagem, tipo = 'default') {
-  const cores = {
-    success: { bg: 'linear-gradient(135deg, var(--gold) 0%, #f59e0b 100%)', cor: '#000' },
-    error: { bg: 'linear-gradient(135deg, var(--danger) 0%, #dc2626 100%)', cor: '#fff' },
-    default: { bg: 'linear-gradient(135deg, var(--accent) 0%, #0ea5e9 100%)', cor: '#000' }
-  };
-  
-  const estilo = cores[tipo] || cores.default;
-  const p = document.getElementById("popup");
-  
-  p.innerText = mensagem;
-  p.style.background = estilo.bg;
-  p.style.color = estilo.cor;
-  p.style.display = "block";
-  p.style.animation = "slideInRight 0.3s ease";
-  
-  setTimeout(() => {
-    p.style.animation = "slideOutRight 0.3s ease";
-    setTimeout(() => p.style.display = "none", 300);
-  }, 2500);
-}
+// ==================== SISTEMA DE SONS ====================
+const SONS = {};
 
-// ==================== RESETS (MANTIDOS) ====================
-function resetDia() {
-    if(!confirm("Deseja realmente resetar TODO o progresso de hoje? Esta ação não pode ser desfeita.")) return;
+function carregarSons() {
+  if (Object.keys(SONS).length === 0) {
+    SONS.tarefaConcluida = new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3');
+    SONS.habitoConcluido = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
+    SONS.xpGanho = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    SONS.conquistaDesbloqueada = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
+    SONS.levelUp = new Audio('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3');
+    SONS.erro = new Audio('https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3');
+    SONS.sucesso = new Audio('https://assets.mixkit.co/active_storage/sfx/2001/2001-preview.mp3');
     
-    const hoje = new Date().toLocaleDateString();
-    const atividadesDeHoje = S.hist.filter(x => x.data === hoje);
-    let xpParaRemover = 0;
-    
-    atividadesDeHoje.forEach(atv => {
-        xpParaRemover += (atv.xpGanhos || 0);
-        if(atv.tipo === 'H') {
-            const hab = S.habitos.find(h => h.nome === atv.nome);
-            if(hab && hab.streak > 0) hab.streak -= 1;
-        }
+    Object.values(SONS).forEach(som => {
+      som.preload = 'auto';
+      som.load();
     });
+  }
+}
 
-    S.xp = Math.max(0, S.xp - xpParaRemover);
-    S.hist = S.hist.filter(x => x.data !== hoje);
-    S.tarefas.forEach(t => t.status = 'pendente');
-    
-    // Recheca conquistas
-    const conquistasAntes = [...S.badges_unlocked];
-    S.badges_unlocked = S.badges_unlocked.filter(id => {
-        const b = BADGES.find(badge => badge.id === id);
-        return b ? b.req(S) : false;
-    });
-    
-    if(conquistasAntes.length !== S.badges_unlocked.length) {
-      popupAnimado("Algumas conquistas foram perdidas", 'error');
+function tocarSom(tipo, vol = 0.5) {
+  try {
+    const som = SONS[tipo];
+    if (som) {
+      som.volume = vol;
+      som.currentTime = 0;
+      som.play().catch(e => console.log('Autoplay bloqueado'));
     }
-
-    salvar();
-    tocarSom('sucesso', 0.4);
-    popupAnimado("Progresso de hoje resetado!", 'success');
-    fullRender();
+  } catch(e) { console.log('Erro som:', e); }
 }
 
-function resetGeral() {
-    if(!confirm("⚠️ ATENÇÃO! Isso apagará PERMANENTEMENTE:\n\n• Todo seu XP e nível\n• Histórico completo\n• Todas as tarefas\n• Todos os hábitos\n• Todas as conquistas\n\nApenas seus dados de perfil serão mantidos.\n\nTem CERTEZA ABSOLUTA?")) return;
-    
-    if(!confirm("ÚLTIMA CONFIRMAÇÃO: Esta ação é IRREVERSÍVEL! Confirma?")) return;
-    
-    S = { 
-        perfil: S.perfil, 
-        categorias: [], 
-        tarefas: [], 
-        habitos: [], 
-        hist: [], 
-        xp: 0, 
-        badges_unlocked: [] 
-    }; 
-    
-    localStorage.removeItem('lifeDash_openCats');
-    openCats = {};
-    window.nivelAnterior = 1;
-
-    if(auth.currentUser) {
-        db.collection("users").doc(auth.currentUser.uid).set(S).then(() => {
-            tocarSom('sucesso', 0.5);
-            popupAnimado("Sistema resetado com sucesso!", 'success');
-            fullRender();
-        });
-    }
-}
-
-// ==================== CONQUISTAS (MANTIDO) ====================
-function checarConquistas() {
-    let novasConquistas = false;
-    BADGES.forEach(b => {
-        if(!S.badges_unlocked.includes(b.id) && b.req(S)) {
-            S.badges_unlocked.push(b.id);
-            novasConquistas = true;
-            setTimeout(() => {
-                tocarSom('conquistaDesbloqueada', 0.8);
-                mostrarAnimacaoConquista(b);
-            }, 300);
-        }
-    });
-    if(novasConquistas) {
-      salvar();
-      scheduleRender('badges');
-      scheduleRender('header');
-    }
-}
-
-function fazerLogout() { 
-    if(!confirm("Tem certeza que deseja sair?")) return;
-    auth.signOut().then(() => {
-        localStorage.clear();
-        location.reload();
-    }); 
-}
-
-// ==================== SERVICE WORKER PARA PWA ====================
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(reg => console.log('Service Worker registrado'))
-      .catch(err => console.log('Erro SW:', err));
-  });
-}
-
-// ==================== INITIAL CACHE SETUP ====================
-document.addEventListener('DOMContentLoaded', function() {
-  // Pre-cache dos elementos mais usados
+// ==================== INICIALIZAÇÃO ====================
+function inicializarApp() {
+  console.log("=== INICIALIZANDO APP ===");
+  
   const ids = [
     'hNome', 'hIdade', 'hSexo', 'hProfissao', 'hFrase',
     'hNivel', 'xpBar', 'xpNumerico', 'hFoto',
@@ -2113,14 +2161,218 @@ document.addEventListener('DOMContentLoaded', function() {
   
   ids.forEach(id => {
     DOMCache[id] = document.getElementById(id);
+    console.log(`Cache: ${id} =`, DOMCache[id] ? "OK" : "NÃO ENCONTRADO");
   });
-});
+  
+  window.jaDeuBoasVindas = false;
+  window.nivelAnterior = undefined; // Iniciar como undefined
+  window.tempFoto = "";
+  
+  if (!auth.currentUser) {
+    console.log("Nenhum usuário logado, mostrando tela de login");
+    document.getElementById('login-screen').style.display = 'flex';
+  } else {
+    console.log("Usuário já logado:", auth.currentUser.uid);
+  }
+  
+  console.log("=== APP INICIALIZADO ===");
+}
 
-window.onload = () => {
-    if(!auth.currentUser) {
-        document.getElementById('login-screen').style.display = 'flex';
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', inicializarApp);
+} else {
+  inicializarApp();
+}
+
+// Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('Service Worker registrado'))
+      .catch(err => console.log('Erro SW:', err));
+  });
+}
+
+// ==================== FUNÇÃO DE DEBUG ====================
+function debugPerfil() {
+  console.log("=== DEBUG DO PERFIL ===");
+  
+  // Verificar elementos HTML
+  const elementos = ['hNome', 'hIdade', 'hSexo', 'hProfissao', 'hFrase', 'hNivel', 'xpNumerico', 'hFoto', 'homeBadges', 'homeBadgesMobile'];
+  
+  elementos.forEach(id => {
+    const el = document.getElementById(id);
+    console.log(`${id}:`, el ? "ENCONTRADO" : "NÃO ENCONTRADO");
+  });
+  
+  // Verificar dados
+  console.log("Dados S.perfil:", S.perfil);
+  console.log("Dados S.badges_unlocked:", S.badges_unlocked);
+  console.log("=== FIM DEBUG ===");
+}
+
+// Adicionar botão de debug na tela
+setTimeout(() => {
+  if (!document.getElementById('debugBtn')) {
+    const btn = document.createElement('button');
+    btn.id = 'debugBtn';
+    btn.textContent = "🐛 Debug";
+    btn.style.cssText = `
+      position: fixed;
+      bottom: 100px;
+      right: 20px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 12px;
+      z-index: 9999;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    `;
+    btn.onclick = debugPerfil;
+    document.body.appendChild(btn);
+  }
+}, 2000);
+
+// ==================== BOTÃO DE DEBUG TAREFAS/HÁBITOS ====================
+function debugTarefasHabitos() {
+  console.log("=== DEBUG TAREFAS E HÁBITOS ===");
+  
+  // Verificar elementos
+  console.log("homeTarefas:", document.getElementById("homeTarefas"));
+  console.log("habitHead:", document.getElementById("habitHead"));
+  console.log("homeHabitos:", document.getElementById("homeHabitos"));
+  
+  // Verificar dados
+  console.log("Dados S.categorias:", S.categorias);
+  console.log("Dados S.tarefas:", S.tarefas);
+  console.log("Dados S.habitos:", S.habitos);
+  
+  // Forçar renderização
+  renderTasks();
+  renderHabits();
+  
+  // Forçar mostrar elementos
+  const homeTarefas = document.getElementById("homeTarefas");
+  const habitTable = document.querySelector(".habit-table");
+  if (homeTarefas) homeTarefas.style.display = "block";
+  if (habitTable) habitTable.style.display = "table";
+  
+  console.log("=== FIM DEBUG ===");
+}
+
+// Adicionar botão
+setTimeout(() => {
+  if (!document.getElementById('debugTarefasBtn')) {
+    const btn = document.createElement('button');
+    btn.id = 'debugTarefasBtn';
+    btn.textContent = "🐛 Debug Tarefas";
+    btn.style.cssText = `
+      position: fixed;
+      bottom: 140px;
+      right: 20px;
+      background: #a855f7;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 12px;
+      z-index: 9999;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    `;
+    btn.onclick = debugTarefasHabitos;
+    document.body.appendChild(btn);
+  }
+}, 3000);
+
+// ==================== DEBUG ESPECÍFICO PARA CONQUISTAS ====================
+function debugConquistas() {
+  console.log("=== DEBUG CONQUISTAS ===");
+  
+  // 1. Verificar dados
+  console.log("S.badges_unlocked:", S.badges_unlocked);
+  console.log("Tipo:", typeof S.badges_unlocked);
+  console.log("É array?", Array.isArray(S.badges_unlocked));
+  
+  // 2. Verificar lista BADGES
+  console.log("BADGES disponíveis:", BADGES.length);
+  console.log("Primeiras 3 BADGES:", BADGES.slice(0, 3));
+  
+  // 3. Verificar elementos HTML
+  const homeBadges = document.getElementById("homeBadges");
+  const homeBadgesMobile = document.getElementById("homeBadgesMobile");
+  console.log("homeBadges encontrado?", !!homeBadges);
+  console.log("homeBadgesMobile encontrado?", !!homeBadgesMobile);
+  
+  if (homeBadges) {
+    console.log("Conteúdo atual de homeBadges:", homeBadges.innerHTML);
+  }
+  
+  // 4. Testar renderização manual
+  console.log("Testando renderização...");
+  renderHomeBadges();
+  
+  console.log("=== FIM DEBUG CONQUISTAS ===");
+}
+
+// Adicionar botão de debug conquistas
+setTimeout(() => {
+  if (!document.getElementById('debugConquistasBtn')) {
+    const btn = document.createElement('button');
+    btn.id = 'debugConquistasBtn';
+    btn.textContent = "🏆 Debug Conquistas";
+    btn.style.cssText = `
+      position: fixed;
+      bottom: 180px;
+      right: 20px;
+      background: #f59e0b;
+      color: black;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 12px;
+      z-index: 9999;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      font-weight: bold;
+    `;
+    btn.onclick = debugConquistas;
+    document.body.appendChild(btn);
+  }
+}, 3000);
+
+// ==================== CONTROLE DE RESPONSIVIDADE ====================
+function atualizarVisibilidadeBadges() {
+  const isMobile = window.innerWidth <= 768;
+  console.log(`📱 Atualizando visibilidade: ${isMobile ? 'MOBILE' : 'DESKTOP'} (${window.innerWidth}px)`);
+  
+  const homeBadgesMobile = document.getElementById("homeBadgesMobile");
+  const conquistasDesktop = document.querySelector('.card-slim:nth-child(2)');
+  
+  if (isMobile) {
+    // Modo MOBILE
+    if (homeBadgesMobile) {
+      homeBadgesMobile.style.display = "flex";
     }
-};
+    if (conquistasDesktop) {
+      conquistasDesktop.style.display = "none";
+    }
+  } else {
+    // Modo DESKTOP
+    if (homeBadgesMobile) {
+      homeBadgesMobile.style.display = "none";
+    }
+    if (conquistasDesktop) {
+      conquistasDesktop.style.display = "flex";
+    }
+  }
+}
+
+// Executar quando a janela for redimensionada
+window.addEventListener('resize', atualizarVisibilidadeBadges);
 </script>
 </body>
 </html>
