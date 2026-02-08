@@ -2940,6 +2940,33 @@ input:focus, select:focus, textarea:focus {
 <div id="popup"></div>
 
 <script>
+  // ==================== MONITOR DE ERROS GLOBAL ====================
+console.log("LifeDash v2.3 - Inicializando...");
+
+// Capturar TODOS os erros não tratados
+window.addEventListener('error', function(e) {
+  console.error("🔥 ERRO GLOBAL CAPTURADO:", e.error);
+  console.error("Arquivo:", e.filename);
+  console.error("Linha:", e.lineno);
+  
+  // Esconder loading se houver erro
+  hideLoading();
+  hideSkeletons();
+  
+  // Mostrar erro amigável
+  if (e.error && e.error.message && e.error.message.includes('firebase')) {
+    showToast("Erro de conexão. Verifique sua internet.", 'error');
+  }
+});
+
+// Capturar promessas rejeitadas
+window.addEventListener('unhandledrejection', function(e) {
+  console.error("🔥 PROMESSA REJEITADA:", e.reason);
+  hideLoading();
+  hideSkeletons();
+});
+
+console.log("Monitor de erros ativado");
 // ==================== CONFIGURAÇÃO FIREBASE ====================
 const firebaseConfig = {
   apiKey: "AIzaSyBkSJDH_aEVsp-LSNGm4XBqWoo_FUIJYNo",
@@ -2950,12 +2977,23 @@ const firebaseConfig = {
   appId: "1:270639106877:web:92c8ec9353c6bacb485354"
 };
 
-// Inicializar Firebase apenas se não estiver inicializado
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
+// CORREÇÃO: Inicializar Firebase com tratamento de erro
+try {
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+    console.log("Firebase inicializado com sucesso");
+  } else {
+    console.log("Firebase já estava inicializado");
+    firebase.app(); // Usa a instância existente
+  }
+} catch (error) {
+  console.error("ERRO CRÍTICO Firebase:", error);
+  alert("Erro ao carregar o sistema. Recarregue a página.");
 }
+
 const db = firebase.firestore();
 const auth = firebase.auth();
+console.log("Firebase auth/db configurados");
 
 // ==================== SISTEMA DE RENDERIZAÇÃO OTIMIZADO ====================
 let renderQueue = new Set();
@@ -3478,24 +3516,27 @@ function fazerLogout() {
   }); 
 }
 
-// ==================== ESTADO GLOBAL ====================
-let S = { 
-  perfil: {}, 
-  categorias: [], 
-  tarefas: [], 
-  habitos: [], 
-  hist: [], 
-  xp: 0, 
-  badges_unlocked: [],
-  pomodoroStats: {
-    total: 0,
-    hoje: 0,
-    tempoTotal: 0,
-    tempoHoje: 0
-  },
-  ultimoReset: new Date().toLocaleDateString()
-};
-let openCats = JSON.parse(localStorage.getItem('lifeDash_openCats')) || {};
+// ==================== TIMEOUT DE SEGURANÇA ====================
+// Previne tela de carregamento infinita
+setTimeout(() => {
+  const loadingOverlay = document.getElementById('loadingOverlay');
+  const loginScreen = document.getElementById('login-screen');
+  
+  console.log("Verificação de timeout:");
+  console.log("- Login screen visible:", loginScreen.style.display !== 'none');
+  console.log("- Loading overlay active:", loadingOverlay?.classList.contains('active'));
+  
+  if (loadingOverlay && loadingOverlay.classList.contains('active')) {
+    console.warn("TIMEOUT: Forçando esconder loading após 15 segundos");
+    hideLoading();
+    hideSkeletons();
+    
+    // Se ainda não mostrou login, mostrar
+    if (loginScreen.style.display === 'none' && !auth.currentUser) {
+      loginScreen.style.display = 'flex';
+    }
+  }
+}, 15000); // 15 segundos
 
 // ==================== POMODORO RÁPIDO ====================
 let quickPomodoroTimer = null;
@@ -3668,82 +3709,68 @@ function updateQuickPomodoroDisplay() {
   }
 }
 
-// ==================== LISTENER DE AUTENTICAÇÃO ====================
+// ==================== LISTENER DE AUTENTICAÇÃO SIMPLIFICADO ====================
 auth.onAuthStateChanged(async (user) => {
+  console.log("Auth state changed. Usuário:", user ? "SIM" : "NÃO");
+  
   if (user) {
+    console.log("UID do usuário:", user.uid);
+    
+    // 1. Esconder tela de login IMEDIATAMENTE
     document.getElementById('login-screen').style.display = 'none';
+    
+    // 2. Mostrar loading
     showLoading("Carregando seus dados...");
     
-    window.nivelAnterior = undefined;
-    window.jaDeuBoasVindas = false;
-    
     try {
-      const doc = await db.collection("users").doc(user.uid).get();
+      // 3. Buscar dados do Firestore
+      console.log("Buscando dados do Firestore...");
+      const docRef = db.collection("users").doc(user.uid);
+      const doc = await docRef.get();
       
       if (doc.exists) {
+        console.log("Documento encontrado");
         S = doc.data();
         
-        // Verificar se precisa resetar tarefas do dia anterior
-        verificarResetDiario();
-        
+        // 4. GARANTIR que todas as propriedades existam
         S.perfil = S.perfil || {};
-        S.badges_unlocked = S.badges_unlocked || [];
-        S.hist = S.hist || [];
         S.categorias = S.categorias || [];
         S.tarefas = S.tarefas || [];
         S.habitos = S.habitos || [];
+        S.hist = S.hist || [];
         S.xp = S.xp || 0;
+        S.badges_unlocked = S.badges_unlocked || [];
         S.pomodoroStats = S.pomodoroStats || {
-          total: 0,
-          hoje: 0,
-          tempoTotal: 0,
-          tempoHoje: 0
+          total: 0, hoje: 0, tempoTotal: 0, tempoHoje: 0
         };
         S.ultimoReset = S.ultimoReset || new Date().toLocaleDateString();
         
-        // Garantir que tarefas tenham estrutura completa
-        S.tarefas = S.tarefas.map(t => ({
-          ...t,
-          descricao: t.descricao || '',
-          subtarefas: t.subtarefas || [],
-          dataCriacao: t.dataCriacao || new Date().toLocaleDateString(),
-          ultimaAtualizacao: t.ultimaAtualizacao || new Date().toLocaleDateString()
-        }));
-  
-        if (S.xp !== undefined) {
-          const l = xpInfo(S.xp);
-          window.nivelAnterior = l.n;
-        }
-  
+        // 5. Sincronizar perfil
         sincronizarInputsPerfil();
         
+        // 6. Renderizar TUDO
         setTimeout(() => {
           fullRender();
           updateQuickPomodoroDisplay();
-
-          setTimeout(() => renderHomeBadges(), 300);
-
+          
+          // 7. Esconder loading e skeletons
           setTimeout(() => {
             hideSkeletons();
-          }, 300);
-          
-          if (!window.jaDeuBoasVindas && S.perfil && S.perfil.nome) {
-            setTimeout(() => {
-              showToast(`Bem-vindo, ${S.perfil.nome}!`, 'success', 2000);
-              window.jaDeuBoasVindas = true;
-            }, 800);
-          }
-          
-          setTimeout(() => {
             hideLoading();
-          }, 1000);
-          
+            
+            // 8. Boas-vindas
+            if (S.perfil && S.perfil.nome) {
+              showToast(`Bem-vindo, ${S.perfil.nome}!`, 'success', 2000);
+            }
+          }, 500);
         }, 100);
         
       } else {
+        // Criar novo documento
+        console.log("Criando novo documento para usuário");
         const novosDados = {
           perfil: {
-            nome: "Novo Usuário",
+            nome: user.displayName || "Novo Usuário",
             email: user.email,
             frase: "Foco no progresso!",
             dataCriacao: new Date().toISOString()
@@ -3754,35 +3781,31 @@ auth.onAuthStateChanged(async (user) => {
           hist: [],
           xp: 0,
           badges_unlocked: [],
-          pomodoroStats: {
-            total: 0,
-            hoje: 0,
-            tempoTotal: 0,
-            tempoHoje: 0
-          },
+          pomodoroStats: { total: 0, hoje: 0, tempoTotal: 0, tempoHoje: 0 },
           ultimoReset: new Date().toLocaleDateString()
         };
         
-        await db.collection("users").doc(user.uid).set(novosDados);
+        await docRef.set(novosDados);
         S = novosDados;
         
-        fullRender();
-        updateQuickPomodoroDisplay();
-        hideSkeletons();
         hideLoading();
+        fullRender();
         showToast("Perfil criado com sucesso!", 'success');
       }
       
     } catch (error) {
-      console.error("Erro ao carregar dados:", error);
+      console.error("ERRO CRÍTICO no carregamento:", error);
       hideLoading();
-      showToast("Erro ao carregar dados. Tente recarregar.", 'error');
+      showToast("Erro: " + error.message, 'error');
     }
     
   } else {
+    // Usuário NÃO autenticado
+    console.log("Nenhum usuário, mostrando login");
     document.getElementById('login-screen').style.display = 'flex';
-    window.jaDeuBoasVindas = false;
-    window.nivelAnterior = undefined;
+    
+    // GARANTIR que loading esteja escondido
+    hideLoading();
   }
 });
 
@@ -5071,15 +5094,26 @@ function showLoading(message = "Carregando...") {
 }
 
 function hideLoading() {
+  console.log("Executando hideLoading()");
+  
   const overlay = document.getElementById('loadingOverlay');
   if (overlay) {
+    console.log("Loading overlay encontrado, removendo...");
     overlay.classList.remove('active');
+    
+    // Remover DOM após animação
     setTimeout(() => {
-      if (overlay.parentNode && !overlay.classList.contains('active')) {
+      if (overlay.parentNode) {
         overlay.remove();
+        console.log("Loading overlay removido do DOM");
       }
     }, 300);
+  } else {
+    console.log("Nenhum loading overlay encontrado");
   }
+  
+  // Garantir que skeletons sejam escondidos também
+  setTimeout(hideSkeletons, 100);
 }
 
 function showToast(message, type = 'info', duration = 3000) {
@@ -5113,49 +5147,65 @@ function showToast(message, type = 'info', duration = 3000) {
 }
 
 function hideSkeletons() {
-  const fotoSkeleton = document.getElementById("hFotoSkeleton");
-  const foto = document.getElementById("hFoto");
-  if (fotoSkeleton) fotoSkeleton.style.display = "none";
-  if (foto) foto.style.display = "block";
+  console.log("Executando hideSkeletons()");
   
-  const profileInfoSkeleton = document.getElementById("profileInfoSkeleton");
-  const profileInfoReal = document.getElementById("profileInfoReal");
-  if (profileInfoSkeleton) profileInfoSkeleton.style.display = "none";
-  if (profileInfoReal) profileInfoReal.style.display = "block";
+  // 1. Esconder TODOS os elementos skeleton
+  const skeletonSelectors = [
+    '.skeleton', '.skeleton-line', '.skeleton-badge', 
+    '.skeleton-cat', '.skeleton-task', '.skeleton-habit-row', 
+    '.skeleton-badge-card', '.skeleton-category'
+  ];
   
-  const mobileBadgesSkeleton = document.getElementById("mobileBadgesSkeleton");
-  const mobileBadgesReal = document.getElementById("mobileBadgesReal");
-  if (mobileBadgesSkeleton) mobileBadgesSkeleton.style.display = "none";
-  if (mobileBadgesReal) {
-    mobileBadgesReal.style.display = "block";
-    setTimeout(atualizarVisibilidadeBadges, 50);
+  skeletonSelectors.forEach(selector => {
+    document.querySelectorAll(selector).forEach(el => {
+      el.style.display = 'none';
+      el.style.visibility = 'hidden';
+    });
+  });
+  
+  // 2. Mostrar elementos REAIS
+  const elementsToShow = [
+    {id: 'hFoto', display: 'block'},
+    {id: 'profileInfoReal', display: 'block'},
+    {id: 'mobileBadgesReal', display: 'block'},
+    {id: 'xpInfoReal', display: 'block'},
+    {id: 'homeBadges', display: 'flex'},
+    {id: 'homeTarefas', display: 'block'},
+    {id: 'conquistasTitulo', display: 'block'}
+  ];
+  
+  elementsToShow.forEach(item => {
+    const el = document.getElementById(item.id);
+    if (el) {
+      el.style.display = item.display;
+      el.style.visibility = 'visible';
+    }
+  });
+  
+  // 3. Mostrar tabela de hábitos
+  const habitTable = document.querySelector('.habit-table');
+  if (habitTable) {
+    habitTable.style.display = 'table';
+    habitTable.style.visibility = 'visible';
   }
   
-  const xpInfoSkeleton = document.getElementById("xpInfoSkeleton");
-  const xpInfoReal = document.getElementById("xpInfoReal");
-  if (xpInfoSkeleton) xpInfoSkeleton.style.display = "none";
-  if (xpInfoReal) xpInfoReal.style.display = "block";
+  // 4. Esconder skeletons específicos
+  const skeletonIds = [
+    'profileInfoSkeleton', 'mobileBadgesSkeleton', 
+    'xpInfoSkeleton', 'badgesSkeleton', 
+    'tarefasSkeleton', 'habitosSkeleton', 
+    'conquistasSkeleton', 'hFotoSkeleton'
+  ];
   
-  const badgesSkeleton = document.getElementById("badgesSkeleton");
-  const homeBadges = document.getElementById("homeBadges");
-  const conquistasTitulo = document.getElementById("conquistasTitulo");
-  if (badgesSkeleton) badgesSkeleton.style.display = "none";
-  if (homeBadges) homeBadges.style.display = "flex";
-  if (conquistasTitulo) conquistasTitulo.style.display = "block";
-  
-  document.querySelectorAll('.skeleton-line').forEach(el => {
-    el.style.display = 'none';
+  skeletonIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.display = 'none';
+      el.style.visibility = 'hidden';
+    }
   });
-
-  const tarefasSkeleton = document.getElementById("tarefasSkeleton");
-  const homeTarefas = document.getElementById("homeTarefas");
-  if (tarefasSkeleton) tarefasSkeleton.style.display = "none";
-  if (homeTarefas) homeTarefas.style.display = "block";
   
-  const habitosSkeleton = document.getElementById("habitosSkeleton");
-  const habitTable = document.querySelector(".habit-table");
-  if (habitosSkeleton) habitosSkeleton.style.display = "none";
-  if (habitTable) habitTable.style.display = "table";
+  console.log("Skeletons escondidos com sucesso");
 }
 
 // ==================== FUNÇÕES DE FOTO ====================
@@ -5408,6 +5458,62 @@ if ('serviceWorker' in navigator) {
     }
   });
 }
+</script>
+<!-- ==================== BOTÃO DE EMERGÊNCIA ==================== -->
+<button id="emergencyFixBtn" onclick="emergencyFix()" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 99999;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
+  cursor: pointer;
+  display: none;
+  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.5);
+  transition: all 0.3s;
+">
+  ⚡
+</button>
+
+<script>
+// Função de emergência
+function emergencyFix() {
+  console.log("EMERGENCY FIX ACIONADO");
+  
+  // 1. Parar todos os timers
+  if (quickPomodoroTimer) clearInterval(quickPomodoroTimer);
+  if (focoTimer) clearInterval(focoTimer);
+  if (saveTimeout) clearTimeout(saveTimeout);
+  if (renderTimeout) clearTimeout(renderTimeout);
+  
+  // 2. Esconder tudo
+  hideLoading();
+  hideSkeletons();
+  
+  // 3. Mostrar tela de login
+  document.getElementById('login-screen').style.display = 'flex';
+  
+  // 4. Limpar localStorage
+  localStorage.clear();
+  
+  // 5. Recarregar
+  setTimeout(() => {
+    showToast("Sistema reiniciado. Faça login novamente.", 'info');
+  }, 500);
+}
+
+// Mostrar botão se loading demorar
+setTimeout(() => {
+  const loadingOverlay = document.getElementById('loadingOverlay');
+  if (loadingOverlay && loadingOverlay.classList.contains('active')) {
+    document.getElementById('emergencyFixBtn').style.display = 'flex';
+  }
+}, 10000);
 </script>
 </body>
 </html>
