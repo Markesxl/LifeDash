@@ -15,6 +15,23 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
+<!-- SISTEMA DE ÁUDIO -->
+<audio id="soundCheck" preload="auto">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" type="audio/mpeg">
+</audio>
+<audio id="soundSuccess" preload="auto">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3" type="audio/mpeg">
+</audio>
+<audio id="soundError" preload="auto">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" type="audio/mpeg">
+</audio>
+<audio id="soundLevelUp" preload="auto">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3" type="audio/mpeg">
+</audio>
+<audio id="soundBadge" preload="auto">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3" type="audio/mpeg">
+</audio>
+
 <style>
 :root {
   /* Design System Tokens */
@@ -1519,7 +1536,7 @@ input:focus, select:focus, textarea:focus {
 .historico-tipo-habito { background: rgba(34, 197, 94, 0.2); color: var(--success); }
 .historico-tipo-pomodoro { background: rgba(245, 158, 11, 0.2); color: var(--gold); }
 
-/* ==================== MOBILE RESPONSIVO CORRIGIDO ==================== */
+/* ==================== CORREÇÃO HÁBITOS MOBILE ==================== */
 @media (max-width: 1090px) {
   .menu-toggle {
     display: flex !important;
@@ -1586,6 +1603,9 @@ input:focus, select:focus, textarea:focus {
   .card {
     padding: var(--space-lg);
     margin-bottom: var(--space-lg);
+    overflow: visible !important;
+    padding-right: 8px !important;
+    padding-left: 8px !important;
   }
   
   h3 {
@@ -1599,49 +1619,76 @@ input:focus, select:focus, textarea:focus {
     gap: var(--space-sm);
   }
   
-  /* Habitos mobile otimizado - SEM SOBREPOSIÇÃO */
+  /* Habitos mobile otimizado - CORRIGIDO */
   .habit-circle {
-    width: 30px !important;
-    height: 30px !important;
-    min-width: 30px !important;
-    min-height: 30px !important;
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
     font-size: 14px !important;
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
   }
   
   .habit-table {
-    border-spacing: 0 4px;
-    width: 100%;
-    margin-left: 0;
-    margin-right: 0;
+    border-spacing: 0 6px !important;
+    width: 100% !important;
+    table-layout: fixed !important;
+    margin: 0 !important;
   }
   
   .habit-table th,
   .habit-table td {
-    padding: var(--space-xs) 2px !important;
+    padding: 8px 4px !important;
+    box-sizing: border-box !important;
+  }
+  
+  .habit-table th:first-child,
+  .habit-table td:first-child {
+    width: 35% !important;
+    max-width: 35% !important;
+    padding-left: 8px !important;
+    text-align: left !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+  
+  .habit-table th:not(:first-child),
+  .habit-table td:not(:first-child) {
+    width: 9.3% !important;
+    max-width: 9.3% !important;
+    text-align: center !important;
   }
   
   .habit-table th {
-    font-size: 9px !important;
-    padding-bottom: 2px !important;
+    font-size: 10px !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+    line-height: 1.2 !important;
   }
   
   .habit-name {
-    font-size: 12px !important;
-    padding-left: 0;
-    line-height: 1.2;
+    font-size: 13px !important;
+    line-height: 1.3 !important;
+    padding-right: 4px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
   }
   
-  /* Ajuste do header de hábitos */
-  .habit-table th:first-child {
-    width: 40% !important;
-    text-align: left !important;
-    padding-left: 4px !important;
+  .card-content {
+    overflow-x: auto !important;
+    overflow-y: visible !important;
   }
   
-  /* Garantir que não corte nas bordas */
-  .card {
-    overflow: visible !important;
+  /* Scroll horizontal suave */
+  .habit-table-container {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    margin: 0 -8px !important;
+    padding: 0 8px !important;
   }
   
   /* Ajuste dos switches no mobile */
@@ -2147,6 +2194,9 @@ input:focus, select:focus, textarea:focus {
     <button onclick="irPara('perfil', this)"><span class="icon">👤</span> Perfil</button>
     <button onclick="irPara('historico', this)"><span class="icon">📜</span> Histórico</button>
     <button onclick="irPara('modofoco', this)" id="modoFocoBtn"><span class="icon">🍅</span> Modo Foco</button>
+    <button onclick="toggleSounds()" style="margin-top: 20px; color: var(--accent);">
+      <span class="icon">🔊</span> Som: <span id="soundStatus">Ligado</span>
+    </button>
     <button onclick="fazerLogout()" style="margin-top: 40px; color: var(--danger);"><span class="icon">🚪</span> Sair</button>
   </div>
 </div>
@@ -2270,10 +2320,7 @@ input:focus, select:focus, textarea:focus {
             <div class="skeleton-habit-row"></div>
             <div class="skeleton-habit-row"></div>
           </div>
-          <table class="habit-table" style="display:none;">
-            <thead id="habitHead"></thead>
-            <tbody id="homeHabitos"></tbody>
-          </table>
+          <div id="homeHabitos"></div>
         </div>
       </div>
     </div>
@@ -2471,37 +2518,59 @@ input:focus, select:focus, textarea:focus {
 
 <!-- ==================== MODAIS DE REGISTRO ==================== -->
 <div id="modalTarefas" class="modal-overlay">
-  <div class="modal-content">
+  <div class="modal-content" style="max-width: 600px;">
     <div class="modal-header">
-      <h3>➕ Registrar Tarefas</h3>
+      <h3>📝 Gerenciar Tarefas</h3>
       <button class="modal-close" onclick="fecharModal('modalTarefas')">×</button>
     </div>
     
-    <div class="modal-form-group">
-      <label class="modal-label">NOVA CATEGORIA</label>
-      <div style="display:flex; gap:var(--space-md);">
-        <input id="modalCatNome" placeholder="Ex: Trabalho, Estudos...">
-        <button class="btn-primary btn-plus" onclick="addCatModal()">+</button>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl);">
+      <!-- Coluna 1: Nova Categoria/Tarefa -->
+      <div>
+        <div class="modal-form-group">
+          <label class="modal-label">NOVA CATEGORIA</label>
+          <div style="display:flex; gap:var(--space-md);">
+            <input id="modalCatNome" placeholder="Ex: Trabalho, Estudos...">
+            <button class="btn-primary btn-plus" onclick="addCatModal()">+</button>
+          </div>
+        </div>
+        
+        <div class="modal-form-group">
+          <label class="modal-label">NOVA TAREFA</label>
+          <select id="modalTarCat" style="margin-bottom:var(--space-md)">
+            <option value="">Selecione uma categoria</option>
+          </select>
+          <div style="display:flex; gap:var(--space-md); margin-bottom:var(--space-sm);">
+            <input id="modalTarNome" placeholder="Nome da tarefa...">
+            <button class="btn-primary btn-plus" onclick="addTarModal()">+</button>
+          </div>
+          <textarea id="modalTarDesc" placeholder="Descrição da tarefa (opcional)" rows="2"></textarea>
+          
+          <div style="margin-top:var(--space-md); padding:var(--space-md); background:rgba(255,255,255,0.03); border-radius:var(--radius-md);">
+            <div style="font-size:13px; color:var(--accent); margin-bottom:var(--space-sm); font-weight:600;">➕ ADICIONAR SUBTAREFAS</div>
+            <div style="display:flex; gap:var(--space-sm); margin-bottom:var(--space-sm);">
+              <input id="modalSubtarNome" placeholder="Nome da subtarefa" style="flex:1;">
+              <button class="btn-primary" style="padding:var(--space-sm) var(--space-md);" onclick="addSubtarefaModal()">+</button>
+            </div>
+            <div id="modalSubtarefasList" style="max-height:150px; overflow-y:auto;"></div>
+          </div>
+        </div>
       </div>
-    </div>
-    
-    <div class="modal-form-group">
-      <label class="modal-label">NOVA TAREFA</label>
-      <select id="modalTarCat" style="margin-bottom:var(--space-md)"></select>
-      <div style="display:flex; gap:var(--space-md); margin-bottom:var(--space-sm);">
-        <input id="modalTarNome" placeholder="Nome da tarefa...">
-        <button class="btn-primary btn-plus" onclick="addTarModal()">+</button>
+      
+      <!-- Coluna 2: Tarefas Existentes -->
+      <div>
+        <div class="modal-form-group">
+          <label class="modal-label">TAREFAS EXISTENTES</label>
+          <div id="modalListTarefas" style="max-height:400px; overflow-y:auto; padding:var(--space-sm); background:rgba(255,255,255,0.03); border-radius:var(--radius-md);">
+            <!-- Lista de tarefas será carregada aqui -->
+          </div>
+        </div>
+        
+        <div class="modal-form-group">
+          <label class="modal-label">CATEGORIAS</label>
+          <div id="modalListCats" style="max-height:150px; overflow-y:auto; padding:var(--space-sm); background:rgba(255,255,255,0.03); border-radius:var(--radius-md);"></div>
+        </div>
       </div>
-      <textarea id="modalTarDesc" placeholder="Descrição da tarefa (opcional)" rows="2"></textarea>
-      <div style="margin-top:var(--space-sm);">
-        <input id="modalSubtarNome" placeholder="Subtarefa (opcional)">
-        <button class="btn-primary" style="margin-top:var(--space-sm); padding:var(--space-sm); font-size:14px;" onclick="addSubtarefaModal()">+ Adicionar Subtarefa</button>
-      </div>
-    </div>
-    
-    <div class="modal-form-group">
-      <label class="modal-label">CATEGORIAS EXISTENTES</label>
-      <div id="modalListCats" style="max-height:200px; overflow-y:auto; padding:var(--space-sm); background:rgba(255,255,255,0.03); border-radius:var(--radius-md);"></div>
     </div>
   </div>
 </div>
@@ -2612,6 +2681,32 @@ function getElement(id) {
   return DOMCache[id];
 }
 
+// ==================== SISTEMA DE ÁUDIO ====================
+function playSound(type) {
+  if (!window.soundsEnabled) return;
+  
+  try {
+    const audio = document.getElementById(`sound${type.charAt(0).toUpperCase() + type.slice(1)}`);
+    if (audio) {
+      audio.currentTime = 0;
+      audio.play().catch(e => console.log("Erro ao tocar som:", e));
+    }
+  } catch (e) {
+    console.log("Erro no sistema de áudio:", e);
+  }
+}
+
+// Configuração inicial de áudio
+window.soundsEnabled = localStorage.getItem('lifeDash_soundsEnabled') !== 'false';
+
+function toggleSounds() {
+  window.soundsEnabled = !window.soundsEnabled;
+  localStorage.setItem('lifeDash_soundsEnabled', window.soundsEnabled);
+  document.getElementById('soundStatus').textContent = window.soundsEnabled ? 'Ligado' : 'Desligado';
+  playSound('check');
+  showToast(`Sons ${window.soundsEnabled ? 'ativados' : 'desativados'}`, 'success');
+}
+
 // ==================== FUNÇÕES BÁSICAS ====================
 // Sistema XP mais difícil
 function xpInfo(xp) { 
@@ -2707,9 +2802,9 @@ function toggleCardContent(cardId, button) {
   
   if (cardContent.classList.contains('collapsed')) {
     // Expandir
-    cardContent.classList.remove('collapsed');
     cardContent.style.maxHeight = cardContent.scrollHeight + 'px';
-    button.textContent = '▼';
+    cardContent.classList.remove('collapsed');
+    button.innerHTML = '▼';
     
     setTimeout(() => {
       cardContent.style.maxHeight = 'none';
@@ -2717,16 +2812,82 @@ function toggleCardContent(cardId, button) {
   } else {
     // Colapsar
     cardContent.style.maxHeight = cardContent.scrollHeight + 'px';
-    cardContent.offsetHeight; // Forçar reflow
-    cardContent.style.maxHeight = '0';
-    cardContent.classList.add('collapsed');
-    button.textContent = '▶';
+    requestAnimationFrame(() => {
+      cardContent.style.maxHeight = '0';
+      cardContent.classList.add('collapsed');
+      button.innerHTML = '▶';
+    });
+  }
+  
+  playSound('check');
+}
+
+// ==================== SISTEMA DE SUBTAREFAS MELHORADO ====================
+let subtarefasTemporarias = [];
+
+function addSubtarefaModal() {
+  const input = document.getElementById('modalSubtarNome');
+  const nome = input.value.trim();
+  
+  if (nome) {
+    subtarefasTemporarias.push({
+      nome: nome,
+      concluida: false
+    });
+    
+    input.value = '';
+    playSound('check');
+    showToast('Subtarefa adicionada! Será incluída na próxima tarefa criada.', 'success');
+    
+    atualizarListaSubtarefasModal();
+  }
+}
+
+function atualizarListaSubtarefasModal() {
+  const container = document.getElementById('modalSubtarefasList');
+  if (!container) return;
+  
+  if (subtarefasTemporarias.length === 0) {
+    container.innerHTML = '<small style="color:rgba(255,255,255,0.5); display:block; text-align:center; padding:var(--space-sm);">Nenhuma subtarefa pendente</small>';
+    return;
+  }
+  
+  container.innerHTML = subtarefasTemporarias.map((sub, index) => `
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:var(--space-xs) var(--space-sm); margin-bottom:var(--space-xs); background:rgba(255,255,255,0.05); border-radius:var(--radius-sm);">
+      <span style="font-size:13px; color:rgba(255,255,255,0.8);">• ${sub.nome}</span>
+      <button onclick="removerSubtarefaTemporaria(${index})" style="color:var(--danger); background:none; border:none; cursor:pointer; font-size:14px; width:24px; height:24px; display:flex; align-items:center; justify-content:center;">✕</button>
+    </div>
+  `).join('');
+}
+
+function removerSubtarefaTemporaria(index) {
+  subtarefasTemporarias.splice(index, 1);
+  atualizarListaSubtarefasModal();
+  playSound('check');
+}
+
+function addSubtarefaExistente(tarefaIndex) {
+  const nome = prompt('Nome da subtarefa:');
+  if (nome && nome.trim()) {
+    const tarefa = S.tarefas[tarefaIndex];
+    if (!tarefa.subtarefas) tarefa.subtarefas = [];
+    
+    tarefa.subtarefas.push({
+      nome: nome.trim(),
+      concluida: false
+    });
+    
+    salvar();
+    scheduleRender('tasks');
+    playSound('check');
+    showToast('Subtarefa adicionada!', 'success');
   }
 }
 
 // ==================== MODAIS ====================
 function abrirModalTarefas() {
   document.getElementById('modalTarefas').style.display = 'flex';
+  subtarefasTemporarias = []; // Resetar subtarefas temporárias
   renderModalContent();
 }
 
@@ -2740,10 +2901,11 @@ function fecharModal(modalId) {
 }
 
 function renderModalContent() {
-  // Atualizar select de categorias no modal
+  // Atualizar select de categorias
   const modalTarCat = getElement("modalTarCat");
   if (modalTarCat) {
     modalTarCat.innerHTML = S.categorias.length > 0 ? 
+      '<option value="">Selecione uma categoria</option>' +
       S.categorias.map(c => `<option value="${c}">${c}</option>`).join("") :
       "<option value=''>Crie uma categoria primeiro</option>";
   }
@@ -2752,13 +2914,51 @@ function renderModalContent() {
   const modalListCats = getElement("modalListCats");
   if (modalListCats) {
     modalListCats.innerHTML = S.categorias.map((c,i) => 
-      `<div class="item" style="padding:var(--space-sm) var(--space-md); margin-bottom:var(--space-xs);">
-        <span>${c}</span>
-        <button onclick="if(confirm('Remover categoria ${c}?')){S.categorias.splice(${i},1);salvar();renderModalContent();}" 
-                style="color:var(--danger);border:none;background:none;cursor:pointer;font-size:16px">✖</button>
+      `<div style="display:flex; align-items:center; justify-content:space-between; padding:var(--space-sm); margin-bottom:var(--space-xs); background:rgba(255,255,255,0.03); border-radius:var(--radius-sm);">
+        <span style="font-size:14px;">${c}</span>
+        <button onclick="if(confirm('Remover categoria ${c}?')){S.categorias.splice(${i},1);salvar();renderModalContent();scheduleRender('tasks');}" 
+                style="color:var(--danger);border:none;background:none;cursor:pointer;font-size:16px; width:24px; height:24px; display:flex; align-items:center; justify-content:center;">✖</button>
       </div>`
     ).join("") || "<small style='color:rgba(255, 255, 255, 0.5); padding:var(--space-sm); text-align:center; display:block;'>Nenhuma categoria</small>";
   }
+  
+  // Listar tarefas existentes
+  const modalListTarefas = getElement("modalListTarefas");
+  if (modalListTarefas) {
+    if (S.tarefas.length === 0) {
+      modalListTarefas.innerHTML = '<small style="color:rgba(255,255,255,0.5); padding:var(--space-lg); text-align:center; display:block;">Nenhuma tarefa criada</small>';
+    } else {
+      modalListTarefas.innerHTML = S.tarefas.map((t, i) => `
+        <div style="margin-bottom:var(--space-sm); border:1px solid rgba(255,255,255,0.1); border-radius:var(--radius-md); overflow:hidden;">
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:var(--space-sm); background:rgba(255,255,255,0.05);">
+            <div>
+              <div style="font-weight:600; font-size:14px;">${t.nome}</div>
+              <div style="font-size:11px; color:var(--accent);">${t.cat}</div>
+            </div>
+            <div style="display:flex; gap:var(--space-xs);">
+              <button onclick="addSubtarefaExistente(${i})" style="background:var(--purple); color:white; border:none; width:28px; height:28px; border-radius:var(--radius-sm); cursor:pointer; font-size:14px;" title="Adicionar subtarefa">+</button>
+              <button onclick="if(confirm('Excluir tarefa ${t.nome}?')){S.tarefas.splice(${i},1);salvar();renderModalContent();scheduleRender('tasks');}" 
+                      style="background:var(--danger); color:white; border:none; width:28px; height:28px; border-radius:var(--radius-sm); cursor:pointer; font-size:14px;" title="Excluir">✖</button>
+            </div>
+          </div>
+          ${t.subtarefas && t.subtarefas.length > 0 ? `
+            <div style="padding:var(--space-sm); background:rgba(0,0,0,0.1);">
+              <div style="font-size:11px; color:rgba(255,255,255,0.6); margin-bottom:var(--space-xs);">Subtarefas:</div>
+              ${t.subtarefas.map((sub, subIndex) => `
+                <div style="display:flex; align-items:center; padding:var(--space-xs) 0; font-size:12px;">
+                  <div class="subtask-checkbox ${sub.concluida ? 'checked' : ''}" onclick="toggleSubtarefa(${i}, ${subIndex})" style="margin-right:var(--space-sm); cursor:pointer;"></div>
+                  <span style="flex:1;">${sub.nome}</span>
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+        </div>
+      `).join('');
+    }
+  }
+  
+  // Atualizar lista de subtarefas temporárias
+  atualizarListaSubtarefasModal();
   
   // Listar hábitos existentes
   const modalListHabs = getElement("modalListHabs");
@@ -2766,7 +2966,7 @@ function renderModalContent() {
     modalListHabs.innerHTML = S.habitos.map((h,i) => 
       `<div class="item" style="padding:var(--space-sm) var(--space-md); margin-bottom:var(--space-xs);">
         <span>${h.nome} <small style="color:var(--gold); font-size:11px;">🔥 ${h.streak||0}d</small></span>
-        <button onclick="if(confirm('Remover hábito ${h.nome}?')){S.habitos.splice(${i},1);salvar();renderModalContent();}" 
+        <button onclick="if(confirm('Remover hábito ${h.nome}?')){S.habitos.splice(${i},1);salvar();renderModalContent();scheduleRender('habits');}" 
                 style="color:var(--danger);border:none;background:none;cursor:pointer;font-size:16px">✖</button>
       </div>`
     ).join("") || "<small style='color:rgba(255, 255, 255, 0.5); padding:var(--space-sm); text-align:center; display:block;'>Nenhum hábito</small>";
@@ -2803,7 +3003,7 @@ function addTarModal() {
       cat: catSelect.value, 
       status:'pendente',
       descricao: descInput.value.trim(),
-      subtarefas: [],
+      subtarefas: [...subtarefasTemporarias], // Adicionar subtarefas temporárias
       dataCriacao: new Date().toLocaleDateString(),
       ultimaAtualizacao: new Date().toLocaleDateString()
     }; 
@@ -2811,24 +3011,17 @@ function addTarModal() {
     S.tarefas.push(novaTarefa); 
     nomeInput.value = ""; 
     descInput.value = "";
-    showToast("Tarefa criada!", 'success');
+    subtarefasTemporarias = []; // Limpar subtarefas temporárias
+    
+    playSound('success');
+    showToast("Tarefa criada com " + (novaTarefa.subtarefas.length || 0) + " subtarefa(s)!", 'success');
     
     salvar();
+    renderModalContent();
     scheduleRender('tasks');
   } else if (!catSelect.value) {
-    showToast("Crie uma categoria primeiro!", 'error');
-  }
-}
-
-function addSubtarefaModal() {
-  const subtarefaInput = getElement("modalSubtarNome");
-  const nome = subtarefaInput.value.trim();
-  
-  if (nome) {
-    // Esta função seria chamada quando uma tarefa estiver sendo editada
-    // Por enquanto, apenas limpa o campo
-    subtarefaInput.value = "";
-    showToast("Subtarefa será adicionada à próxima tarefa criada", 'info');
+    playSound('error');
+    showToast("Selecione uma categoria primeiro!", 'error');
   }
 }
 
@@ -3358,36 +3551,46 @@ function renderHabits() {
     };
   });
   
-  const hHead = getElement("habitHead");
-  if (hHead) {
-    hHead.innerHTML = `<tr><th style="text-align:left; width:35%">Hábito</th>${ultimos7.map(d=>`<th>${d.label}<br><span style="font-size:12px">${d.num}</span></th>`).join("")}</tr>`;
-  }
-  
   const hBody = getElement("homeHabitos");
   if (hBody) {
     if (S.habitos.length === 0) {
-      hBody.innerHTML = `<tr><td colspan="8">
-        <div class="empty-state" style="padding:var(--space-xl) var(--space-lg);">
-          <div class="empty-state-icon">🔁</div>
-          <div class="empty-state-title">Nenhum hábito configurado</div>
-          <div class="empty-state-description">Clique no botão + para criar seu primeiro hábito!</div>
-        </div>
-      </td></tr>`;
+      hBody.innerHTML = `<div style="padding:var(--space-xl) var(--space-lg); text-align:center;">
+        <div style="font-size:56px; opacity:0.3; margin-bottom:var(--space-lg);">🔁</div>
+        <div style="font-size:18px; color:white; margin-bottom:var(--space-sm); font-weight:600;">Nenhum hábito configurado</div>
+        <div style="color:rgba(255,255,255,0.6); font-size:15px;">Clique no botão + para criar seu primeiro hábito!</div>
+      </div>`;
     } else {
-      hBody.innerHTML = S.habitos.map((h, i) => `
-        <tr>
-          <td style="text-align:left">
-            <div class="habit-name">${h.nome}</div>
-            <div style="font-size:11px; color:var(--gold); margin-top:var(--space-xs)">🔥 ${h.streak||0} dias</div>
-          </td>
-          ${ultimos7.map(d => {
-            const feito = S.hist.some(r => r.nome === h.nome && r.data === d.data);
-            const isHoje = d.data === hoje;
-            let cl = 'habit-circle'; 
-            if (feito) cl += ' done'; 
-            return `<td><div class="${cl}" ${!feito && isHoje ? `data-habit-idx="${i}" data-habit-date="${d.data}"` : ''}>${feito?'✓':''}</div></td>`;
-          }).join("")}
-        </tr>`).join("");
+      let tableHTML = `
+        <div class="habit-table-container" style="${window.innerWidth <= 1090 ? 'overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -8px; padding: 0 8px;' : ''}">
+          <table class="habit-table" style="width:${window.innerWidth <= 1090 ? 'auto' : '100%'}; min-width:${window.innerWidth <= 1090 ? '500px' : 'auto'}">
+            <thead>
+              <tr>
+                <th style="text-align:left; ${window.innerWidth <= 1090 ? 'width: 120px;' : 'width:35%'}">Hábito</th>
+                ${ultimos7.map(d=>`<th>${d.label}<br><span style="font-size:12px">${d.num}</span></th>`).join("")}
+              </tr>
+            </thead>
+            <tbody>
+              ${S.habitos.map((h, i) => `
+                <tr>
+                  <td style="text-align:left; ${window.innerWidth <= 1090 ? 'min-width: 120px; max-width: 120px;' : ''}">
+                    <div class="habit-name" style="${window.innerWidth <= 1090 ? 'font-size: 13px; line-height: 1.3;' : ''}">${h.nome}</div>
+                    <div style="font-size:11px; color:var(--gold); margin-top:var(--space-xs)">🔥 ${h.streak||0} dias</div>
+                  </td>
+                  ${ultimos7.map(d => {
+                    const feito = S.hist.some(r => r.nome === h.nome && r.data === d.data);
+                    const isHoje = d.data === hoje;
+                    let cl = 'habit-circle'; 
+                    if (feito) cl += ' done'; 
+                    return `<td><div class="${cl}" ${!feito && isHoje ? `data-habit-idx="${i}" data-habit-date="${d.data}"` : ''}>${feito?'✓':''}</div></td>`;
+                  }).join("")}
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+      
+      hBody.innerHTML = tableHTML;
       
       setTimeout(() => {
         document.querySelectorAll('[data-habit-idx]').forEach(el => {
@@ -3637,6 +3840,7 @@ function iniciarModoFoco() {
           });
           
           salvar();
+          playSound('success');
           showToast(`🍅 Pomodoro completo! +15 XP`, 'success');
           
           // Iniciar descanso
@@ -3654,6 +3858,7 @@ function iniciarModoFoco() {
               
               if (tempoRestante <= 0) {
                 clearInterval(focoTimer);
+                playSound('check');
                 showToast("⏰ Descanso terminado! Hora de focar novamente.", 'info');
                 document.getElementById('focoStatus').textContent = "Pronto para começar...";
               }
@@ -3671,12 +3876,14 @@ function pausarModoFoco() {
   if (btnPausar) {
     btnPausar.innerHTML = isRunning ? '⏸️ Pausar' : '▶️ Continuar';
   }
+  playSound('check');
 }
 
 function pararModoFoco() {
   clearInterval(focoTimer);
   document.getElementById('focoOverlay').style.display = 'none';
   document.body.style.overflow = 'auto';
+  playSound('check');
   showToast("Modo foco encerrado", 'info');
   
   // Atualizar estatísticas
@@ -3772,6 +3979,7 @@ function salvarPerfilFirebase() {
   S.perfil.frase = document.getElementById("pFrase").value.trim();
   if(window.tempFoto) S.perfil.foto = window.tempFoto;
   salvar(); 
+  playSound('success');
   showToast("Perfil atualizado com sucesso!", 'success');
 }
 
@@ -3792,6 +4000,7 @@ function toggleTarefa(idx) {
       hora: new Date().getHours()
     });
     
+    playSound('success');
     showToast("+5 XP ✓", 'success');
     scheduleRender('header');
     scheduleRender('tasks');
@@ -3803,6 +4012,7 @@ function toggleTarefa(idx) {
     const hIdx = S.hist.findLastIndex(h => h.nome === t.nome && h.data === hoje);
     if (hIdx > -1) S.hist.splice(hIdx, 1);
     
+    playSound('error');
     showToast("-5 XP", 'error');
     scheduleRender('header');
     scheduleRender('tasks');
@@ -3831,12 +4041,14 @@ function toggleSubtarefa(tarefaIndex, subtarefaIndex) {
       xpGanhos: 2,
       hora: new Date().getHours()
     });
+    playSound('check');
     showToast("+2 XP (subtarefa)", 'success');
   } else {
     S.xp = Math.max(0, (S.xp || 0) - 2);
     const hIdx = S.hist.findLastIndex(h => h.nome === `Subtarefa: ${subtarefa.nome}`);
     if (hIdx > -1) S.hist.splice(hIdx, 1);
-    showToast("-2 XP (subtarefa)", 'error');
+    playSound('check');
+    showToast("-2 XP (subtarefa)", 'info');
   }
   
   scheduleRender('header');
@@ -3869,6 +4081,7 @@ function concluirHabito(habIdx, dataStr) {
     hora: new Date().getHours()
   });
 
+  playSound('success');
   showToast("+8 XP! 🔥", 'success');
   
   scheduleRender('header');
@@ -3908,6 +4121,8 @@ function toggleCat(cat) {
     currentWrapper.style.maxHeight = '0';
     currentWrapper.classList.remove('open');
   }
+  
+  playSound('check');
 }
 
 // ==================== CONQUISTAS ====================
@@ -3989,11 +4204,25 @@ function checarConquistas() {
     if(!S.badges_unlocked.includes(b.id) && b.req(S)) {
       S.badges_unlocked.push(b.id);
       novasConquistas = true;
+      playSound('badge');
       setTimeout(() => {
         mostrarAnimacaoConquista(b);
       }, 300);
     }
   });
+  
+  // Verificar level up
+  if (S.xp !== undefined) {
+    const nivelAtual = xpInfo(S.xp).n;
+    if (window.nivelAnterior !== undefined && nivelAtual > window.nivelAnterior) {
+      playSound('levelUp');
+      setTimeout(() => {
+        mostrarAnimacaoLevelUp(nivelAtual);
+      }, 500);
+    }
+    window.nivelAnterior = nivelAtual;
+  }
+  
   if(novasConquistas) {
     salvar();
     scheduleRender('badges');
@@ -4086,13 +4315,6 @@ function hideSkeletons() {
   if (xpInfoSkeleton) xpInfoSkeleton.style.display = "none";
   if (xpInfoReal) xpInfoReal.style.display = "block";
   
-  const badgesSkeleton = document.getElementById("badgesSkeleton");
-  const homeBadges = document.getElementById("homeBadges");
-  const conquistasTitulo = document.getElementById("conquistasTitulo");
-  if (badgesSkeleton) badgesSkeleton.style.display = "none";
-  if (homeBadges) homeBadges.style.display = "flex";
-  if (conquistasTitulo) conquistasTitulo.style.display = "block";
-  
   document.querySelectorAll('.skeleton-line').forEach(el => {
     el.style.display = 'none';
   });
@@ -4103,9 +4325,72 @@ function hideSkeletons() {
   if (homeTarefas) homeTarefas.style.display = "block";
   
   const habitosSkeleton = document.getElementById("habitosSkeleton");
-  const habitTable = document.querySelector(".habit-table");
+  const homeHabitos = document.getElementById("homeHabitos");
   if (habitosSkeleton) habitosSkeleton.style.display = "none";
-  if (habitTable) habitTable.style.display = "table";
+  if (homeHabitos) homeHabitos.style.display = "block";
+}
+
+// ==================== ANIMAÇÕES ====================
+function mostrarAnimacaoLevelUp(nivel) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.95);
+    backdrop-filter: blur(20px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  `;
+  
+  overlay.innerHTML = `
+    <div style="text-align: center; animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);">
+      <div style="font-size: 120px; margin-bottom: var(--space-lg); animation: rotate 1s ease;">⭐</div>
+      <h1 style="color: var(--gold); font-size: 56px; margin: 0; text-shadow: 0 0 30px var(--gold); font-weight:800">LEVEL UP!</h1>
+      <p style="color: white; font-size: 36px; margin: var(--space-md) 0; font-weight:600">Nível ${nivel}</p>
+      <p style="color: var(--accent); font-size: 20px;">Você está evoluindo! Continue assim! 🚀</p>
+    </div>
+  `;
+  
+  document.body.appendChild(overlay);
+  setTimeout(() => {
+    overlay.style.animation = 'fadeOut 0.3s ease';
+    setTimeout(() => overlay.remove(), 300);
+  }, 3000);
+}
+
+function mostrarAnimacaoConquista(badge) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.95);
+    backdrop-filter: blur(20px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  `;
+  
+  const cor = BADGE_COLORS[badge.cat] || 'var(--gold)';
+  
+  overlay.innerHTML = `
+    <div style="text-align: center; animation: bounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); max-width:500px; padding:var(--space-lg)">
+      <div style="font-size: 120px; margin-bottom: var(--space-lg); animation: pulse 1s infinite;">${badge.icon}</div>
+      <h2 style="color: ${cor}; font-size: 42px; margin: 0; text-shadow: 0 0 20px ${cor}; font-weight:800">🏆 CONQUISTA!</h2>
+      <p style="color: white; font-size: 32px; margin: var(--space-lg) 0; font-weight: 700;">${badge.title}</p>
+      <p style="color: var(--accent); font-size: 18px; line-height:1.6">${badge.desc}</p>
+    </div>
+  `;
+  
+  document.body.appendChild(overlay);
+  setTimeout(() => {
+    overlay.style.animation = 'fadeOut 0.3s ease';
+    setTimeout(() => overlay.remove(), 300);
+  }, 4000);
 }
 
 // ==================== FUNÇÕES DE FOTO ====================
@@ -4220,69 +4505,6 @@ function resetGeral() {
   }
 }
 
-// ==================== ANIMAÇÕES ====================
-function mostrarAnimacaoLevelUp(nivel) {
-  const overlay = document.createElement('div');
-  overlay.style.cssText = `
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.95);
-    backdrop-filter: blur(20px);
-    z-index: 99999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: fadeIn 0.3s ease;
-  `;
-  
-  overlay.innerHTML = `
-    <div style="text-align: center; animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);">
-      <div style="font-size: 120px; margin-bottom: var(--space-lg); animation: rotate 1s ease;">⭐</div>
-      <h1 style="color: var(--gold); font-size: 56px; margin: 0; text-shadow: 0 0 30px var(--gold); font-weight:800">LEVEL UP!</h1>
-      <p style="color: white; font-size: 36px; margin: var(--space-md) 0; font-weight:600">Nível ${nivel}</p>
-      <p style="color: var(--accent); font-size: 20px;">Você está evoluindo! Continue assim! 🚀</p>
-    </div>
-  `;
-  
-  document.body.appendChild(overlay);
-  setTimeout(() => {
-    overlay.style.animation = 'fadeOut 0.3s ease';
-    setTimeout(() => overlay.remove(), 300);
-  }, 3000);
-}
-
-function mostrarAnimacaoConquista(badge) {
-  const overlay = document.createElement('div');
-  overlay.style.cssText = `
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.95);
-    backdrop-filter: blur(20px);
-    z-index: 99999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: fadeIn 0.3s ease;
-  `;
-  
-  const cor = BADGE_COLORS[badge.cat] || 'var(--gold)';
-  
-  overlay.innerHTML = `
-    <div style="text-align: center; animation: bounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); max-width:500px; padding:var(--space-lg)">
-      <div style="font-size: 120px; margin-bottom: var(--space-lg); animation: pulse 1s infinite;">${badge.icon}</div>
-      <h2 style="color: ${cor}; font-size: 42px; margin: 0; text-shadow: 0 0 20px ${cor}; font-weight:800">🏆 CONQUISTA!</h2>
-      <p style="color: white; font-size: 32px; margin: var(--space-lg) 0; font-weight: 700;">${badge.title}</p>
-      <p style="color: var(--accent); font-size: 18px; line-height:1.6">${badge.desc}</p>
-    </div>
-  `;
-  
-  document.body.appendChild(overlay);
-  setTimeout(() => {
-    overlay.style.animation = 'fadeOut 0.3s ease';
-    setTimeout(() => overlay.remove(), 300);
-  }, 4000);
-}
-
 // ==================== CONTROLE DE RESPONSIVIDADE ====================
 function atualizarVisibilidadeBadges() {
   const isMobile = window.innerWidth <= 1090;
@@ -4315,7 +4537,7 @@ function inicializarApp() {
     'hNome', 'hIdade', 'hSexo', 'hProfissao', 'hFrase',
     'hNivel', 'xpBar', 'xpNumerico', 'hFoto',
     'homeBadges', 'homeBadgesMobile',
-    'homeTarefas', 'habitHead', 'homeHabitos',
+    'homeTarefas', 'homeHabitos',
     'muralConquistas', 'listHist'
   ];
   
@@ -4330,6 +4552,9 @@ function inicializarApp() {
   if (!auth.currentUser) {
     document.getElementById('login-screen').style.display = 'flex';
   }
+  
+  // Inicializar status do som
+  document.getElementById('soundStatus').textContent = window.soundsEnabled ? 'Ligado' : 'Desligado';
 }
 
 if (document.readyState === 'loading') {
