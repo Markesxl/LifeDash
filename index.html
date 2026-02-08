@@ -2,10 +2,10 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Life Dash v2.1 - Intelligence Pro</title>
+<title>Life Dash v2.2 - Intelligence Pro</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#38bdf8">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -61,6 +61,27 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+/* Personalização do Scroll */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-gradient);
+  border-radius: var(--radius-sm);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-gradient);
 }
 
 body {
@@ -356,20 +377,45 @@ body {
   min-width: 0;
 }
 
-.profile-info-slim p {
-  margin: 6px 0;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
+/* Perfil com nome destacado */
+.profile-name-large {
+  font-size: 24px;
+  font-weight: 800;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: var(--space-sm);
+  line-height: 1.2;
+}
+
+.profile-details {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: var(--space-sm);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.profile-details span {
+  padding-right: var(--space-md);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.profile-details span:last-child {
+  border-right: none;
 }
 
 .phrase-slim {
   font-style: italic;
+  font-size: 13px !important;
+  margin-top: var(--space-sm) !important;
+  color: rgba(255, 255, 255, 0.8);
   background: var(--accent-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  font-size: 13px !important;
-  margin-top: var(--space-sm) !important;
   font-weight: 500;
 }
 
@@ -598,24 +644,84 @@ body {
   padding: var(--space-lg);
 }
 
-/* ==================== ITENS DE TAREFA COM ESPAÇAMENTO CORRIGIDO ==================== */
+/* ==================== ITENS DE TAREFA COM SUBTAREFAS ==================== */
 .task-item {
-  display: flex;
-  align-items: center;
-  padding: var(--space-md) 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+  padding: var(--space-md);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+  transition: var(--transition);
 }
 
-.task-item:last-child {
-  border-bottom: none;
+.task-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.task-main-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-sm);
 }
 
 .task-name {
   flex: 1;
   font-size: 15px;
   color: rgba(255, 255, 255, 0.9);
-  padding: var(--space-sm) 0;
+}
+
+.task-description {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-left: 52px;
+  margin-bottom: var(--space-sm);
+  line-height: 1.4;
+  font-style: italic;
+}
+
+.subtask-container {
+  margin-left: 52px;
+  margin-top: var(--space-xs);
+}
+
+.subtask-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
+  padding: var(--space-xs) 0;
+}
+
+.subtask-name {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  flex: 1;
+}
+
+.subtask-checkbox {
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.subtask-checkbox.checked {
+  background: var(--success);
+  border-color: var(--success);
+}
+
+.subtask-checkbox.checked::after {
+  content: '✓';
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
 }
 
 /* ==================== SWITCH MODERNO COM ESPAÇAMENTO ==================== */
@@ -787,17 +893,23 @@ input:checked + .slider:before {
   transform: translateY(-4px);
 }
 
-h3 {
-  color: var(--accent);
-  font-size: 20px;
-  margin: 0 0 var(--space-lg) 0;
+/* Cabeçalho do card com botão de ação */
+.card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: var(--space-lg);
   padding-bottom: var(--space-md);
-  cursor: pointer;
-  user-select: none;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-header h3 {
+  color: var(--accent);
+  font-size: 20px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
   font-weight: 700;
   background: linear-gradient(135deg, #38bdf8, #a855f7);
   -webkit-background-clip: text;
@@ -805,24 +917,60 @@ h3 {
   background-clip: text;
 }
 
-.item {
+.card-toggle {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 20px;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background: rgba(255, 255, 255, 0.03);
-  padding: var(--space-md) var(--space-lg);
-  border-radius: var(--radius-md);
-  margin-bottom: var(--space-sm);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  font-size: 15px;
+  justify-content: center;
+  border-radius: var(--radius-sm);
   transition: var(--transition);
-  backdrop-filter: blur(10px);
 }
 
-.item:hover {
-  background: rgba(255, 255, 255, 0.08);
-  transform: translateX(4px);
-  border-color: rgba(255, 255, 255, 0.15);
+.card-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: rotate(180deg);
+}
+
+.card-content {
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-content.collapsed {
+  max-height: 0;
+}
+
+/* Botão de ação no card */
+.card-action-button {
+  position: absolute;
+  top: var(--space-xl);
+  right: var(--space-xl);
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: var(--primary-gradient);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  transition: var(--transition);
+  z-index: 10;
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+}
+
+.card-action-button:hover {
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.5);
 }
 
 /* ==================== BOTÕES GLASS ==================== */
@@ -933,7 +1081,7 @@ h3 {
   box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
 }
 
-/* ==================== CONQUISTAS GLASS ==================== */
+/* ==================== CONQUISTAS COMPACTAS ==================== */
 .badge-category {
   margin-bottom: var(--space-xl);
 }
@@ -955,14 +1103,14 @@ h3 {
 
 .badge-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: var(--space-lg);
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-md);
 }
 
 .badge-card {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(20px);
-  padding: var(--space-lg);
+  padding: var(--space-md);
   border-radius: var(--radius-md);
   text-align: center;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -970,6 +1118,10 @@ h3 {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .badge-card::before {
@@ -1005,35 +1157,37 @@ h3 {
 }
 
 .badge-icon {
-  font-size: 48px;
-  margin-bottom: var(--space-md);
+  font-size: 36px;
+  margin-bottom: var(--space-sm);
   display: block;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
 
 .badge-title {
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 700;
   color: white;
-  margin: var(--space-sm) 0 var(--space-xs);
+  margin-bottom: var(--space-xs);
+  line-height: 1.2;
 }
 
 .badge-desc {
-  font-size: 11px;
+  font-size: 10px;
   color: rgba(255, 255, 255, 0.6);
-  line-height: 1.4;
+  line-height: 1.3;
+  margin-bottom: var(--space-xs);
 }
 
 .badge-progress {
-  margin-top: var(--space-md);
-  padding-top: var(--space-md);
+  margin-top: var(--space-sm);
+  padding-top: var(--space-sm);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .badge-progress-bar {
   background: rgba(0, 0, 0, 0.2);
   border-radius: var(--radius-sm);
-  height: 8px;
+  height: 6px;
   overflow: hidden;
   margin-top: var(--space-xs);
 }
@@ -1156,7 +1310,7 @@ h3 {
   font-weight: 500;
 }
 
-input, select {
+input, select, textarea {
   width: 100%;
   padding: var(--space-md) var(--space-lg);
   border-radius: var(--radius-md);
@@ -1180,7 +1334,13 @@ select {
   padding-right: 2.5rem;
 }
 
-input:focus, select:focus {
+textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 
@@ -1435,8 +1595,8 @@ input:focus, select:focus {
   }
   
   .badge-grid {
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: var(--space-md);
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: var(--space-sm);
   }
   
   /* Habitos mobile otimizado - SEM SOBREPOSIÇÃO */
@@ -1491,12 +1651,20 @@ input:focus, select:focus {
   }
   
   .task-item {
-    padding: var(--space-sm) 0;
-    gap: var(--space-sm);
+    padding: var(--space-sm);
+    margin-bottom: var(--space-sm);
   }
   
   .task-name {
     font-size: 13px;
+  }
+  
+  .subtask-container {
+    margin-left: 44px;
+  }
+  
+  .subtask-name {
+    font-size: 12px;
   }
   
   /* Melhor alinhamento do menu toggle */
@@ -1539,6 +1707,25 @@ input:focus, select:focus {
   .modal-content {
     padding: var(--space-lg);
     max-height: 85vh;
+  }
+  
+  /* Botões de ação no mobile */
+  .card-action-button {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    top: var(--space-lg);
+    right: var(--space-lg);
+  }
+  
+  /* Perfil mobile */
+  .profile-name-large {
+    font-size: 20px;
+  }
+  
+  .profile-details {
+    font-size: 12px;
+    gap: var(--space-sm);
   }
 }
 
@@ -1721,7 +1908,7 @@ input:focus, select:focus {
 }
 
 .skeleton-badge-card {
-  height: 160px;
+  height: 140px;
   border-radius: var(--radius-md);
   animation: skeleton-pulse 1.5s ease-in-out infinite;
   background: linear-gradient(90deg, 
@@ -1975,13 +2162,17 @@ input:focus, select:focus {
       
       <div class="profile-info-slim">
         <div id="profileInfoReal" style="display: none;">
-          <p><strong>Nome:</strong> <span id="hNome">---</span> | <strong>Idade:</strong> <span id="hIdade">--</span></p>
-          <p><strong>Sexo:</strong> <span id="hSexo">---</span> | <strong>Profissão:</strong> <span id="hProfissao">---</span></p>
+          <div class="profile-name-large" id="hNome">---</div>
+          <div class="profile-details">
+            <span><strong>Idade:</strong> <span id="hIdade">--</span></span>
+            <span><strong>Sexo:</strong> <span id="hSexo">---</span></span>
+            <span><strong>Profissão:</strong> <span id="hProfissao">---</span></span>
+          </div>
           <p id="hFrase" class="phrase-slim">"---"</p>
         </div>
         
         <div id="profileInfoSkeleton">
-          <div class="skeleton-line" style="width:70%; height:18px; margin-bottom:var(--space-sm);"></div>
+          <div class="skeleton-line" style="width:70%; height:24px; margin-bottom:var(--space-sm);"></div>
           <div class="skeleton-line" style="width:60%; height:18px; margin-bottom:var(--space-sm);"></div>
           <div class="skeleton-line" style="width:50%; height:14px; margin-bottom:var(--space-md);"></div>
         </div>
@@ -2045,8 +2236,12 @@ input:focus, select:focus {
     <div class="grid-stack">
       <!-- Card de Tarefas -->
       <div class="card">
-        <h3 onclick="toggleCard('homeTarefasCont', this)">🚀 Tarefas do Dia <span>▼</span></h3>
-        <div id="homeTarefasCont" class="card-content" style="max-height: none;">
+        <button class="card-action-button" onclick="abrirModalTarefas()" title="Registrar Tarefas">+</button>
+        <div class="card-header">
+          <h3>🚀 Tarefas do Dia</h3>
+          <button class="card-toggle" onclick="toggleCardContent('homeTarefasCont', this)">▼</button>
+        </div>
+        <div id="homeTarefasCont" class="card-content">
           <div id="tarefasSkeleton">
             <div class="skeleton-cat" style="margin-bottom:var(--space-md);"></div>
             <div class="skeleton-task"></div>
@@ -2054,16 +2249,17 @@ input:focus, select:focus {
             <div class="skeleton-task"></div>
           </div>
           <div id="homeTarefas" style="display:none;"></div>
-          <div style="margin-top: var(--space-lg);">
-            <button class="btn-primary" onclick="abrirModalTarefas()">➕ Registrar Tarefas</button>
-          </div>
         </div>
       </div>
       
       <!-- Card de Hábitos -->
       <div class="card">
-        <h3 onclick="toggleCard('homeHabitosCont', this)">✨ Hábitos Ativos <span>▼</span></h3>
-        <div id="homeHabitosCont" class="card-content" style="max-height: none;">
+        <button class="card-action-button" onclick="abrirModalHabitos()" title="Registrar Hábitos">+</button>
+        <div class="card-header">
+          <h3>✨ Hábitos Ativos</h3>
+          <button class="card-toggle" onclick="toggleCardContent('homeHabitosCont', this)">▼</button>
+        </div>
+        <div id="homeHabitosCont" class="card-content">
           <div id="habitosSkeleton">
             <div style="display:flex; gap:var(--space-md); margin-bottom:var(--space-lg);">
               <div class="skeleton-line" style="width:120px; height:24px;"></div>
@@ -2078,9 +2274,6 @@ input:focus, select:focus {
             <thead id="habitHead"></thead>
             <tbody id="homeHabitos"></tbody>
           </table>
-          <div style="margin-top: var(--space-lg);">
-            <button class="btn-primary" onclick="abrirModalHabitos()">➕ Registrar Hábitos</button>
-          </div>
         </div>
       </div>
     </div>
@@ -2120,7 +2313,7 @@ input:focus, select:focus {
         <div id="conquistasSkeleton">
           <div class="skeleton-category" style="margin-bottom:var(--space-xl);">
             <div class="skeleton-line" style="width:140px; height:20px; margin-bottom:var(--space-lg);"></div>
-            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap:var(--space-lg);">
+            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:var(--space-md);">
               <div class="skeleton-badge-card"></div>
               <div class="skeleton-badge-card"></div>
               <div class="skeleton-badge-card"></div>
@@ -2129,7 +2322,7 @@ input:focus, select:focus {
           </div>
           <div class="skeleton-category">
             <div class="skeleton-line" style="width:140px; height:20px; margin-bottom:var(--space-lg);"></div>
-            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap:var(--space-lg);">
+            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:var(--space-md);">
               <div class="skeleton-badge-card"></div>
               <div class="skeleton-badge-card"></div>
               <div class="skeleton-badge-card"></div>
@@ -2295,9 +2488,14 @@ input:focus, select:focus {
     <div class="modal-form-group">
       <label class="modal-label">NOVA TAREFA</label>
       <select id="modalTarCat" style="margin-bottom:var(--space-md)"></select>
-      <div style="display:flex; gap:var(--space-md);">
+      <div style="display:flex; gap:var(--space-md); margin-bottom:var(--space-sm);">
         <input id="modalTarNome" placeholder="Nome da tarefa...">
         <button class="btn-primary btn-plus" onclick="addTarModal()">+</button>
+      </div>
+      <textarea id="modalTarDesc" placeholder="Descrição da tarefa (opcional)" rows="2"></textarea>
+      <div style="margin-top:var(--space-sm);">
+        <input id="modalSubtarNome" placeholder="Subtarefa (opcional)">
+        <button class="btn-primary" style="margin-top:var(--space-sm); padding:var(--space-sm); font-size:14px;" onclick="addSubtarefaModal()">+ Adicionar Subtarefa</button>
       </div>
     </div>
     
@@ -2361,7 +2559,10 @@ const firebaseConfig = {
   appId: "1:270639106877:web:92c8ec9353c6bacb485354"
 };
 
-firebase.initializeApp(firebaseConfig);
+// Inicializar Firebase apenas se não estiver inicializado
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 const db = firebase.firestore();
 const auth = firebase.auth();
 
@@ -2412,17 +2613,18 @@ function getElement(id) {
 }
 
 // ==================== FUNÇÕES BÁSICAS ====================
+// Sistema XP mais difícil
 function xpInfo(xp) { 
   if (typeof xp !== 'number' || xp < 0) xp = 0;
   
   let nivel = 1;
   let xpBase = 0;
-  let xpProximo = 100;
+  let xpProximo = 150; // Aumentado de 100 para 150
   
   while (xp >= xpProximo) {
     nivel++;
     xpBase = xpProximo;
-    xpProximo += Math.floor(100 * Math.pow(1.15, nivel - 1));
+    xpProximo += Math.floor(150 * Math.pow(1.25, nivel - 1)); // Aumentado o crescimento
   }
   
   const xpAtualNivel = xp - xpBase;
@@ -2498,37 +2700,27 @@ function toggleAuth(m) {
   document.getElementById('auth-register').style.display = m==='register'?'block':'none'; 
 }
 
-// ==================== FUNÇÕES DE COLLAPSE SUAVIZADO ====================
-function toggleCard(cardId, headerElement) {
+// ==================== TOGGLE CARD CONTENT ====================
+function toggleCardContent(cardId, button) {
   const cardContent = document.getElementById(cardId);
-  const icon = headerElement.querySelector('span');
-  
   if (!cardContent) return;
   
-  // Verifica se está atualmente expandido
-  const isExpanded = cardContent.style.maxHeight && cardContent.style.maxHeight !== 'none';
-  
-  if (isExpanded) {
-    // Colapsar
-    cardContent.style.maxHeight = cardContent.scrollHeight + 'px';
-    
-    // Forçar reflow
-    cardContent.offsetHeight;
-    
-    cardContent.style.maxHeight = '0';
-    cardContent.style.padding = '0';
-    icon.textContent = '▶';
-  } else {
+  if (cardContent.classList.contains('collapsed')) {
     // Expandir
     cardContent.classList.remove('collapsed');
     cardContent.style.maxHeight = cardContent.scrollHeight + 'px';
-    cardContent.style.padding = 'var(--space-lg) 0 0 0';
-    icon.textContent = '▼';
+    button.textContent = '▼';
     
-    // Remover max-height após animação
     setTimeout(() => {
       cardContent.style.maxHeight = 'none';
     }, 500);
+  } else {
+    // Colapsar
+    cardContent.style.maxHeight = cardContent.scrollHeight + 'px';
+    cardContent.offsetHeight; // Forçar reflow
+    cardContent.style.maxHeight = '0';
+    cardContent.classList.add('collapsed');
+    button.textContent = '▶';
   }
 }
 
@@ -2602,17 +2794,41 @@ function addCatModal() {
 function addTarModal() {
   const nomeInput = getElement("modalTarNome");
   const catSelect = getElement("modalTarCat");
+  const descInput = getElement("modalTarDesc");
   const nome = nomeInput.value.trim();
   
   if (nome && catSelect.value) { 
-    S.tarefas.push({nome, cat:catSelect.value, status:'pendente'}); 
+    const novaTarefa = {
+      nome, 
+      cat: catSelect.value, 
+      status:'pendente',
+      descricao: descInput.value.trim(),
+      subtarefas: [],
+      dataCriacao: new Date().toLocaleDateString(),
+      ultimaAtualizacao: new Date().toLocaleDateString()
+    }; 
+    
+    S.tarefas.push(novaTarefa); 
     nomeInput.value = ""; 
+    descInput.value = "";
     showToast("Tarefa criada!", 'success');
     
     salvar();
     scheduleRender('tasks');
   } else if (!catSelect.value) {
     showToast("Crie uma categoria primeiro!", 'error');
+  }
+}
+
+function addSubtarefaModal() {
+  const subtarefaInput = getElement("modalSubtarNome");
+  const nome = subtarefaInput.value.trim();
+  
+  if (nome) {
+    // Esta função seria chamada quando uma tarefa estiver sendo editada
+    // Por enquanto, apenas limpa o campo
+    subtarefaInput.value = "";
+    showToast("Subtarefa será adicionada à próxima tarefa criada", 'info');
   }
 }
 
@@ -2717,7 +2933,8 @@ async function fazerRegistro() {
         hoje: 0,
         tempoTotal: 0,
         tempoHoje: 0
-      }
+      },
+      ultimoReset: new Date().toLocaleDateString()
     };
     
     await db.collection("users").doc(userCredential.user.uid).set(dadosUsuario);
@@ -2793,7 +3010,8 @@ let S = {
     hoje: 0,
     tempoTotal: 0,
     tempoHoje: 0
-  }
+  },
+  ultimoReset: new Date().toLocaleDateString()
 };
 let openCats = JSON.parse(localStorage.getItem('lifeDash_openCats')) || {};
 
@@ -2812,6 +3030,9 @@ auth.onAuthStateChanged(async (user) => {
       if (doc.exists) {
         S = doc.data();
         
+        // Verificar se precisa resetar tarefas do dia anterior
+        verificarResetDiario();
+        
         S.perfil = S.perfil || {};
         S.badges_unlocked = S.badges_unlocked || [];
         S.hist = S.hist || [];
@@ -2825,6 +3046,16 @@ auth.onAuthStateChanged(async (user) => {
           tempoTotal: 0,
           tempoHoje: 0
         };
+        S.ultimoReset = S.ultimoReset || new Date().toLocaleDateString();
+        
+        // Garantir que tarefas tenham estrutura completa
+        S.tarefas = S.tarefas.map(t => ({
+          ...t,
+          descricao: t.descricao || '',
+          subtarefas: t.subtarefas || [],
+          dataCriacao: t.dataCriacao || new Date().toLocaleDateString(),
+          ultimaAtualizacao: t.ultimaAtualizacao || new Date().toLocaleDateString()
+        }));
   
         if (S.xp !== undefined) {
           const l = xpInfo(S.xp);
@@ -2874,7 +3105,8 @@ auth.onAuthStateChanged(async (user) => {
             hoje: 0,
             tempoTotal: 0,
             tempoHoje: 0
-          }
+          },
+          ultimoReset: new Date().toLocaleDateString()
         };
         
         await db.collection("users").doc(user.uid).set(novosDados);
@@ -2898,6 +3130,43 @@ auth.onAuthStateChanged(async (user) => {
     window.nivelAnterior = undefined;
   }
 });
+
+// ==================== VERIFICAÇÃO DE RESET DIÁRIO ====================
+function verificarResetDiario() {
+  const hoje = new Date().toLocaleDateString();
+  
+  // Se for um novo dia, resetar tarefas concluídas
+  if (S.ultimoReset !== hoje) {
+    // Resetar estatísticas de pomodoro do dia
+    S.pomodoroStats.hoje = 0;
+    S.pomodoroStats.tempoHoje = 0;
+    
+    // Marcar tarefas concluídas como pendentes
+    let tarefasResetadas = 0;
+    S.tarefas.forEach(tarefa => {
+      if (tarefa.status === 'concluido') {
+        tarefa.status = 'pendente';
+        tarefasResetadas++;
+        
+        // Resetar subtarefas
+        if (tarefa.subtarefas && tarefa.subtarefas.length > 0) {
+          tarefa.subtarefas.forEach(sub => {
+            sub.concluida = false;
+          });
+        }
+      }
+    });
+    
+    // Atualizar data do último reset
+    S.ultimoReset = hoje;
+    
+    // Salvar mudanças se houver tarefas resetadas
+    if (tarefasResetadas > 0) {
+      salvar();
+      showToast(`📅 Novo dia! ${tarefasResetadas} tarefas resetadas.`, 'info', 3000);
+    }
+  }
+}
 
 // ==================== FUNÇÕES DE RENDER ====================
 function renderHeader() {
@@ -3002,13 +3271,15 @@ function renderTasks() {
       <div class="empty-state">
         <div class="empty-state-icon">📝</div>
         <div class="empty-state-title">Nenhuma tarefa registrada</div>
-        <div class="empty-state-description">Clique no botão abaixo para criar sua primeira tarefa!</div>
+        <div class="empty-state-description">Clique no botão + para criar sua primeira tarefa!</div>
       </div>`;
   } else {
     S.categorias.forEach((cat, catIndex) => {
-      const ts = S.tarefas.filter(t => t.cat === cat);
+      const ts = S.tarefas.filter(t => t.cat === cat && t.status !== 'oculta');
       const conc = ts.filter(t => t.status === 'concluido').length;
       const isOpen = openCats[cat];
+      
+      if (ts.length === 0) return;
       
       // Cores diferentes para cada categoria (8 cores disponíveis)
       const colorIndex = catIndex % 8;
@@ -3020,15 +3291,29 @@ function renderTasks() {
           <span>${isOpen?'▲':'▼'}</span>
         </div>
         <div class="task-container-wrapper ${isOpen?'open':''}">
-          ${ts.map(t => `
-            <div class="task-item">
-              <span class="task-name">${t.nome}</span>
-              <div class="switch-container">
-                <label class="switch">
-                  <input type="checkbox" ${t.status==='concluido'?'checked':''} onchange="toggleTarefa(${S.tarefas.indexOf(t)})">
-                  <span class="slider"></span>
-                </label>
+          ${ts.map((t, tIndex) => `
+            <div class="task-item" data-task-index="${S.tarefas.indexOf(t)}">
+              <div class="task-main-row">
+                <div class="switch-container">
+                  <label class="switch">
+                    <input type="checkbox" ${t.status==='concluido'?'checked':''} onchange="toggleTarefa(${S.tarefas.indexOf(t)})">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <span class="task-name">${t.nome}</span>
               </div>
+              ${t.descricao ? `<div class="task-description" style="color:${getCategoryColor(colorIndex)}">${t.descricao}</div>` : ''}
+              ${t.subtarefas && t.subtarefas.length > 0 ? `
+                <div class="subtask-container">
+                  ${t.subtarefas.map((sub, subIndex) => `
+                    <div class="subtask-item">
+                      <div class="subtask-checkbox ${sub.concluida ? 'checked' : ''}" 
+                           onclick="toggleSubtarefa(${S.tarefas.indexOf(t)}, ${subIndex})"></div>
+                      <span class="subtask-name">${sub.nome}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              ` : ''}
             </div>
           `).join("")}
         </div>`;
@@ -3085,7 +3370,7 @@ function renderHabits() {
         <div class="empty-state" style="padding:var(--space-xl) var(--space-lg);">
           <div class="empty-state-icon">🔁</div>
           <div class="empty-state-title">Nenhum hábito configurado</div>
-          <div class="empty-state-description">Clique no botão abaixo para criar seu primeiro hábito!</div>
+          <div class="empty-state-description">Clique no botão + para criar seu primeiro hábito!</div>
         </div>
       </td></tr>`;
     } else {
@@ -3342,17 +3627,17 @@ function iniciarModoFoco() {
           S.pomodoroStats.tempoHoje = (S.pomodoroStats.tempoHoje || 0) + parseInt(document.getElementById('focoTempo').value);
           S.pomodoroStats.tempoTotal = (S.pomodoroStats.tempoTotal || 0) + parseInt(document.getElementById('focoTempo').value);
           
-          // Ganhar XP por pomodoro completado
-          S.xp += 25;
+          // Ganhar XP por pomodoro completado (reduzido)
+          S.xp += 15; // Reduzido de 25 para 15
           S.hist.push({
             nome: "Pomodoro Completado",
             data: new Date().toLocaleDateString(),
             tipo: 'P',
-            xpGanhos: 25
+            xpGanhos: 15
           });
           
           salvar();
-          showToast(`🍅 Pomodoro completo! +25 XP`, 'success');
+          showToast(`🍅 Pomodoro completo! +15 XP`, 'success');
           
           // Iniciar descanso
           const tempoDescanso = parseInt(document.getElementById('descansoTempo').value) * 60;
@@ -3496,34 +3781,68 @@ function toggleTarefa(idx) {
 
   if (t.status === 'pendente') {
     t.status = 'concluido'; 
-    S.xp = (S.xp || 0) + 10;
+    // XP reduzido de 10 para 5
+    S.xp = (S.xp || 0) + 5;
     S.hist.push({
       nome: t.nome, 
       data: hoje, 
       tipo: 'T', 
       cat: t.cat, 
-      xpGanhos: 10, 
+      xpGanhos: 5, // Reduzido
       hora: new Date().getHours()
     });
     
-    showToast("+10 XP ✓", 'success');
+    showToast("+5 XP ✓", 'success');
     scheduleRender('header');
     scheduleRender('tasks');
     scheduleRender('history');
     checarConquistas();
   } else {
     t.status = 'pendente'; 
-    S.xp = Math.max(0, (S.xp || 0) - 10);
+    S.xp = Math.max(0, (S.xp || 0) - 5);
     const hIdx = S.hist.findLastIndex(h => h.nome === t.nome && h.data === hoje);
     if (hIdx > -1) S.hist.splice(hIdx, 1);
     
-    showToast("-10 XP", 'error');
+    showToast("-5 XP", 'error');
     scheduleRender('header');
     scheduleRender('tasks');
     scheduleRender('history');
     checarConquistas();
   }
 
+  salvar();
+}
+
+function toggleSubtarefa(tarefaIndex, subtarefaIndex) {
+  const tarefa = S.tarefas[tarefaIndex];
+  if (!tarefa || !tarefa.subtarefas || !tarefa.subtarefas[subtarefaIndex]) return;
+  
+  const subtarefa = tarefa.subtarefas[subtarefaIndex];
+  subtarefa.concluida = !subtarefa.concluida;
+  
+  // Pequena quantidade de XP por subtarefa
+  if (subtarefa.concluida) {
+    S.xp += 2;
+    S.hist.push({
+      nome: `Subtarefa: ${subtarefa.nome}`,
+      data: new Date().toLocaleDateString(),
+      tipo: 'T',
+      cat: tarefa.cat,
+      xpGanhos: 2,
+      hora: new Date().getHours()
+    });
+    showToast("+2 XP (subtarefa)", 'success');
+  } else {
+    S.xp = Math.max(0, (S.xp || 0) - 2);
+    const hIdx = S.hist.findLastIndex(h => h.nome === `Subtarefa: ${subtarefa.nome}`);
+    if (hIdx > -1) S.hist.splice(hIdx, 1);
+    showToast("-2 XP (subtarefa)", 'error');
+  }
+  
+  scheduleRender('header');
+  scheduleRender('tasks');
+  scheduleRender('history');
+  checarConquistas();
   salvar();
 }
 
@@ -3540,16 +3859,17 @@ function concluirHabito(habIdx, dataStr) {
     h.streak = (h.streak || 0) + 1;
   }
 
-  S.xp += 15;
+  // XP reduzido de 15 para 8
+  S.xp += 8;
   S.hist.push({
     nome: h.nome, 
     data: dataStr, 
     tipo: 'H', 
-    xpGanhos: 15,
+    xpGanhos: 8, // Reduzido
     hora: new Date().getHours()
   });
 
-  showToast("+15 XP! 🔥", 'success');
+  showToast("+8 XP! 🔥", 'success');
   
   scheduleRender('header');
   scheduleRender('habits');
@@ -3847,6 +4167,15 @@ function resetDia() {
   S.hist = S.hist.filter(x => x.data !== hoje);
   S.tarefas.forEach(t => t.status = 'pendente');
   
+  // Resetar subtarefas
+  S.tarefas.forEach(t => {
+    if (t.subtarefas && t.subtarefas.length > 0) {
+      t.subtarefas.forEach(sub => {
+        sub.concluida = false;
+      });
+    }
+  });
+  
   const conquistasAntes = [...S.badges_unlocked];
   S.badges_unlocked = S.badges_unlocked.filter(id => {
     const b = BADGES.find(badge => badge.id === id);
@@ -3875,7 +4204,8 @@ function resetGeral() {
       hoje: 0,
       tempoTotal: 0,
       tempoHoje: 0
-    }
+    },
+    ultimoReset: new Date().toLocaleDateString()
   }; 
   
   localStorage.removeItem('lifeDash_openCats');
@@ -4008,12 +4338,12 @@ if (document.readyState === 'loading') {
   inicializarApp();
 }
 
-// Service Worker
+// Remover Service Worker para evitar erros
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(reg => console.log('Service Worker registrado'))
-      .catch(err => console.log('Erro SW:', err));
+  navigator.serviceWorker.getRegistrations().then(function(registrations) {
+    for(let registration of registrations) {
+      registration.unregister();
+    }
   });
 }
 </script>
