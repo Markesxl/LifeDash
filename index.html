@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Life Dash v2.0 - Intelligence Pro</title>
+<title>Life Dash v2.1 - Intelligence Pro</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#38bdf8">
@@ -120,9 +120,59 @@ body {
   backdrop-filter: blur(10px);
 }
 
+.menu-toggle span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  position: relative;
+}
+
+.menu-toggle span::before,
+.menu-toggle span::after {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 1px;
+  transition: var(--transition);
+}
+
+.menu-toggle span::before {
+  top: 6px;
+}
+
+.menu-toggle span::after {
+  bottom: 6px;
+}
+
+.menu-toggle span::before {
+  top: 8px;
+}
+
+.menu-toggle span::after {
+  bottom: 8px;
+}
+
 .menu-toggle:hover {
   background: rgba(56, 189, 248, 0.25);
   transform: scale(1.05);
+}
+
+.menu-toggle.open span::before {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.menu-toggle.open span::after {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+.menu-toggle.open span::before,
+.menu-toggle.open span::after {
+  top: 12px;
 }
 
 #mobile-logo {
@@ -463,7 +513,7 @@ body {
   transform: translateY(-2px);
 }
 
-/* ==================== CATEGORIAS E TAREFAS CORRIGIDAS ==================== */
+/* ==================== CATEGORIAS E TAREFAS COM CORES DIFERENTES ==================== */
 .cat-header {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
@@ -503,22 +553,15 @@ body {
   opacity: 1;
 }
 
-/* Diferenciação visual entre categorias */
-.cat-header:nth-child(4n+1) {
-  border-left: 4px solid #667eea;
-}
-
-.cat-header:nth-child(4n+2) {
-  border-left: 4px solid #f093fb;
-}
-
-.cat-header:nth-child(4n+3) {
-  border-left: 4px solid #43e97b;
-}
-
-.cat-header:nth-child(4n+4) {
-  border-left: 4px solid #fa709a;
-}
+/* Cores únicas para cada categoria */
+.cat-header[data-color="0"] { border-left: 4px solid #667eea; }
+.cat-header[data-color="1"] { border-left: 4px solid #f093fb; }
+.cat-header[data-color="2"] { border-left: 4px solid #43e97b; }
+.cat-header[data-color="3"] { border-left: 4px solid #fa709a; }
+.cat-header[data-color="4"] { border-left: 4px solid #38f9d7; }
+.cat-header[data-color="5"] { border-left: 4px solid #fee140; }
+.cat-header[data-color="6"] { border-left: 4px solid #a855f7; }
+.cat-header[data-color="7"] { border-left: 4px solid #fb923c; }
 
 .cat-header:hover {
   background: rgba(255, 255, 255, 0.1);
@@ -782,47 +825,6 @@ h3 {
   border-color: rgba(255, 255, 255, 0.15);
 }
 
-/* ==================== ESTRUTURA ATIVA COM COLLAPSE ==================== */
-.estrutura-category {
-  margin-bottom: var(--space-md);
-}
-
-.estrutura-header {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  padding: var(--space-md) var(--space-lg);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  color: var(--accent);
-  font-size: 14px;
-  font-weight: 600;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: var(--transition);
-  margin-bottom: var(--space-sm);
-}
-
-.estrutura-header:hover {
-  background: rgba(255, 255, 255, 0.08);
-  transform: translateX(4px);
-}
-
-.estrutura-content {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
-              opacity 0.3s ease;
-}
-
-.estrutura-content.open {
-  max-height: 1000px;
-  opacity: 1;
-  padding-top: var(--space-sm);
-}
-
 /* ==================== BOTÕES GLASS ==================== */
 .btn-primary {
   width: 100%;
@@ -1060,30 +1062,6 @@ h3 {
   animation: shine 2s infinite;
 }
 
-/* ==================== REGISTRO GROUP GLASS ==================== */
-.registro-group {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-md);
-  padding: var(--space-lg);
-  margin-bottom: var(--space-lg);
-  backdrop-filter: blur(10px);
-}
-
-.registro-group-title {
-  font-size: 13px;
-  font-weight: 700;
-  background: var(--accent-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-transform: uppercase;
-  margin-bottom: var(--space-md);
-  letter-spacing: 1px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: var(--space-sm);
-}
-
 /* ==================== MODO FOCO (POMODORO) ==================== */
 #focoOverlay {
   position: fixed;
@@ -1189,6 +1167,17 @@ input, select {
   font-size: 16px;
   transition: var(--transition);
   backdrop-filter: blur(10px);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+select {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1em;
+  padding-right: 2.5rem;
 }
 
 input:focus, select:focus {
@@ -1206,6 +1195,169 @@ input:focus, select:focus {
   gap: var(--space-xl);
   align-items: start;
 }
+
+/* ==================== MODAIS DE REGISTRO ==================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+  background: var(--card-bg);
+  backdrop-filter: blur(40px);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-header h3 {
+  margin: 0;
+  border: none;
+  padding: 0;
+  cursor: default;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 24px;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.modal-form-group {
+  margin-bottom: var(--space-lg);
+}
+
+.modal-label {
+  display: block;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: var(--space-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ==================== HISTÓRICO AVANÇADO ==================== */
+.historico-filtros {
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.filtro-input {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filtro-select {
+  min-width: 150px;
+}
+
+.historico-estatisticas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.estatistica-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  text-align: center;
+  transition: var(--transition);
+}
+
+.estatistica-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-2px);
+}
+
+.estatistica-valor {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: var(--space-xs);
+}
+
+.estatistica-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.historico-lista {
+  max-height: 500px;
+  overflow-y: auto;
+  margin-top: var(--space-lg);
+}
+
+.historico-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-sm);
+  transition: var(--transition);
+}
+
+.historico-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateX(4px);
+}
+
+.historico-tipo {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-right: var(--space-sm);
+}
+
+.historico-tipo-tarefa { background: rgba(56, 189, 248, 0.2); color: var(--accent); }
+.historico-tipo-habito { background: rgba(34, 197, 94, 0.2); color: var(--success); }
+.historico-tipo-pomodoro { background: rgba(245, 158, 11, 0.2); color: var(--gold); }
 
 /* ==================== MOBILE RESPONSIVO CORRIGIDO ==================== */
 @media (max-width: 1090px) {
@@ -1287,42 +1439,44 @@ input:focus, select:focus {
     gap: var(--space-md);
   }
   
-  /* Habitos mobile otimizado - NÃO CORTANDO NAS BORDAS */
+  /* Habitos mobile otimizado - SEM SOBREPOSIÇÃO */
   .habit-circle {
-    width: 34px !important;
-    height: 34px !important;
-    min-width: 34px !important;
-    min-height: 34px !important;
-    font-size: 16px !important;
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    min-height: 30px !important;
+    font-size: 14px !important;
+    margin: 0 auto;
   }
   
   .habit-table {
-    border-spacing: 0 6px;
-    margin-left: -4px;
-    margin-right: -4px;
-    width: calc(100% + 8px);
+    border-spacing: 0 4px;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
   }
   
   .habit-table th,
   .habit-table td {
-    padding: var(--space-sm) 2px !important;
+    padding: var(--space-xs) 2px !important;
   }
   
   .habit-table th {
     font-size: 9px !important;
-    padding-bottom: 4px !important;
+    padding-bottom: 2px !important;
   }
   
   .habit-name {
-    font-size: 14px !important;
-    padding-left: 4px;
+    font-size: 12px !important;
+    padding-left: 0;
+    line-height: 1.2;
   }
   
   /* Ajuste do header de hábitos */
   .habit-table th:first-child {
-    width: 35% !important;
+    width: 40% !important;
     text-align: left !important;
-    padding-left: 8px !important;
+    padding-left: 4px !important;
   }
   
   /* Garantir que não corte nas bordas */
@@ -1332,12 +1486,17 @@ input:focus, select:focus {
   
   /* Ajuste dos switches no mobile */
   .switch {
-    transform: scale(1);
+    transform: scale(0.9);
     margin-left: 0;
   }
   
   .task-item {
     padding: var(--space-sm) 0;
+    gap: var(--space-sm);
+  }
+  
+  .task-name {
+    font-size: 13px;
   }
   
   /* Melhor alinhamento do menu toggle */
@@ -1354,10 +1513,32 @@ input:focus, select:focus {
   .cat-header {
     padding: var(--space-sm) var(--space-md);
     margin-top: var(--space-sm);
+    font-size: 13px;
   }
   
   .task-container-wrapper.open {
     padding: var(--space-md);
+  }
+  
+  /* Histórico mobile */
+  .historico-filtros {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+  
+  .filtro-input,
+  .filtro-select {
+    min-width: 100%;
+  }
+  
+  .historico-estatisticas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  /* Modais mobile */
+  .modal-content {
+    padding: var(--space-lg);
+    max-height: 85vh;
   }
 }
 
@@ -1735,7 +1916,7 @@ input:focus, select:focus {
 <body>
 
 <button class="menu-toggle" onclick="toggleSidebar()">
-  <span>☰</span>
+  <span></span>
   <small id="menu-text">Menu</small>
 </button>
 
@@ -1777,7 +1958,6 @@ input:focus, select:focus {
     <button class="active" onclick="irPara('home', this)"><span class="icon">🏠</span> Home</button>
     <button onclick="irPara('conquistas', this)"><span class="icon">🏆</span> Conquistas</button>
     <button onclick="irPara('perfil', this)"><span class="icon">👤</span> Perfil</button>
-    <button onclick="irPara('registros', this)"><span class="icon">📝</span> Registros</button>
     <button onclick="irPara('historico', this)"><span class="icon">📜</span> Histórico</button>
     <button onclick="irPara('modofoco', this)" id="modoFocoBtn"><span class="icon">🍅</span> Modo Foco</button>
     <button onclick="fazerLogout()" style="margin-top: 40px; color: var(--danger);"><span class="icon">🚪</span> Sair</button>
@@ -1866,7 +2046,7 @@ input:focus, select:focus {
       <!-- Card de Tarefas -->
       <div class="card">
         <h3 onclick="toggleCard('homeTarefasCont', this)">🚀 Tarefas do Dia <span>▼</span></h3>
-        <div id="homeTarefasCont" class="card-content">
+        <div id="homeTarefasCont" class="card-content" style="max-height: none;">
           <div id="tarefasSkeleton">
             <div class="skeleton-cat" style="margin-bottom:var(--space-md);"></div>
             <div class="skeleton-task"></div>
@@ -1874,13 +2054,16 @@ input:focus, select:focus {
             <div class="skeleton-task"></div>
           </div>
           <div id="homeTarefas" style="display:none;"></div>
+          <div style="margin-top: var(--space-lg);">
+            <button class="btn-primary" onclick="abrirModalTarefas()">➕ Registrar Tarefas</button>
+          </div>
         </div>
       </div>
       
       <!-- Card de Hábitos -->
       <div class="card">
         <h3 onclick="toggleCard('homeHabitosCont', this)">✨ Hábitos Ativos <span>▼</span></h3>
-        <div id="homeHabitosCont" class="card-content">
+        <div id="homeHabitosCont" class="card-content" style="max-height: none;">
           <div id="habitosSkeleton">
             <div style="display:flex; gap:var(--space-md); margin-bottom:var(--space-lg);">
               <div class="skeleton-line" style="width:120px; height:24px;"></div>
@@ -1895,6 +2078,9 @@ input:focus, select:focus {
             <thead id="habitHead"></thead>
             <tbody id="homeHabitos"></tbody>
           </table>
+          <div style="margin-top: var(--space-lg);">
+            <button class="btn-primary" onclick="abrirModalHabitos()">➕ Registrar Hábitos</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1922,81 +2108,6 @@ input:focus, select:focus {
           <button class="btn-primary" onclick="salvarPerfilFirebase()">💾 Salvar Alterações</button>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- ==================== SEÇÃO REGISTROS ==================== -->
-  <div id="registros" class="section">
-    <div class="grid-stack">
-      <div class="card">
-        <h3 style="cursor: default;">➕ Novo Registro</h3>
-        <p style="color:var(--accent); font-size:13px; font-weight:700; margin-bottom:var(--space-sm);">CATEGORIA</p>
-        <div style="display:flex; gap:var(--space-md); margin-bottom:var(--space-lg)">
-            <input id="regCatNome" placeholder="Ex: Trabalho, Estudos...">
-            <button class="btn-primary btn-plus" onclick="addCat()">+</button>
-        </div>
-        
-        <p style="color:var(--accent); font-size:13px; font-weight:700; margin-bottom:var(--space-sm);">TAREFA</p>
-        <select id="regTarCat" style="margin-bottom:var(--space-md)"></select>
-        <div style="display:flex; gap:var(--space-md); margin-bottom:var(--space-lg)">
-            <input id="regTarNome" placeholder="Nome da tarefa...">
-            <button class="btn-primary btn-plus" onclick="addTar()">+</button>
-        </div>
-        
-        <p style="color:var(--accent); font-size:13px; font-weight:700; margin-bottom:var(--space-sm);">HÁBITO</p>
-        <div style="display:flex; gap:var(--space-md)">
-            <input id="regHabNome" placeholder="Ex: Meditar, Ler...">
-            <button class="btn-primary btn-plus" onclick="addHab()">+</button>
-        </div>
-      </div>
-      
-      <div class="card">
-        <h3 style="cursor: default;">📋 Estrutura Ativa</h3>
-        
-        <div class="estrutura-category">
-          <div class="estrutura-header" onclick="toggleEstrutura('estruturaCats')">
-            <span>📁 Categorias Criadas</span>
-            <span>▼</span>
-          </div>
-          <div id="estruturaCats" class="estrutura-content">
-            <div id="listCats"></div>
-          </div>
-        </div>
-
-        <div class="estrutura-category">
-          <div class="estrutura-header" onclick="toggleEstrutura('estruturaTars')">
-            <span>🎯 Lista de Tarefas</span>
-            <span>▼</span>
-          </div>
-          <div id="estruturaTars" class="estrutura-content">
-            <div id="listTars"></div>
-          </div>
-        </div>
-
-        <div class="estrutura-category">
-          <div class="estrutura-header" onclick="toggleEstrutura('estruturaHabs')">
-            <span>🔁 Hábitos Configurados</span>
-            <span>▼</span>
-          </div>
-          <div id="estruturaHabs" class="estrutura-content">
-            <div id="listHabs"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="card" style="border-color: rgba(239, 68, 68, 0.2); background: rgba(239, 68, 68, 0.05);">
-        <h3 style="color: var(--danger); border-bottom-color: var(--danger); cursor: default;">⚠️ Zona de Perigo</h3>
-        <div class="grid-stack">
-            <div>
-                <p style="font-size: 14px; margin-bottom: var(--space-md); color: rgba(255, 255, 255, 0.7); line-height: 1.6;">Remove apenas o progresso de hoje (tarefas e hábitos concluídos).</p>
-                <button onclick="resetDia()" class="btn-gold-outline">🔄 Resetar Hoje</button>
-            </div>
-            <div>
-                <p style="font-size: 14px; margin-bottom: var(--space-md); color: rgba(255, 255, 255, 0.7); line-height: 1.6;">⚠️ CUIDADO! Apaga TODOS os dados permanentemente.</p>
-                <button onclick="resetGeral()" class="btn-danger-outline">💣 Reset Total</button>
-            </div>
-        </div>
     </div>
   </div>
 
@@ -2033,8 +2144,44 @@ input:focus, select:focus {
   <div id="historico" class="section">
     <div class="card">
       <h3 style="cursor: default;">📜 Histórico de Atividades</h3>
-      <p style="color:rgba(255, 255, 255, 0.6); font-size:14px; margin-bottom:var(--space-lg);">Registro completo de todas as suas atividades realizadas.</p>
-      <div id="listHist"></div>
+      
+      <div class="historico-filtros">
+        <input type="text" id="filtroPesquisa" class="filtro-input" placeholder="🔍 Pesquisar atividades..." oninput="filtrarHistorico()">
+        <select id="filtroTipo" class="filtro-select" onchange="filtrarHistorico()">
+          <option value="">Todos os tipos</option>
+          <option value="T">Tarefas</option>
+          <option value="H">Hábitos</option>
+          <option value="P">Pomodoros</option>
+        </select>
+        <select id="filtroPeriodo" class="filtro-select" onchange="filtrarHistorico()">
+          <option value="7">Últimos 7 dias</option>
+          <option value="30" selected>Últimos 30 dias</option>
+          <option value="90">Últimos 3 meses</option>
+          <option value="365">Último ano</option>
+          <option value="all">Todo o período</option>
+        </select>
+      </div>
+      
+      <div class="historico-estatisticas">
+        <div class="estatistica-card">
+          <div class="estatistica-valor" id="totalAtividades">0</div>
+          <div class="estatistica-label">Atividades</div>
+        </div>
+        <div class="estatistica-card">
+          <div class="estatistica-valor" id="totalXP">0</div>
+          <div class="estatistica-label">XP Ganhos</div>
+        </div>
+        <div class="estatistica-card">
+          <div class="estatistica-valor" id="mediaDiaria">0</div>
+          <div class="estatistica-label">Média/dia</div>
+        </div>
+        <div class="estatistica-card">
+          <div class="estatistica-valor" id="melhorDia">0</div>
+          <div class="estatistica-label">Melhor dia</div>
+        </div>
+      </div>
+      
+      <div class="historico-lista" id="listHist"></div>
     </div>
   </div>
 
@@ -2125,6 +2272,60 @@ input:focus, select:focus {
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAIS DE REGISTRO ==================== -->
+<div id="modalTarefas" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>➕ Registrar Tarefas</h3>
+      <button class="modal-close" onclick="fecharModal('modalTarefas')">×</button>
+    </div>
+    
+    <div class="modal-form-group">
+      <label class="modal-label">NOVA CATEGORIA</label>
+      <div style="display:flex; gap:var(--space-md);">
+        <input id="modalCatNome" placeholder="Ex: Trabalho, Estudos...">
+        <button class="btn-primary btn-plus" onclick="addCatModal()">+</button>
+      </div>
+    </div>
+    
+    <div class="modal-form-group">
+      <label class="modal-label">NOVA TAREFA</label>
+      <select id="modalTarCat" style="margin-bottom:var(--space-md)"></select>
+      <div style="display:flex; gap:var(--space-md);">
+        <input id="modalTarNome" placeholder="Nome da tarefa...">
+        <button class="btn-primary btn-plus" onclick="addTarModal()">+</button>
+      </div>
+    </div>
+    
+    <div class="modal-form-group">
+      <label class="modal-label">CATEGORIAS EXISTENTES</label>
+      <div id="modalListCats" style="max-height:200px; overflow-y:auto; padding:var(--space-sm); background:rgba(255,255,255,0.03); border-radius:var(--radius-md);"></div>
+    </div>
+  </div>
+</div>
+
+<div id="modalHabitos" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>➕ Registrar Hábitos</h3>
+      <button class="modal-close" onclick="fecharModal('modalHabitos')">×</button>
+    </div>
+    
+    <div class="modal-form-group">
+      <label class="modal-label">NOVO HÁBITO</label>
+      <div style="display:flex; gap:var(--space-md);">
+        <input id="modalHabNome" placeholder="Ex: Meditar, Ler, Exercícios...">
+        <button class="btn-primary btn-plus" onclick="addHabModal()">+</button>
+      </div>
+    </div>
+    
+    <div class="modal-form-group">
+      <label class="modal-label">HÁBITOS EXISTENTES</label>
+      <div id="modalListHabs" style="max-height:200px; overflow-y:auto; padding:var(--space-sm); background:rgba(255,255,255,0.03); border-radius:var(--radius-md);"></div>
     </div>
   </div>
 </div>
@@ -2252,6 +2453,7 @@ function toggleSidebar() {
   const menuText = document.getElementById('menu-text');
   
   sidebar.classList.toggle('open');
+  menuToggle.classList.toggle('open');
 
   if (sidebar.classList.contains('open')) {
     menuToggle.style.position = 'fixed';
@@ -2270,6 +2472,7 @@ document.addEventListener('click', function(event) {
   if (sidebar.classList.contains('open')) {
     if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
       sidebar.classList.remove('open');
+      menuToggle.classList.remove('open');
       menuToggle.style.position = 'absolute';
       menuText.classList.remove('menu-text-active');
     }
@@ -2284,6 +2487,7 @@ function irPara(id, btn) {
   
   if(window.innerWidth <= 1090) {
     document.querySelector('.sidebar').classList.remove('open');
+    document.querySelector('.menu-toggle').classList.remove('open');
     document.querySelector('.menu-toggle').style.position = 'absolute';
     document.getElementById('menu-text').classList.remove('menu-text-active');
   }
@@ -2301,17 +2505,10 @@ function toggleCard(cardId, headerElement) {
   
   if (!cardContent) return;
   
-  if (cardContent.classList.contains('collapsed')) {
-    // Expandir
-    cardContent.classList.remove('collapsed');
-    cardContent.style.maxHeight = cardContent.scrollHeight + 'px';
-    icon.textContent = '▼';
-    
-    // Remover max-height após animação
-    setTimeout(() => {
-      cardContent.style.maxHeight = 'none';
-    }, 500);
-  } else {
+  // Verifica se está atualmente expandido
+  const isExpanded = cardContent.style.maxHeight && cardContent.style.maxHeight !== 'none';
+  
+  if (isExpanded) {
     // Colapsar
     cardContent.style.maxHeight = cardContent.scrollHeight + 'px';
     
@@ -2319,39 +2516,132 @@ function toggleCard(cardId, headerElement) {
     cardContent.offsetHeight;
     
     cardContent.style.maxHeight = '0';
-    cardContent.classList.add('collapsed');
+    cardContent.style.padding = '0';
     icon.textContent = '▶';
-  }
-}
-
-function toggleEstrutura(elementId) {
-  const element = document.getElementById(elementId);
-  const header = element.previousElementSibling;
-  const icon = header.querySelector('span:last-child');
-  
-  if (!element) return;
-  
-  if (element.classList.contains('open')) {
-    // Fechar
-    element.style.maxHeight = element.scrollHeight + 'px';
-    element.offsetHeight; // Forçar reflow
-    element.style.maxHeight = '0';
-    element.classList.remove('open');
-    icon.textContent = '▼';
   } else {
-    // Abrir
-    element.classList.add('open');
-    element.style.maxHeight = element.scrollHeight + 'px';
-    icon.textContent = '▲';
+    // Expandir
+    cardContent.classList.remove('collapsed');
+    cardContent.style.maxHeight = cardContent.scrollHeight + 'px';
+    cardContent.style.padding = 'var(--space-lg) 0 0 0';
+    icon.textContent = '▼';
     
-    // Remover max-height fixo após animação
+    // Remover max-height após animação
     setTimeout(() => {
-      if (element.classList.contains('open')) {
-        element.style.maxHeight = 'none';
-      }
+      cardContent.style.maxHeight = 'none';
     }, 500);
   }
 }
+
+// ==================== MODAIS ====================
+function abrirModalTarefas() {
+  document.getElementById('modalTarefas').style.display = 'flex';
+  renderModalContent();
+}
+
+function abrirModalHabitos() {
+  document.getElementById('modalHabitos').style.display = 'flex';
+  renderModalContent();
+}
+
+function fecharModal(modalId) {
+  document.getElementById(modalId).style.display = 'none';
+}
+
+function renderModalContent() {
+  // Atualizar select de categorias no modal
+  const modalTarCat = getElement("modalTarCat");
+  if (modalTarCat) {
+    modalTarCat.innerHTML = S.categorias.length > 0 ? 
+      S.categorias.map(c => `<option value="${c}">${c}</option>`).join("") :
+      "<option value=''>Crie uma categoria primeiro</option>";
+  }
+  
+  // Listar categorias existentes
+  const modalListCats = getElement("modalListCats");
+  if (modalListCats) {
+    modalListCats.innerHTML = S.categorias.map((c,i) => 
+      `<div class="item" style="padding:var(--space-sm) var(--space-md); margin-bottom:var(--space-xs);">
+        <span>${c}</span>
+        <button onclick="if(confirm('Remover categoria ${c}?')){S.categorias.splice(${i},1);salvar();renderModalContent();}" 
+                style="color:var(--danger);border:none;background:none;cursor:pointer;font-size:16px">✖</button>
+      </div>`
+    ).join("") || "<small style='color:rgba(255, 255, 255, 0.5); padding:var(--space-sm); text-align:center; display:block;'>Nenhuma categoria</small>";
+  }
+  
+  // Listar hábitos existentes
+  const modalListHabs = getElement("modalListHabs");
+  if (modalListHabs) {
+    modalListHabs.innerHTML = S.habitos.map((h,i) => 
+      `<div class="item" style="padding:var(--space-sm) var(--space-md); margin-bottom:var(--space-xs);">
+        <span>${h.nome} <small style="color:var(--gold); font-size:11px;">🔥 ${h.streak||0}d</small></span>
+        <button onclick="if(confirm('Remover hábito ${h.nome}?')){S.habitos.splice(${i},1);salvar();renderModalContent();}" 
+                style="color:var(--danger);border:none;background:none;cursor:pointer;font-size:16px">✖</button>
+      </div>`
+    ).join("") || "<small style='color:rgba(255, 255, 255, 0.5); padding:var(--space-sm); text-align:center; display:block;'>Nenhum hábito</small>";
+  }
+}
+
+function addCatModal() {
+  const input = getElement("modalCatNome");
+  const nome = input.value.trim();
+  if (nome) { 
+    if (S.categorias.includes(nome)) {
+      showToast("Categoria já existe!", 'error');
+      return;
+    }
+    S.categorias.push(nome); 
+    input.value = ""; 
+    showToast("Categoria criada!", 'success');
+    
+    salvar();
+    renderModalContent();
+    scheduleRender('tasks');
+  }
+}
+
+function addTarModal() {
+  const nomeInput = getElement("modalTarNome");
+  const catSelect = getElement("modalTarCat");
+  const nome = nomeInput.value.trim();
+  
+  if (nome && catSelect.value) { 
+    S.tarefas.push({nome, cat:catSelect.value, status:'pendente'}); 
+    nomeInput.value = ""; 
+    showToast("Tarefa criada!", 'success');
+    
+    salvar();
+    scheduleRender('tasks');
+  } else if (!catSelect.value) {
+    showToast("Crie uma categoria primeiro!", 'error');
+  }
+}
+
+function addHabModal() {
+  const input = getElement("modalHabNome");
+  const nome = input.value.trim();
+  if (nome) { 
+    if (S.habitos.some(h => h.nome === nome)) {
+      showToast("Hábito já existe!", 'error');
+      return;
+    }
+    S.habitos.push({nome, total:0, streak:0}); 
+    input.value = ""; 
+    showToast("Hábito adicionado!", 'success');
+    
+    salvar();
+    renderModalContent();
+    scheduleRender('habits');
+  }
+}
+
+// Fechar modais ao clicar fora
+document.querySelectorAll('.modal-overlay').forEach(modal => {
+  modal.addEventListener('click', function(e) {
+    if (e.target === this) {
+      this.style.display = 'none';
+    }
+  });
+});
 
 // ==================== AUTENTICAÇÃO ====================
 async function fazerLogin() {
@@ -2712,7 +3002,7 @@ function renderTasks() {
       <div class="empty-state">
         <div class="empty-state-icon">📝</div>
         <div class="empty-state-title">Nenhuma tarefa registrada</div>
-        <div class="empty-state-description">Crie sua primeira tarefa na aba Registros!</div>
+        <div class="empty-state-description">Clique no botão abaixo para criar sua primeira tarefa!</div>
       </div>`;
   } else {
     S.categorias.forEach((cat, catIndex) => {
@@ -2720,14 +3010,13 @@ function renderTasks() {
       const conc = ts.filter(t => t.status === 'concluido').length;
       const isOpen = openCats[cat];
       
-      // Cores diferentes para cada categoria
-      const colors = ['#667eea', '#f093fb', '#43e97b', '#fa709a'];
-      const colorIndex = catIndex % colors.length;
+      // Cores diferentes para cada categoria (8 cores disponíveis)
+      const colorIndex = catIndex % 8;
       
       tarHtml += `
-        <div class="cat-header" onclick="toggleCat('${cat}')" style="border-left: 4px solid ${colors[colorIndex]};">
+        <div class="cat-header" onclick="toggleCat('${cat}')" data-color="${colorIndex}">
           <span>${cat}</span>
-          <span style="font-size:12px; margin-left:auto; margin-right:var(--space-md); font-weight:600; color:${colors[colorIndex]}">${conc}/${ts.length}</span>
+          <span style="font-size:12px; margin-left:auto; margin-right:var(--space-md); font-weight:600; color:${getCategoryColor(colorIndex)}">${conc}/${ts.length}</span>
           <span>${isOpen?'▲':'▼'}</span>
         </div>
         <div class="task-container-wrapper ${isOpen?'open':''}">
@@ -2763,6 +3052,14 @@ function renderTasks() {
   }
 }
 
+function getCategoryColor(index) {
+  const colors = [
+    '#667eea', '#f093fb', '#43e97b', '#fa709a',
+    '#38f9d7', '#fee140', '#a855f7', '#fb923c'
+  ];
+  return colors[index % colors.length];
+}
+
 function renderHabits() {
   const diasS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
   const hoje = new Date().toLocaleDateString();
@@ -2788,7 +3085,7 @@ function renderHabits() {
         <div class="empty-state" style="padding:var(--space-xl) var(--space-lg);">
           <div class="empty-state-icon">🔁</div>
           <div class="empty-state-title">Nenhum hábito configurado</div>
-          <div class="empty-state-description">Adicione hábitos na aba Registros!</div>
+          <div class="empty-state-description">Clique no botão abaixo para criar seu primeiro hábito!</div>
         </div>
       </td></tr>`;
     } else {
@@ -2815,36 +3112,6 @@ function renderHabits() {
         });
       }, 0);
     }
-  }
-}
-
-function renderStructure() {
-  const regTarCat = getElement("regTarCat");
-  if (regTarCat) {
-    regTarCat.innerHTML = S.categorias.length > 0 ? 
-      S.categorias.map(c => `<option value="${c}">${c}</option>`).join("") :
-      "<option value=''>Crie uma categoria primeiro</option>";
-  }
-  
-  const listCats = getElement("listCats");
-  if (listCats) {
-    listCats.innerHTML = S.categorias.map((c,i) => 
-      `<div class="item"><span>${c}</span><button onclick="if(confirm('Remover categoria ${c}?')){S.categorias.splice(${i},1);salvar();}" style="color:var(--danger);border:none;background:none;cursor:pointer;font-size:20px">✖</button></div>`
-    ).join("") || "<small style='color:rgba(255, 255, 255, 0.5)'>Nenhuma categoria</small>";
-  }
-  
-  const listTars = getElement("listTars");
-  if (listTars) {
-    listTars.innerHTML = S.tarefas.map((t,i) => 
-      `<div class="item"><span>${t.nome} <small style='color:rgba(255, 255, 255, 0.5)'>(${t.cat})</small></span><button onclick="if(confirm('Remover tarefa?')){S.tarefas.splice(${i},1);salvar();}" style="color:var(--danger);border:none;background:none;cursor:pointer;font-size:20px">✖</button></div>`
-    ).join("") || "<small style='color:rgba(255, 255, 255, 0.5)'>Nenhuma tarefa</small>";
-  }
-  
-  const listHabs = getElement("listHabs");
-  if (listHabs) {
-    listHabs.innerHTML = S.habitos.map((h,i) => 
-      `<div class="item"><span>${h.nome}</span><button onclick="if(confirm('Remover hábito?')){S.habitos.splice(${i},1);salvar();}" style="color:var(--danger);border:none;background:none;cursor:pointer;font-size:20px">✖</button></div>`
-    ).join("") || "<small style='color:rgba(255, 255, 255, 0.5)'>Nenhum hábito</small>";
   }
 }
 
@@ -2904,21 +3171,113 @@ function renderHistory() {
   const histEl = getElement("listHist");
   if (!histEl) return;
   
-  if (S.hist.length === 0) {
-    histEl.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-state-icon">📜</div>
-        <div class="empty-state-title">Histórico vazio</div>
-        <div class="empty-state-description">Complete tarefas e hábitos para começar!</div>
-      </div>`;
-  } else {
-    histEl.innerHTML = S.hist.slice().reverse().map(h => `
-      <div class="item">
-        <span>${h.tipo === 'T' ? '📋' : '🔁'} ${h.nome}</span>
-        <small style="color:rgba(255, 255, 255, 0.5)">${h.data} • <span style="color:var(--accent);font-weight:600">+${h.xpGanhos}XP</span></small>
-      </div>
-    `).join("");
+  filtrarHistorico();
+}
+
+function filtrarHistorico() {
+  const pesquisa = document.getElementById('filtroPesquisa').value.toLowerCase();
+  const tipo = document.getElementById('filtroTipo').value;
+  const periodo = document.getElementById('filtroPeriodo').value;
+  
+  let historicoFiltrado = S.hist.slice().reverse();
+  
+  // Filtrar por tipo
+  if (tipo) {
+    historicoFiltrado = historicoFiltrado.filter(h => h.tipo === tipo);
   }
+  
+  // Filtrar por pesquisa
+  if (pesquisa) {
+    historicoFiltrado = historicoFiltrado.filter(h => 
+      h.nome.toLowerCase().includes(pesquisa) ||
+      (h.cat && h.cat.toLowerCase().includes(pesquisa))
+    );
+  }
+  
+  // Filtrar por período
+  if (periodo !== 'all') {
+    const dias = parseInt(periodo);
+    const dataLimite = new Date();
+    dataLimite.setDate(dataLimite.getDate() - dias);
+    
+    historicoFiltrado = historicoFiltrado.filter(h => {
+      const dataAtividade = new Date(h.data.split('/').reverse().join('-'));
+      return dataAtividade >= dataLimite;
+    });
+  }
+  
+  // Renderizar histórico filtrado
+  const histEl = getElement("listHist");
+  if (histEl) {
+    if (historicoFiltrado.length === 0) {
+      histEl.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">🔍</div>
+          <div class="empty-state-title">Nenhuma atividade encontrada</div>
+          <div class="empty-state-description">Tente ajustar os filtros de pesquisa.</div>
+        </div>`;
+    } else {
+      histEl.innerHTML = historicoFiltrado.map(h => {
+        const tipoClasse = h.tipo === 'T' ? 'tarefa' : h.tipo === 'H' ? 'habito' : 'pomodoro';
+        const tipoIcon = h.tipo === 'T' ? '📋' : h.tipo === 'H' ? '🔁' : '🍅';
+        return `
+          <div class="historico-item">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:var(--space-xs);">
+              <div style="display:flex; align-items:center; gap:var(--space-sm);">
+                <span class="historico-tipo historico-tipo-${tipoClasse}">${tipoIcon} ${h.tipo === 'T' ? 'Tarefa' : h.tipo === 'H' ? 'Hábito' : 'Pomodoro'}</span>
+                <strong style="font-size:14px;">${h.nome}</strong>
+              </div>
+              <span style="color:var(--accent);font-weight:600">+${h.xpGanhos}XP</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:rgba(255, 255, 255, 0.6);">
+              <span>${h.data} ${h.hora ? `• ${h.hora}:00` : ''}</span>
+              ${h.cat ? `<span style="color:var(--purple);">${h.cat}</span>` : ''}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+  }
+  
+  // Atualizar estatísticas
+  atualizarEstatisticasHistorico(historicoFiltrado);
+}
+
+function atualizarEstatisticasHistorico(historico) {
+  // Total de atividades
+  document.getElementById('totalAtividades').textContent = historico.length;
+  
+  // Total de XP
+  const totalXP = historico.reduce((sum, h) => sum + (h.xpGanhos || 0), 0);
+  document.getElementById('totalXP').textContent = totalXP;
+  
+  // Média diária (últimos 30 dias)
+  const hoje = new Date();
+  const trintaDiasAtras = new Date();
+  trintaDiasAtras.setDate(hoje.getDate() - 30);
+  
+  const atividades30Dias = historico.filter(h => {
+    const dataAtividade = new Date(h.data.split('/').reverse().join('-'));
+    return dataAtividade >= trintaDiasAtras;
+  });
+  
+  const diasComAtividades = new Set(atividades30Dias.map(h => h.data)).size;
+  const mediaDiaria = diasComAtividades > 0 ? (atividades30Dias.length / diasComAtividades).toFixed(1) : 0;
+  document.getElementById('mediaDiaria').textContent = mediaDiaria;
+  
+  // Melhor dia (dia com mais XP)
+  const xpPorDia = {};
+  historico.forEach(h => {
+    xpPorDia[h.data] = (xpPorDia[h.data] || 0) + (h.xpGanhos || 0);
+  });
+  
+  let melhorDiaXP = 0;
+  for (const dia in xpPorDia) {
+    if (xpPorDia[dia] > melhorDiaXP) {
+      melhorDiaXP = xpPorDia[dia];
+    }
+  }
+  document.getElementById('melhorDia').textContent = melhorDiaXP;
 }
 
 function renderPomodoroStats() {
@@ -2941,7 +3300,6 @@ function fullRender() {
   renderHeader();
   renderTasks();
   renderHabits();
-  renderStructure();
   renderBadges();
   renderHistory();
   renderPomodoroStats();
@@ -3082,7 +3440,7 @@ document.addEventListener('touchend', e => {
 });
 
 function handleSwipe() {
-  const sections = ['home', 'conquistas', 'perfil', 'registros', 'modofoco', 'historico'];
+  const sections = ['home', 'conquistas', 'perfil', 'historico', 'modofoco'];
   const currentSection = document.querySelector('.section.active');
   if (!currentSection) return;
   
@@ -3130,59 +3488,6 @@ function salvarPerfilFirebase() {
   if(window.tempFoto) S.perfil.foto = window.tempFoto;
   salvar(); 
   showToast("Perfil atualizado com sucesso!", 'success');
-}
-
-function addCat() { 
-  const i = document.getElementById("regCatNome"); 
-  const nome = i.value.trim();
-  if (nome) { 
-    if (S.categorias.includes(nome)) {
-      showToast("Categoria já existe!", 'error');
-      return;
-    }
-    S.categorias.push(nome); 
-    i.value = ""; 
-    showToast("Categoria criada!", 'success');
-    
-    scheduleRender('structure');
-    scheduleRender('tasks');
-    salvar(); 
-  } 
-}
-
-function addHab() { 
-  const i = document.getElementById("regHabNome"); 
-  const nome = i.value.trim();
-  if (nome) { 
-    if (S.habitos.some(h => h.nome === nome)) {
-      showToast("Hábito já existe!", 'error');
-      return;
-    }
-    S.habitos.push({nome, total:0, streak:0}); 
-    i.value = ""; 
-    showToast("Hábito adicionado!", 'success');
-    
-    scheduleRender('structure');
-    scheduleRender('habits');
-    salvar(); 
-  } 
-}
-
-function addTar() { 
-  const n = document.getElementById("regTarNome");
-  const c = document.getElementById("regTarCat"); 
-  const nome = n.value.trim();
-  if (nome && c.value) { 
-    S.tarefas.push({nome, cat:c.value, status:'pendente'}); 
-    n.value = ""; 
-    showToast("Tarefa criada!", 'success');
-    
-    scheduleRender('structure');
-    scheduleRender('tasks');
-    salvar(); 
-  } else if (!c.value) {
-    showToast("Crie uma categoria primeiro!", 'error');
-  }
 }
 
 function toggleTarefa(idx) {
@@ -3681,7 +3986,6 @@ function inicializarApp() {
     'hNivel', 'xpBar', 'xpNumerico', 'hFoto',
     'homeBadges', 'homeBadgesMobile',
     'homeTarefas', 'habitHead', 'homeHabitos',
-    'regTarCat', 'listCats', 'listTars', 'listHabs',
     'muralConquistas', 'listHist'
   ];
   
