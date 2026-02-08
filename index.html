@@ -327,7 +327,7 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
-  min-height: 140px; /* Reduzido de 160px */
+  min-height: 140px;
   position: relative;
   transition: var(--transition);
   overflow: hidden;
@@ -352,8 +352,8 @@ body {
 }
 
 .profile-img-slim {
-  width: 80px; /* Reduzido de 100px */
-  height: 80px; /* Reduzido de 100px */
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   border: 3px solid transparent;
   background: var(--primary-gradient) border-box;
@@ -380,7 +380,7 @@ body {
 
 /* Perfil com nome destacado */
 .profile-name-large {
-  font-size: 22px; /* Reduzido de 24px */
+  font-size: 22px;
   font-weight: 800;
   background: var(--primary-gradient);
   -webkit-background-clip: text;
@@ -391,7 +391,7 @@ body {
 }
 
 .profile-details {
-  font-size: 12px; /* Reduzido de 13px */
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.7);
   margin-bottom: var(--space-xs);
   display: flex;
@@ -410,7 +410,7 @@ body {
 
 .phrase-slim {
   font-style: italic;
-  font-size: 12px !important; /* Reduzido de 13px */
+  font-size: 12px !important;
   margin-top: var(--space-xs) !important;
   color: rgba(255, 255, 255, 0.8);
   background: var(--accent-gradient);
@@ -429,7 +429,7 @@ body {
 .xp-container {
   background: rgba(0, 0, 0, 0.3);
   border-radius: var(--radius-sm);
-  height: 14px; /* Reduzido de 16px */
+  height: 14px;
   overflow: hidden;
   margin-top: var(--space-xs);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -482,15 +482,15 @@ body {
 }
 
 .badge-mini {
-  width: 40px; /* Reduzido de 44px */
-  height: 40px; /* Reduzido de 44px */
+  width: 40px;
+  height: 40px;
   border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px; /* Reduzido de 20px */
+  font-size: 18px;
   border: 2px solid transparent;
   background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
               var(--primary-gradient) border-box;
@@ -934,17 +934,17 @@ input:checked + .slider:before {
   color: white;
   border: none;
   cursor: pointer;
-  width: 36px; /* Reduzido de 40px */
-  height: 36px; /* Reduzido de 40px */
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px; /* Reduzido de 20px */
+  font-size: 18px;
   font-weight: bold;
   border-radius: var(--radius-md);
   transition: var(--transition);
   box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
-  order: 1; /* Botão + primeiro */
+  order: 1;
 }
 
 .card-header-button:hover {
@@ -965,7 +965,7 @@ input:checked + .slider:before {
   justify-content: center;
   border-radius: var(--radius-sm);
   transition: var(--transition);
-  order: 2; /* Seta depois do botão + */
+  order: 2;
 }
 
 .card-toggle:hover {
@@ -1262,18 +1262,18 @@ input:checked + .slider:before {
 
 /* ==================== CARD POMODORO RÁPIDO - COR AJUSTADA ==================== */
 .pomodoro-card {
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(168, 85, 247, 0.15)); /* Cor mais suave */
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(168, 85, 247, 0.15));
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-radius: var(--radius-lg);
-  padding: var(--space-lg); /* Reduzido de var(--space-xl) */
-  border: 1px solid rgba(56, 189, 248, 0.2); /* Borda azul mais suave */
+  padding: var(--space-lg);
+  border: 1px solid rgba(56, 189, 248, 0.2);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   transition: var(--transition);
-  min-height: 140px; /* Reduzido de 160px */
+  min-height: 140px;
   position: relative;
   overflow: hidden;
 }
@@ -1291,15 +1291,15 @@ input:checked + .slider:before {
 .pomodoro-card:hover {
   border-color: rgba(56, 189, 248, 0.4);
   box-shadow: 
-    0 20px 40px rgba(56, 189, 248, 0.2), /* Sombra azul */
+    0 20px 40px rgba(56, 189, 248, 0.2),
     0 0 0 1px rgba(56, 189, 248, 0.1);
   transform: translateY(-4px);
 }
 
 .pomodoro-timer {
-  font-size: 42px; /* Reduzido de 48px */
+  font-size: 42px;
   font-weight: 800;
-  background: linear-gradient(135deg, #38bdf8, #a855f7); /* Gradiente azul/roxo */
+  background: linear-gradient(135deg, #38bdf8, #a855f7);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1315,21 +1315,21 @@ input:checked + .slider:before {
 }
 
 .pomodoro-btn {
-  width: 46px; /* Reduzido de 50px */
-  height: 46px; /* Reduzido de 50px */
+  width: 46px;
+  height: 46px;
   border-radius: var(--radius-md);
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px; /* Reduzido de 20px */
+  font-size: 18px;
   cursor: pointer;
   transition: var(--transition);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .pomodoro-btn-primary {
-  background: linear-gradient(135deg, #38bdf8, #a855f7); /* Gradiente azul/roxo */
+  background: linear-gradient(135deg, #38bdf8, #a855f7);
   color: white;
 }
 
@@ -1353,7 +1353,7 @@ input:checked + .slider:before {
 .pomodoro-title {
   font-size: 16px;
   font-weight: 700;
-  color: #38bdf8; /* Azul em vez de vermelho */
+  color: #38bdf8;
   margin-bottom: var(--space-sm);
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -1783,7 +1783,7 @@ input:focus, select:focus, textarea:focus {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 160px; /* Ajustado */
+    min-height: 160px;
     margin-top: var(--space-md);
   }
   
@@ -2939,34 +2939,46 @@ input:focus, select:focus, textarea:focus {
 
 <div id="popup"></div>
 
-<script>
-  // ==================== MONITOR DE ERROS GLOBAL ====================
-console.log("LifeDash v2.3 - Inicializando...");
+<!-- ==================== BOTÃO DE EMERGÊNCIA ==================== -->
+<button id="emergencyFixBtn" onclick="emergencyFix()" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 99999;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
+  cursor: pointer;
+  display: none;
+  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.5);
+  transition: all 0.3s;
+">
+  ⚡
+</button>
 
-// Capturar TODOS os erros não tratados
+<script>
+// ==================== MONITOR DE ERROS ====================
+console.log("LifeDash v2.3 - Inicializando sistema...");
+
+// Capturar todos os erros não tratados
 window.addEventListener('error', function(e) {
-  console.error("🔥 ERRO GLOBAL CAPTURADO:", e.error);
-  console.error("Arquivo:", e.filename);
-  console.error("Linha:", e.lineno);
-  
-  // Esconder loading se houver erro
+  console.error("ERRO GLOBAL:", e.error);
+  console.error("Local:", e.filename, "Linha:", e.lineno);
   hideLoading();
   hideSkeletons();
-  
-  // Mostrar erro amigável
-  if (e.error && e.error.message && e.error.message.includes('firebase')) {
-    showToast("Erro de conexão. Verifique sua internet.", 'error');
-  }
 });
 
 // Capturar promessas rejeitadas
 window.addEventListener('unhandledrejection', function(e) {
-  console.error("🔥 PROMESSA REJEITADA:", e.reason);
+  console.error("PROMESSA REJEITADA:", e.reason);
   hideLoading();
   hideSkeletons();
 });
 
-console.log("Monitor de erros ativado");
 // ==================== CONFIGURAÇÃO FIREBASE ====================
 const firebaseConfig = {
   apiKey: "AIzaSyBkSJDH_aEVsp-LSNGm4XBqWoo_FUIJYNo",
@@ -2977,18 +2989,17 @@ const firebaseConfig = {
   appId: "1:270639106877:web:92c8ec9353c6bacb485354"
 };
 
-// CORREÇÃO: Inicializar Firebase com tratamento de erro
+// Inicializar Firebase com tratamento de erro
 try {
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
     console.log("Firebase inicializado com sucesso");
   } else {
     console.log("Firebase já estava inicializado");
-    firebase.app(); // Usa a instância existente
+    firebase.app();
   }
 } catch (error) {
-  console.error("ERRO CRÍTICO Firebase:", error);
-  alert("Erro ao carregar o sistema. Recarregue a página.");
+  console.error("Erro ao inicializar Firebase:", error);
 }
 
 const db = firebase.firestore();
@@ -3043,18 +3054,17 @@ function getElement(id) {
 }
 
 // ==================== FUNÇÕES BÁSICAS ====================
-// Sistema XP mais difícil
 function xpInfo(xp) { 
   if (typeof xp !== 'number' || xp < 0) xp = 0;
   
   let nivel = 1;
   let xpBase = 0;
-  let xpProximo = 150; // Aumentado de 100 para 150
+  let xpProximo = 150;
   
   while (xp >= xpProximo) {
     nivel++;
     xpBase = xpProximo;
-    xpProximo += Math.floor(150 * Math.pow(1.25, nivel - 1)); // Aumentado o crescimento
+    xpProximo += Math.floor(150 * Math.pow(1.25, nivel - 1));
   }
   
   const xpAtualNivel = xp - xpBase;
@@ -3124,7 +3134,6 @@ function irPara(id, btn) {
     document.getElementById('menu-text').classList.remove('menu-text-active');
   }
   
-  // Se for para a página de estatísticas, renderizar os gráficos
   if (id === 'modofoco') {
     setTimeout(renderStatistics, 100);
   }
@@ -3135,13 +3144,11 @@ function toggleAuth(m) {
   document.getElementById('auth-register').style.display = m==='register'?'block':'none'; 
 }
 
-// ==================== TOGGLE CARD CONTENT CORRIGIDO ====================
 function toggleCardContent(cardId, button) {
   const cardContent = document.getElementById(cardId);
   if (!cardContent) return;
   
   if (cardContent.classList.contains('collapsed')) {
-    // Expandir
     cardContent.classList.remove('collapsed');
     cardContent.style.maxHeight = cardContent.scrollHeight + 'px';
     button.classList.remove('closed');
@@ -3152,9 +3159,8 @@ function toggleCardContent(cardId, button) {
       cardContent.style.maxHeight = 'none';
     }, 500);
   } else {
-    // Colapsar
     cardContent.style.maxHeight = cardContent.scrollHeight + 'px';
-    cardContent.offsetHeight; // Forçar reflow
+    cardContent.offsetHeight;
     cardContent.style.maxHeight = '0';
     cardContent.classList.add('collapsed');
     button.classList.remove('open');
@@ -3179,7 +3185,6 @@ function fecharModal(modalId) {
 }
 
 function renderModalContent() {
-  // Atualizar select de categorias no modal
   const modalTarCat = getElement("modalTarCat");
   if (modalTarCat) {
     modalTarCat.innerHTML = S.categorias.length > 0 ? 
@@ -3187,7 +3192,6 @@ function renderModalContent() {
       "<option value=''>Crie uma categoria primeiro</option>";
   }
   
-  // Listar categorias existentes
   const modalListCats = getElement("modalListCats");
   if (modalListCats) {
     modalListCats.innerHTML = S.categorias.map((c,i) => 
@@ -3199,7 +3203,6 @@ function renderModalContent() {
     ).join("") || "<small style='color:rgba(255, 255, 255, 0.5); padding:var(--space-sm); text-align:center; display:block;'>Nenhuma categoria</small>";
   }
   
-  // Listar hábitos existentes
   const modalListHabs = getElement("modalListHabs");
   if (modalListHabs) {
     modalListHabs.innerHTML = S.habitos.map((h,i) => 
@@ -3214,7 +3217,6 @@ function renderModalContent() {
     ).join("") || "<small style='color:rgba(255, 255, 255, 0.5); padding:var(--space-sm); text-align:center; display:block;'>Nenhum hábito</small>";
   }
   
-  // Listar tarefas ativas para adicionar subtarefas
   const taskListModal = getElement("taskListModal");
   if (taskListModal) {
     const tarefasAtivas = S.tarefas.filter(t => t.status !== 'oculta');
@@ -3370,7 +3372,6 @@ function addHabModal() {
   }
 }
 
-// Fechar modais ao clicar fora
 document.querySelectorAll('.modal-overlay').forEach(modal => {
   modal.addEventListener('click', function(e) {
     if (e.target === this) {
@@ -3516,31 +3517,44 @@ function fazerLogout() {
   }); 
 }
 
+// ==================== ESTADO GLOBAL ====================
+let S = { 
+  perfil: {}, 
+  categorias: [], 
+  tarefas: [], 
+  habitos: [], 
+  hist: [], 
+  xp: 0, 
+  badges_unlocked: [],
+  pomodoroStats: {
+    total: 0,
+    hoje: 0,
+    tempoTotal: 0,
+    tempoHoje: 0
+  },
+  ultimoReset: new Date().toLocaleDateString()
+};
+let openCats = JSON.parse(localStorage.getItem('lifeDash_openCats')) || {};
+
 // ==================== TIMEOUT DE SEGURANÇA ====================
-// Previne tela de carregamento infinita
 setTimeout(() => {
   const loadingOverlay = document.getElementById('loadingOverlay');
   const loginScreen = document.getElementById('login-screen');
-  
-  console.log("Verificação de timeout:");
-  console.log("- Login screen visible:", loginScreen.style.display !== 'none');
-  console.log("- Loading overlay active:", loadingOverlay?.classList.contains('active'));
   
   if (loadingOverlay && loadingOverlay.classList.contains('active')) {
     console.warn("TIMEOUT: Forçando esconder loading após 15 segundos");
     hideLoading();
     hideSkeletons();
     
-    // Se ainda não mostrou login, mostrar
     if (loginScreen.style.display === 'none' && !auth.currentUser) {
       loginScreen.style.display = 'flex';
     }
   }
-}, 15000); // 15 segundos
+}, 15000);
 
 // ==================== POMODORO RÁPIDO ====================
 let quickPomodoroTimer = null;
-let quickPomodoroTime = 25 * 60; // 25 minutos em segundos
+let quickPomodoroTime = 25 * 60;
 let isQuickPomodoroRunning = false;
 let isQuickPomodoroPaused = false;
 
@@ -3548,17 +3562,14 @@ function toggleQuickPomodoro() {
   const startBtn = document.getElementById('quickPomodoroStart');
   
   if (!isQuickPomodoroRunning) {
-    // Iniciar modo foco
     iniciarModoFocoRapido();
   } else if (isQuickPomodoroRunning && !isQuickPomodoroPaused) {
-    // Pausar pomodoro
     isQuickPomodoroPaused = true;
     startBtn.innerHTML = '▶';
     startBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
     clearInterval(quickPomodoroTimer);
     
   } else if (isQuickPomodoroRunning && isQuickPomodoroPaused) {
-    // Retomar pomodoro
     isQuickPomodoroPaused = false;
     startBtn.innerHTML = '⏸';
     startBtn.style.background = 'linear-gradient(135deg, #38bdf8, #a855f7)';
@@ -3570,7 +3581,6 @@ function toggleQuickPomodoro() {
 function iniciarModoFocoRapido() {
   const startBtn = document.getElementById('quickPomodoroStart');
   
-  // Iniciar pomodoro
   isQuickPomodoroRunning = true;
   isQuickPomodoroPaused = false;
   startBtn.innerHTML = '⏸';
@@ -3578,24 +3588,20 @@ function iniciarModoFocoRapido() {
   
   quickPomodoroTime = 25 * 60;
   
-  // Mostrar overlay de modo foco
   document.getElementById('focoOverlay').style.display = 'flex';
   document.body.style.overflow = 'hidden';
   
-  // Atualizar timer do overlay
   const focoTimer = document.getElementById('focoTimer');
   const focoStatus = document.getElementById('focoStatus');
   
   if (focoTimer) focoTimer.textContent = '25:00';
   if (focoStatus) focoStatus.textContent = 'Foco - Pomodoro Rápido';
   
-  // Iniciar contagem regressiva
   quickPomodoroTimer = setInterval(() => {
     if (!isQuickPomodoroPaused && quickPomodoroTime > 0) {
       quickPomodoroTime--;
       updateQuickPomodoroDisplay();
       
-      // Atualizar timer do overlay
       if (focoTimer) {
         const minutes = Math.floor(quickPomodoroTime / 60);
         const seconds = quickPomodoroTime % 60;
@@ -3605,17 +3611,14 @@ function iniciarModoFocoRapido() {
       if (quickPomodoroTime === 0) {
         clearInterval(quickPomodoroTimer);
         
-        // Completar pomodoro
         showToast("🍅 Pomodoro completo! Hora de uma pausa.", 'success');
         
-        // Registrar no histórico
         const hoje = new Date().toLocaleDateString();
         S.pomodoroStats.hoje = (S.pomodoroStats.hoje || 0) + 1;
         S.pomodoroStats.total = (S.pomodoroStats.total || 0) + 1;
         S.pomodoroStats.tempoHoje = (S.pomodoroStats.tempoHoje || 0) + 25;
         S.pomodoroStats.tempoTotal = (S.pomodoroStats.tempoTotal || 0) + 25;
         
-        // Ganhar XP
         S.xp += 15;
         S.hist.push({
           nome: "Pomodoro Rápido Completado",
@@ -3627,12 +3630,10 @@ function iniciarModoFocoRapido() {
         salvar();
         scheduleRender('stats');
         
-        // Fechar overlay
         setTimeout(() => {
           document.getElementById('focoOverlay').style.display = 'none';
           document.body.style.overflow = 'auto';
           
-          // Reiniciar para próximo pomodoro
           resetQuickPomodoro();
           startBtn.innerHTML = '▶';
           startBtn.style.background = 'linear-gradient(135deg, #38bdf8, #a855f7)';
@@ -3651,14 +3652,12 @@ function updateQuickPomodoro() {
       clearInterval(quickPomodoroTimer);
       showToast("🍅 Pomodoro completo! Hora de uma pausa.", 'success');
       
-      // Registrar no histórico
       const hoje = new Date().toLocaleDateString();
       S.pomodoroStats.hoje = (S.pomodoroStats.hoje || 0) + 1;
       S.pomodoroStats.total = (S.pomodoroStats.total || 0) + 1;
       S.pomodoroStats.tempoHoje = (S.pomodoroStats.tempoHoje || 0) + 25;
       S.pomodoroStats.tempoTotal = (S.pomodoroStats.tempoTotal || 0) + 25;
       
-      // Ganhar XP
       S.xp += 15;
       S.hist.push({
         nome: "Pomodoro Rápido Completado",
@@ -3694,7 +3693,6 @@ function updateQuickPomodoroDisplay() {
   if (timerDisplay) {
     timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     
-    // Mudar cor quando estiver nos últimos 5 minutos
     if (quickPomodoroTime <= 5 * 60 && quickPomodoroTime > 0) {
       timerDisplay.style.background = 'linear-gradient(135deg, #f59e0b, #a855f7)';
       timerDisplay.style.webkitBackgroundClip = 'text';
@@ -3716,14 +3714,10 @@ auth.onAuthStateChanged(async (user) => {
   if (user) {
     console.log("UID do usuário:", user.uid);
     
-    // 1. Esconder tela de login IMEDIATAMENTE
     document.getElementById('login-screen').style.display = 'none';
-    
-    // 2. Mostrar loading
     showLoading("Carregando seus dados...");
     
     try {
-      // 3. Buscar dados do Firestore
       console.log("Buscando dados do Firestore...");
       const docRef = db.collection("users").doc(user.uid);
       const doc = await docRef.get();
@@ -3732,7 +3726,6 @@ auth.onAuthStateChanged(async (user) => {
         console.log("Documento encontrado");
         S = doc.data();
         
-        // 4. GARANTIR que todas as propriedades existam
         S.perfil = S.perfil || {};
         S.categorias = S.categorias || [];
         S.tarefas = S.tarefas || [];
@@ -3745,20 +3738,16 @@ auth.onAuthStateChanged(async (user) => {
         };
         S.ultimoReset = S.ultimoReset || new Date().toLocaleDateString();
         
-        // 5. Sincronizar perfil
         sincronizarInputsPerfil();
         
-        // 6. Renderizar TUDO
         setTimeout(() => {
           fullRender();
           updateQuickPomodoroDisplay();
           
-          // 7. Esconder loading e skeletons
           setTimeout(() => {
             hideSkeletons();
             hideLoading();
             
-            // 8. Boas-vindas
             if (S.perfil && S.perfil.nome) {
               showToast(`Bem-vindo, ${S.perfil.nome}!`, 'success', 2000);
             }
@@ -3766,7 +3755,6 @@ auth.onAuthStateChanged(async (user) => {
         }, 100);
         
       } else {
-        // Criar novo documento
         console.log("Criando novo documento para usuário");
         const novosDados = {
           perfil: {
@@ -3800,11 +3788,8 @@ auth.onAuthStateChanged(async (user) => {
     }
     
   } else {
-    // Usuário NÃO autenticado
     console.log("Nenhum usuário, mostrando login");
     document.getElementById('login-screen').style.display = 'flex';
-    
-    // GARANTIR que loading esteja escondido
     hideLoading();
   }
 });
@@ -3813,20 +3798,16 @@ auth.onAuthStateChanged(async (user) => {
 function verificarResetDiario() {
   const hoje = new Date().toLocaleDateString();
   
-  // Se for um novo dia, resetar tarefas concluídas
   if (S.ultimoReset !== hoje) {
-    // Resetar estatísticas de pomodoro do dia
     S.pomodoroStats.hoje = 0;
     S.pomodoroStats.tempoHoje = 0;
     
-    // Marcar tarefas concluídas como pendentes
     let tarefasResetadas = 0;
     S.tarefas.forEach(tarefa => {
       if (tarefa.status === 'concluido') {
         tarefa.status = 'pendente';
         tarefasResetadas++;
         
-        // Resetar subtarefas
         if (tarefa.subtarefas && tarefa.subtarefas.length > 0) {
           tarefa.subtarefas.forEach(sub => {
             sub.concluida = false;
@@ -3835,10 +3816,8 @@ function verificarResetDiario() {
       }
     });
     
-    // Atualizar data do último reset
     S.ultimoReset = hoje;
     
-    // Salvar mudanças se houver tarefas resetadas
     if (tarefasResetadas > 0) {
       salvar();
       showToast(`📅 Novo dia! ${tarefasResetadas} tarefas resetadas.`, 'info', 3000);
@@ -3959,7 +3938,6 @@ function renderTasks() {
       
       if (ts.length === 0) return;
       
-      // Cores diferentes para cada categoria (8 cores disponíveis)
       const colorIndex = catIndex % 8;
       
       tarHtml += `
@@ -4144,12 +4122,10 @@ function filtrarHistorico() {
   
   let historicoFiltrado = S.hist.slice().reverse();
   
-  // Filtrar por tipo
   if (tipo) {
     historicoFiltrado = historicoFiltrado.filter(h => h.tipo === tipo);
   }
   
-  // Filtrar por pesquisa
   if (pesquisa) {
     historicoFiltrado = historicoFiltrado.filter(h => 
       h.nome.toLowerCase().includes(pesquisa) ||
@@ -4157,7 +4133,6 @@ function filtrarHistorico() {
     );
   }
   
-  // Filtrar por período
   if (periodo !== 'all') {
     const dias = parseInt(periodo);
     const dataLimite = new Date();
@@ -4169,7 +4144,6 @@ function filtrarHistorico() {
     });
   }
   
-  // Renderizar histórico filtrado
   const histEl = getElement("listHist");
   if (histEl) {
     if (historicoFiltrado.length === 0) {
@@ -4202,19 +4176,15 @@ function filtrarHistorico() {
     }
   }
   
-  // Atualizar estatísticas
   atualizarEstatisticasHistorico(historicoFiltrado);
 }
 
 function atualizarEstatisticasHistorico(historico) {
-  // Total de atividades
   document.getElementById('totalAtividades').textContent = historico.length;
   
-  // Total de XP
   const totalXP = historico.reduce((sum, h) => sum + (h.xpGanhos || 0), 0);
   document.getElementById('totalXP').textContent = totalXP;
   
-  // Média diária (últimos 30 dias)
   const hoje = new Date();
   const trintaDiasAtras = new Date();
   trintaDiasAtras.setDate(hoje.getDate() - 30);
@@ -4228,7 +4198,6 @@ function atualizarEstatisticasHistorico(historico) {
   const mediaDiaria = diasComAtividades > 0 ? (atividades30Dias.length / diasComAtividades).toFixed(1) : 0;
   document.getElementById('mediaDiaria').textContent = mediaDiaria;
   
-  // Melhor dia (dia com mais XP)
   const xpPorDia = {};
   historico.forEach(h => {
     xpPorDia[h.data] = (xpPorDia[h.data] || 0) + (h.xpGanhos || 0);
@@ -4246,7 +4215,6 @@ function atualizarEstatisticasHistorico(historico) {
 // ==================== ESTATÍSTICAS E GRÁFICOS ====================
 function renderStatistics() {
   if (!S || !S.hist || S.hist.length === 0) {
-    // Mostrar estado vazio
     document.getElementById('statTarefasCompletas').textContent = '0';
     document.getElementById('statHabitosStreak').textContent = '0';
     document.getElementById('statXPTotal').textContent = '0';
@@ -4255,7 +4223,6 @@ function renderStatistics() {
     document.getElementById('mediaDiariaStats').textContent = '0 atividades/dia';
     document.getElementById('metaSugerida').textContent = 'Complete sua primeira tarefa!';
     
-    // Limpar gráficos
     const chartContainers = ['categoriaChart', 'progressoSemanalChart', 'produtividadeChart'];
     chartContainers.forEach(id => {
       const canvas = document.getElementById(id);
@@ -4263,7 +4230,6 @@ function renderStatistics() {
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // Mostrar mensagem de estado vazio
         ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
         ctx.font = '16px "Segoe UI"';
         ctx.textAlign = 'center';
@@ -4276,7 +4242,6 @@ function renderStatistics() {
     return;
   }
   
-  // Atualizar estatísticas gerais
   const tarefasCompletas = S.hist.filter(h => h.tipo === 'T').length;
   const maiorStreak = S.habitos.length > 0 ? Math.max(...S.habitos.map(h => h.streak || 0)) : 0;
   const nivelInfo = xpInfo(S.xp);
@@ -4286,7 +4251,6 @@ function renderStatistics() {
   document.getElementById('statXPTotal').textContent = S.xp;
   document.getElementById('statNivelAtual').textContent = nivelInfo.n;
   
-  // Calcular estatísticas por categoria
   const statsPorCategoria = {};
   S.tarefas.forEach(t => {
     if (!statsPorCategoria[t.cat]) {
@@ -4298,7 +4262,6 @@ function renderStatistics() {
     }
   });
   
-  // Encontrar categoria em alta
   let categoriaAlta = { nome: 'Nenhuma', taxa: 0 };
   for (const cat in statsPorCategoria) {
     const taxa = statsPorCategoria[cat].total > 0 ? 
@@ -4308,7 +4271,6 @@ function renderStatistics() {
     }
   }
   
-  // Calcular média diária
   const ultimos7Dias = [...Array(7)].map((_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (6 - i));
@@ -4324,11 +4286,9 @@ function renderStatistics() {
   
   const mediaDiaria = Object.values(atividadesPorDia).reduce((a, b) => a + b, 0) / 7;
   
-  // Atualizar insights
   document.getElementById('categoriaAlta').textContent = `${categoriaAlta.nome} (${categoriaAlta.taxa.toFixed(0)}% concluída)`;
   document.getElementById('mediaDiariaStats').textContent = `${mediaDiaria.toFixed(1)} atividades/dia`;
   
-  // Sugerir meta
   let metaSugerida = '';
   if (tarefasCompletas < 5) {
     metaSugerida = 'Complete 5 tarefas para desbloquear sua primeira conquista!';
@@ -4341,7 +4301,6 @@ function renderStatistics() {
   }
   document.getElementById('metaSugerida').textContent = metaSugerida;
   
-  // Renderizar gráficos
   renderGraficoCategorias(statsPorCategoria);
   renderGraficoProgressoSemanal(atividadesPorDia, ultimos7Dias);
   renderGraficoProdutividade();
@@ -4350,7 +4309,6 @@ function renderStatistics() {
 function renderGraficoCategorias(statsPorCategoria) {
   const ctx = document.getElementById('categoriaChart').getContext('2d');
   
-  // Destruir gráfico anterior se existir
   if (window.categoriaChart) {
     window.categoriaChart.destroy();
   }
@@ -4363,7 +4321,6 @@ function renderGraficoCategorias(statsPorCategoria) {
     (statsPorCategoria[cat].completas / statsPorCategoria[cat].total) * 100 : 0
   );
   
-  // Cores para as categorias
   const cores = categorias.map((cat, index) => getCategoryColor(index));
   
   window.categoriaChart = new Chart(ctx, {
@@ -4463,15 +4420,12 @@ function renderGraficoCategorias(statsPorCategoria) {
 function renderGraficoProgressoSemanal(atividadesPorDia, dias) {
   const ctx = document.getElementById('progressoSemanalChart').getContext('2d');
   
-  // Destruir gráfico anterior se existir
   if (window.progressoSemanalChart) {
     window.progressoSemanalChart.destroy();
   }
   
-  // Nomes dos dias da semana
   const nomesDias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
   
-  // Preparar dados
   const dados = dias.map(dia => {
     const dataObj = new Date(dia.split('/').reverse().join('-'));
     const nomeDia = nomesDias[dataObj.getDay()];
@@ -4551,19 +4505,16 @@ function renderGraficoProgressoSemanal(atividadesPorDia, dias) {
 function renderGraficoProdutividade() {
   const ctx = document.getElementById('produtividadeChart').getContext('2d');
   
-  // Destruir gráfico anterior se existir
   if (window.produtividadeChart) {
     window.produtividadeChart.destroy();
   }
   
-  // Agrupar atividades por tipo
   const atividadesPorTipo = {
     'Tarefas': S.hist.filter(h => h.tipo === 'T').length,
     'Hábitos': S.hist.filter(h => h.tipo === 'H').length,
     'Pomodoros': S.hist.filter(h => h.tipo === 'P').length
   };
   
-  // Calcular XP por tipo
   const xpPorTipo = {
     'Tarefas': S.hist.filter(h => h.tipo === 'T').reduce((sum, h) => sum + (h.xpGanhos || 0), 0),
     'Hábitos': S.hist.filter(h => h.tipo === 'H').reduce((sum, h) => sum + (h.xpGanhos || 0), 0),
@@ -4691,15 +4642,13 @@ function iniciarModoFoco() {
       if (tempoRestante <= 0) {
         clearInterval(focoTimer);
         if (isPomodoro) {
-          // Pomodoro completado
           pomodoroCount++;
           S.pomodoroStats.hoje = (S.pomodoroStats.hoje || 0) + 1;
           S.pomodoroStats.total = (S.pomodoroStats.total || 0) + 1;
           S.pomodoroStats.tempoHoje = (S.pomodoroStats.tempoHoje || 0) + parseInt(document.getElementById('focoTempo').value);
           S.pomodoroStats.tempoTotal = (S.pomodoroStats.tempoTotal || 0) + parseInt(document.getElementById('focoTempo').value);
           
-          // Ganhar XP por pomodoro completado (reduzido)
-          S.xp += 15; // Reduzido de 25 para 15
+          S.xp += 15;
           S.hist.push({
             nome: "Pomodoro Completado",
             data: new Date().toLocaleDateString(),
@@ -4710,7 +4659,6 @@ function iniciarModoFoco() {
           salvar();
           showToast(`🍅 Pomodoro completo! +15 XP`, 'success');
           
-          // Iniciar descanso
           const tempoDescanso = parseInt(document.getElementById('descansoTempo').value) * 60;
           tempoRestante = tempoDescanso;
           isPomodoro = false;
@@ -4803,13 +4751,11 @@ function handleSwipe() {
   const swipeThreshold = 50;
   
   if (touchEndX < touchStartX - swipeThreshold && currentIndex < sections.length - 1) {
-    // Swipe left - próxima seção
     const nextBtn = document.querySelector(`.nav button[onclick*="${sections[currentIndex + 1]}"]`);
     if (nextBtn) {
       irPara(sections[currentIndex + 1], nextBtn);
     }
   } else if (touchEndX > touchStartX + swipeThreshold && currentIndex > 0) {
-    // Swipe right - seção anterior
     const prevBtn = document.querySelector(`.nav button[onclick*="${sections[currentIndex - 1]}"]`);
     if (prevBtn) {
       irPara(sections[currentIndex - 1], prevBtn);
@@ -4849,14 +4795,13 @@ function toggleTarefa(idx) {
 
   if (t.status === 'pendente') {
     t.status = 'concluido'; 
-    // XP reduzido de 10 para 5
     S.xp = (S.xp || 0) + 5;
     S.hist.push({
       nome: t.nome, 
       data: hoje, 
       tipo: 'T', 
       cat: t.cat, 
-      xpGanhos: 5, // Reduzido
+      xpGanhos: 5,
       hora: new Date().getHours()
     });
     
@@ -4890,7 +4835,6 @@ function toggleSubtarefa(tarefaIndex, subtarefaIndex) {
   const subtarefa = tarefa.subtarefas[subtarefaIndex];
   subtarefa.concluida = !subtarefa.concluida;
   
-  // Pequena quantidade de XP por subtarefa
   if (subtarefa.concluida) {
     S.xp += 2;
     S.hist.push({
@@ -4930,13 +4874,12 @@ function concluirHabito(habIdx, dataStr) {
     h.streak = (h.streak || 0) + 1;
   }
 
-  // XP reduzido de 15 para 8
   S.xp += 8;
   S.hist.push({
     nome: h.nome, 
     data: dataStr, 
     tipo: 'H', 
-    xpGanhos: 8, // Reduzido
+    xpGanhos: 8,
     hora: new Date().getHours()
   });
 
@@ -4964,19 +4907,17 @@ function toggleCat(cat) {
   
   if (!currentWrapper) return;
   
-  // Atualizar ícone
   const iconSpan = currentHeader.querySelector('span:last-child');
   if (iconSpan) {
     iconSpan.innerText = openCats[cat] ? '▲' : '▼';
   }
   
-  // Animação suave
   if (openCats[cat]) {
     currentWrapper.classList.add('open');
     currentWrapper.style.maxHeight = currentWrapper.scrollHeight + 'px';
   } else {
     currentWrapper.style.maxHeight = currentWrapper.scrollHeight + 'px';
-    currentWrapper.offsetHeight; // Forçar reflow
+    currentWrapper.offsetHeight;
     currentWrapper.style.maxHeight = '0';
     currentWrapper.classList.remove('open');
   }
@@ -5101,7 +5042,6 @@ function hideLoading() {
     console.log("Loading overlay encontrado, removendo...");
     overlay.classList.remove('active');
     
-    // Remover DOM após animação
     setTimeout(() => {
       if (overlay.parentNode) {
         overlay.remove();
@@ -5112,7 +5052,6 @@ function hideLoading() {
     console.log("Nenhum loading overlay encontrado");
   }
   
-  // Garantir que skeletons sejam escondidos também
   setTimeout(hideSkeletons, 100);
 }
 
@@ -5149,7 +5088,6 @@ function showToast(message, type = 'info', duration = 3000) {
 function hideSkeletons() {
   console.log("Executando hideSkeletons()");
   
-  // 1. Esconder TODOS os elementos skeleton
   const skeletonSelectors = [
     '.skeleton', '.skeleton-line', '.skeleton-badge', 
     '.skeleton-cat', '.skeleton-task', '.skeleton-habit-row', 
@@ -5163,7 +5101,6 @@ function hideSkeletons() {
     });
   });
   
-  // 2. Mostrar elementos REAIS
   const elementsToShow = [
     {id: 'hFoto', display: 'block'},
     {id: 'profileInfoReal', display: 'block'},
@@ -5182,14 +5119,12 @@ function hideSkeletons() {
     }
   });
   
-  // 3. Mostrar tabela de hábitos
   const habitTable = document.querySelector('.habit-table');
   if (habitTable) {
     habitTable.style.display = 'table';
     habitTable.style.visibility = 'visible';
   }
   
-  // 4. Esconder skeletons específicos
   const skeletonIds = [
     'profileInfoSkeleton', 'mobileBadgesSkeleton', 
     'xpInfoSkeleton', 'badgesSkeleton', 
@@ -5267,7 +5202,6 @@ function resetDia() {
   S.hist = S.hist.filter(x => x.data !== hoje);
   S.tarefas.forEach(t => t.status = 'pendente');
   
-  // Resetar subtarefas
   S.tarefas.forEach(t => {
     if (t.subtarefas && t.subtarefas.length > 0) {
       t.subtarefas.forEach(sub => {
@@ -5414,6 +5348,35 @@ window.addEventListener('resize', () => {
   if (window.produtividadeChart) window.produtividadeChart.resize();
 });
 
+// ==================== FUNÇÃO DE EMERGÊNCIA ====================
+function emergencyFix() {
+  console.log("EMERGENCY FIX ACIONADO");
+  
+  if (quickPomodoroTimer) clearInterval(quickPomodoroTimer);
+  if (focoTimer) clearInterval(focoTimer);
+  if (saveTimeout) clearTimeout(saveTimeout);
+  if (renderTimeout) clearTimeout(renderTimeout);
+  
+  hideLoading();
+  hideSkeletons();
+  
+  document.getElementById('login-screen').style.display = 'flex';
+  
+  localStorage.clear();
+  
+  setTimeout(() => {
+    showToast("Sistema reiniciado. Faça login novamente.", 'info');
+  }, 500);
+}
+
+// Mostrar botão se loading demorar
+setTimeout(() => {
+  const loadingOverlay = document.getElementById('loadingOverlay');
+  if (loadingOverlay && loadingOverlay.classList.contains('active')) {
+    document.getElementById('emergencyFixBtn').style.display = 'flex';
+  }
+}, 10000);
+
 // ==================== INICIALIZAÇÃO ====================
 function inicializarApp() {
   const ids = [
@@ -5440,7 +5403,6 @@ function inicializarApp() {
     document.getElementById('login-screen').style.display = 'flex';
   }
   
-  // Inicializar display do pomodoro rápido
   updateQuickPomodoroDisplay();
 }
 
@@ -5458,62 +5420,6 @@ if ('serviceWorker' in navigator) {
     }
   });
 }
-</script>
-<!-- ==================== BOTÃO DE EMERGÊNCIA ==================== -->
-<button id="emergencyFixBtn" onclick="emergencyFix()" style="
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 99999;
-  background: #ef4444;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  font-size: 24px;
-  cursor: pointer;
-  display: none;
-  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.5);
-  transition: all 0.3s;
-">
-  ⚡
-</button>
-
-<script>
-// Função de emergência
-function emergencyFix() {
-  console.log("EMERGENCY FIX ACIONADO");
-  
-  // 1. Parar todos os timers
-  if (quickPomodoroTimer) clearInterval(quickPomodoroTimer);
-  if (focoTimer) clearInterval(focoTimer);
-  if (saveTimeout) clearTimeout(saveTimeout);
-  if (renderTimeout) clearTimeout(renderTimeout);
-  
-  // 2. Esconder tudo
-  hideLoading();
-  hideSkeletons();
-  
-  // 3. Mostrar tela de login
-  document.getElementById('login-screen').style.display = 'flex';
-  
-  // 4. Limpar localStorage
-  localStorage.clear();
-  
-  // 5. Recarregar
-  setTimeout(() => {
-    showToast("Sistema reiniciado. Faça login novamente.", 'info');
-  }, 500);
-}
-
-// Mostrar botão se loading demorar
-setTimeout(() => {
-  const loadingOverlay = document.getElementById('loadingOverlay');
-  if (loadingOverlay && loadingOverlay.classList.contains('active')) {
-    document.getElementById('emergencyFixBtn').style.display = 'flex';
-  }
-}, 10000);
 </script>
 </body>
 </html>
