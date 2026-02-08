@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Life Dash v2.2 - Intelligence Pro</title>
+<title>Life Dash v2.3 - Intelligence Pro</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#38bdf8">
 <meta name="mobile-web-app-capable" content="yes">
@@ -317,16 +317,17 @@ body {
   margin-bottom: var(--space-xl);
 }
 
+/* ==================== CARDS SLIM COMPACTOS ==================== */
 .card-slim {
   background: var(--card-bg);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-radius: var(--radius-lg);
-  padding: var(--space-lg) var(--space-xl);
+  padding: var(--space-lg);
   border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
-  min-height: 160px;
+  min-height: 140px; /* Reduzido de 160px */
   position: relative;
   transition: var(--transition);
   overflow: hidden;
@@ -351,14 +352,14 @@ body {
 }
 
 .profile-img-slim {
-  width: 100px;
-  height: 100px;
+  width: 80px; /* Reduzido de 100px */
+  height: 80px; /* Reduzido de 100px */
   border-radius: 50%;
   border: 3px solid transparent;
   background: var(--primary-gradient) border-box;
   object-fit: cover;
   flex-shrink: 0;
-  margin-right: var(--space-lg);
+  margin-right: var(--space-md);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   position: relative;
 }
@@ -379,27 +380,27 @@ body {
 
 /* Perfil com nome destacado */
 .profile-name-large {
-  font-size: 24px;
+  font-size: 22px; /* Reduzido de 24px */
   font-weight: 800;
   background: var(--primary-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-xs);
   line-height: 1.2;
 }
 
 .profile-details {
-  font-size: 13px;
+  font-size: 12px; /* Reduzido de 13px */
   color: rgba(255, 255, 255, 0.7);
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-xs);
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-md);
+  gap: var(--space-sm);
 }
 
 .profile-details span {
-  padding-right: var(--space-md);
+  padding-right: var(--space-sm);
   border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -409,8 +410,8 @@ body {
 
 .phrase-slim {
   font-style: italic;
-  font-size: 13px !important;
-  margin-top: var(--space-sm) !important;
+  font-size: 12px !important; /* Reduzido de 13px */
+  margin-top: var(--space-xs) !important;
   color: rgba(255, 255, 255, 0.8);
   background: var(--accent-gradient);
   -webkit-background-clip: text;
@@ -421,16 +422,16 @@ body {
 
 /* ==================== XP BAR ANIMATED ==================== */
 .xp-wrapper {
-  margin-top: var(--space-md);
+  margin-top: var(--space-sm);
   width: 100%;
 }
 
 .xp-container {
   background: rgba(0, 0, 0, 0.3);
   border-radius: var(--radius-sm);
-  height: 16px;
+  height: 14px; /* Reduzido de 16px */
   overflow: hidden;
-  margin-top: var(--space-sm);
+  margin-top: var(--space-xs);
   border: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
 }
@@ -477,19 +478,19 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-sm);
-  margin: var(--space-sm) 0;
+  margin: var(--space-xs) 0;
 }
 
 .badge-mini {
-  width: 44px;
-  height: 44px;
+  width: 40px; /* Reduzido de 44px */
+  height: 40px; /* Reduzido de 44px */
   border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 18px; /* Reduzido de 20px */
   border: 2px solid transparent;
   background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
               var(--primary-gradient) border-box;
@@ -893,7 +894,7 @@ input:checked + .slider:before {
   transform: translateY(-4px);
 }
 
-/* Cabeçalho do card com botões à direita */
+/* Cabeçalho do card com botões à direita - AJUSTADO */
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -901,6 +902,7 @@ input:checked + .slider:before {
   margin-bottom: var(--space-lg);
   padding-bottom: var(--space-md);
   border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  position: relative;
 }
 
 .card-header h3 {
@@ -917,10 +919,13 @@ input:checked + .slider:before {
   background-clip: text;
 }
 
+/* Container dos botões do header ajustado */
 .card-header-buttons {
   display: flex;
   gap: var(--space-sm);
   align-items: center;
+  position: absolute;
+  right: 0;
 }
 
 /* Botão de ação no card header */
@@ -929,20 +934,21 @@ input:checked + .slider:before {
   color: white;
   border: none;
   cursor: pointer;
-  width: 40px;
-  height: 40px;
+  width: 36px; /* Reduzido de 40px */
+  height: 36px; /* Reduzido de 40px */
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 18px; /* Reduzido de 20px */
   font-weight: bold;
   border-radius: var(--radius-md);
   transition: var(--transition);
   box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+  order: 1; /* Botão + primeiro */
 }
 
 .card-header-button:hover {
-  transform: scale(1.1) rotate(90deg);
+  transform: scale(1.1);
   box-shadow: 0 8px 32px rgba(102, 126, 234, 0.5);
 }
 
@@ -959,10 +965,19 @@ input:checked + .slider:before {
   justify-content: center;
   border-radius: var(--radius-sm);
   transition: var(--transition);
+  order: 2; /* Seta depois do botão + */
 }
 
 .card-toggle:hover {
   background: rgba(255, 255, 255, 0.1);
+}
+
+/* Rotação da seta corrigida */
+.card-toggle.closed {
+  transform: rotate(0deg);
+}
+
+.card-toggle.open {
   transform: rotate(180deg);
 }
 
@@ -998,7 +1013,7 @@ input:checked + .slider:before {
 }
 
 .card-action-button:hover {
-  transform: scale(1.1) rotate(90deg);
+  transform: scale(1.1);
   box-shadow: 0 12px 40px rgba(102, 126, 234, 0.5);
 }
 
@@ -1106,7 +1121,7 @@ input:checked + .slider:before {
 }
 
 .btn-plus:hover {
-  transform: scale(1.1) rotate(90deg);
+  transform: scale(1.1);
   box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
 }
 
@@ -1245,20 +1260,20 @@ input:checked + .slider:before {
   animation: shine 2s infinite;
 }
 
-/* ==================== CARD POMODORO RÁPIDO ==================== */
+/* ==================== CARD POMODORO RÁPIDO - COR AJUSTADA ==================== */
 .pomodoro-card {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(219, 39, 119, 0.15));
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(168, 85, 247, 0.15)); /* Cor mais suave */
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-radius: var(--radius-lg);
-  padding: var(--space-xl);
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  padding: var(--space-lg); /* Reduzido de var(--space-xl) */
+  border: 1px solid rgba(56, 189, 248, 0.2); /* Borda azul mais suave */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   transition: var(--transition);
-  min-height: 160px;
+  min-height: 140px; /* Reduzido de 160px */
   position: relative;
   overflow: hidden;
 }
@@ -1270,26 +1285,26 @@ input:checked + .slider:before {
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.3), transparent);
 }
 
 .pomodoro-card:hover {
-  border-color: rgba(239, 68, 68, 0.4);
+  border-color: rgba(56, 189, 248, 0.4);
   box-shadow: 
-    0 20px 40px rgba(239, 68, 68, 0.2),
-    0 0 0 1px rgba(239, 68, 68, 0.1);
+    0 20px 40px rgba(56, 189, 248, 0.2), /* Sombra azul */
+    0 0 0 1px rgba(56, 189, 248, 0.1);
   transform: translateY(-4px);
 }
 
 .pomodoro-timer {
-  font-size: 48px;
+  font-size: 42px; /* Reduzido de 48px */
   font-weight: 800;
-  background: linear-gradient(135deg, #ef4444, #dc2626);
+  background: linear-gradient(135deg, #38bdf8, #a855f7); /* Gradiente azul/roxo */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin-bottom: var(--space-md);
-  text-shadow: 0 5px 20px rgba(239, 68, 68, 0.3);
+  text-shadow: 0 5px 20px rgba(56, 189, 248, 0.3);
   letter-spacing: 2px;
 }
 
@@ -1300,27 +1315,27 @@ input:checked + .slider:before {
 }
 
 .pomodoro-btn {
-  width: 50px;
-  height: 50px;
+  width: 46px; /* Reduzido de 50px */
+  height: 46px; /* Reduzido de 50px */
   border-radius: var(--radius-md);
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 18px; /* Reduzido de 20px */
   cursor: pointer;
   transition: var(--transition);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .pomodoro-btn-primary {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
+  background: linear-gradient(135deg, #38bdf8, #a855f7); /* Gradiente azul/roxo */
   color: white;
 }
 
 .pomodoro-btn-primary:hover {
   transform: scale(1.1);
-  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+  box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
 }
 
 .pomodoro-btn-secondary {
@@ -1338,7 +1353,7 @@ input:checked + .slider:before {
 .pomodoro-title {
   font-size: 16px;
   font-weight: 700;
-  color: #ef4444;
+  color: #38bdf8; /* Azul em vez de vermelho */
   margin-bottom: var(--space-sm);
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -1665,6 +1680,52 @@ input:focus, select:focus, textarea:focus {
 .historico-tipo-habito { background: rgba(34, 197, 94, 0.2); color: var(--success); }
 .historico-tipo-pomodoro { background: rgba(245, 158, 11, 0.2); color: var(--gold); }
 
+/* ==================== GRAFICOS MODO FOCO ==================== */
+.chart-container {
+  position: relative;
+  height: 300px;
+  width: 100%;
+  margin: var(--space-lg) 0;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-md);
+  margin: var(--space-lg) 0;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  text-align: center;
+  transition: var(--transition);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.stat-value {
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: var(--space-xs);
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 /* ==================== MOBILE RESPONSIVO CORRIGIDO ==================== */
 @media (max-width: 1090px) {
   .menu-toggle {
@@ -1722,7 +1783,7 @@ input:focus, select:focus, textarea:focus {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 180px;
+    min-height: 160px; /* Ajustado */
     margin-top: var(--space-md);
   }
   
@@ -1897,6 +1958,15 @@ input:focus, select:focus, textarea:focus {
     width: 42px;
     height: 42px;
     font-size: 18px;
+  }
+  
+  /* Charts mobile */
+  .chart-container {
+    height: 250px;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -2269,6 +2339,128 @@ input:focus, select:focus, textarea:focus {
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+/* ==================== MODAL DE TAREFAS COM SUBTAREFAS ==================== */
+.subtask-list {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: var(--space-sm);
+  padding: var(--space-sm);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-sm);
+}
+
+.subtask-item-modal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-xs) var(--space-sm);
+  margin-bottom: var(--space-xs);
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.subtask-item-modal span {
+  flex: 1;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.task-list-modal {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: var(--space-sm);
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.task-item-modal {
+  padding: var(--space-sm);
+  margin-bottom: var(--space-sm);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.task-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-xs);
+}
+
+.task-item-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+  flex: 1;
+}
+
+.task-item-actions {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.add-subtask-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: var(--transition);
+}
+
+.add-subtask-btn:hover {
+  background: rgba(56, 189, 248, 0.2);
+  transform: scale(1.1);
+}
+
+.delete-task-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: var(--danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: var(--transition);
+}
+
+.delete-task-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  transform: scale(1.1);
+}
+
+.delete-subtask-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-xs);
+  background: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: var(--danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  transition: var(--transition);
+}
+
+.delete-subtask-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
 </style>
 </head>
 <body>
@@ -2317,7 +2509,7 @@ input:focus, select:focus, textarea:focus {
     <button onclick="irPara('conquistas', this)"><span class="icon">🏆</span> Conquistas</button>
     <button onclick="irPara('perfil', this)"><span class="icon">👤</span> Perfil</button>
     <button onclick="irPara('historico', this)"><span class="icon">📜</span> Histórico</button>
-    <button onclick="irPara('modofoco', this)" id="modoFocoBtn"><span class="icon">🍅</span> Modo Foco</button>
+    <button onclick="irPara('modofoco', this)" id="modoFocoBtn"><span class="icon">📊</span> Estatísticas</button>
     <button onclick="fazerLogout()" style="margin-top: 40px; color: var(--danger);"><span class="icon">🚪</span> Sair</button>
   </div>
 </div>
@@ -2401,7 +2593,7 @@ input:focus, select:focus, textarea:focus {
 
     <!-- Card de Pomodoro Rápido -->
     <div class="pomodoro-card">
-      <div class="pomodoro-title">🍅 Pomodoro Rápido</div>
+      <div class="pomodoro-title">🍅 Pomodoro</div>
       <div class="pomodoro-timer" id="quickPomodoroTimer">25:00</div>
       <div class="pomodoro-controls">
         <button class="pomodoro-btn pomodoro-btn-primary" id="quickPomodoroStart" onclick="toggleQuickPomodoro()">▶</button>
@@ -2419,7 +2611,7 @@ input:focus, select:focus, textarea:focus {
           <h3>🚀 Tarefas do Dia</h3>
           <div class="card-header-buttons">
             <button class="card-header-button" onclick="abrirModalTarefas()" title="Registrar Tarefas">+</button>
-            <button class="card-toggle" onclick="toggleCardContent('homeTarefasCont', this)">▼</button>
+            <button class="card-toggle closed" onclick="toggleCardContent('homeTarefasCont', this)">▼</button>
           </div>
         </div>
         <div id="homeTarefasCont" class="card-content">
@@ -2439,7 +2631,7 @@ input:focus, select:focus, textarea:focus {
           <h3>✨ Hábitos Ativos</h3>
           <div class="card-header-buttons">
             <button class="card-header-button" onclick="abrirModalHabitos()" title="Registrar Hábitos">+</button>
-            <button class="card-toggle" onclick="toggleCardContent('homeHabitosCont', this)">▼</button>
+            <button class="card-toggle closed" onclick="toggleCardContent('homeHabitosCont', this)">▼</button>
           </div>
         </div>
         <div id="homeHabitosCont" class="card-content">
@@ -2561,90 +2753,79 @@ input:focus, select:focus, textarea:focus {
     </div>
   </div>
 
-  <!-- ==================== SEÇÃO MODO FOCO ==================== -->
+  <!-- ==================== SEÇÃO ESTATÍSTICAS (ANTIGO MODO FOCO) ==================== -->
   <div id="modofoco" class="section">
     <div class="card">
-      <h3 style="cursor: default;">🍅 Modo Foco (Pomodoro)</h3>
+      <h3 style="cursor: default;">📊 Estatísticas de Desempenho</h3>
       <p style="color:rgba(255, 255, 255, 0.6); font-size:14px; margin-bottom:var(--space-xl); line-height:1.6;">
-        Aumente sua produtividade com a técnica Pomodoro! Trabalhe com foco total por 25 minutos e descanse por 5.
+        Analise seu progresso e descubra onde você mais está se desenvolvendo!
       </p>
       
       <div class="grid-stack">
         <div class="card" style="background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(168, 85, 247, 0.1));">
-          <h4 style="color: var(--accent); margin-bottom: var(--space-lg);">⚙️ Configurações</h4>
-          <div style="margin-bottom: var(--space-md);">
-            <label style="display: block; color: rgba(255, 255, 255, 0.8); margin-bottom: var(--space-sm); font-size: 14px;">Tempo de Foco (minutos):</label>
-            <select id="focoTempo" style="width: 100%;">
-              <option value="15">15 minutos</option>
-              <option value="25" selected>25 minutos (Pomodoro Clássico)</option>
-              <option value="30">30 minutos</option>
-              <option value="45">45 minutos</option>
-              <option value="50">50 minutos</option>
-            </select>
+          <h4 style="color: var(--accent); margin-bottom: var(--space-lg);">📈 Desempenho por Categoria</h4>
+          <div class="chart-container">
+            <canvas id="categoriaChart"></canvas>
           </div>
-          
-          <div style="margin-bottom: var(--space-lg);">
-            <label style="display: block; color: rgba(255, 255, 255, 0.8); margin-bottom: var(--space-sm); font-size: 14px;">Tempo de Descanso (minutos):</label>
-            <select id="descansoTempo" style="width: 100%;">
-              <option value="5" selected>5 minutos</option>
-              <option value="10">10 minutos</option>
-              <option value="15">15 minutos</option>
-            </select>
-          </div>
-          
-          <button class="btn-primary" onclick="iniciarModoFoco()">🚀 Iniciar Modo Foco</button>
         </div>
         
         <div class="card" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.1));">
-          <h4 style="color: var(--success); margin-bottom: var(--space-lg);">📊 Estatísticas</h4>
+          <h4 style="color: var(--success); margin-bottom: var(--space-lg);">📊 Estatísticas Gerais</h4>
           
-          <div class="registro-group" style="margin-bottom: var(--space-lg);">
-            <div class="registro-group-title">Hoje</div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
-              <div style="text-align: center;">
-                <div style="font-size: 32px; font-weight: 800; color: var(--accent);" id="pomodorosHoje">0</div>
-                <div style="font-size: 12px; color: rgba(255, 255, 255, 0.6);">Pomodoros</div>
-              </div>
-              <div style="text-align: center;">
-                <div style="font-size: 32px; font-weight: 800; color: var(--success);" id="tempoFocoHoje">0h</div>
-                <div style="font-size: 12px; color: rgba(255, 255, 255, 0.6);">Tempo Focado</div>
-              </div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value" id="statTarefasCompletas">0</div>
+              <div class="stat-label">Tarefas Completas</div>
             </div>
-          </div>
-          
-          <div class="registro-group">
-            <div class="registro-group-title">Total</div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
-              <div style="text-align: center;">
-                <div style="font-size: 32px; font-weight: 800; color: var(--gold);" id="pomodorosTotal">0</div>
-                <div style="font-size: 12px; color: rgba(255, 255, 255, 0.6);">Total Pomodoros</div>
-              </div>
-              <div style="text-align: center;">
-                <div style="font-size: 32px; font-weight: 800; color: var(--purple);" id="tempoFocoTotal">0h</div>
-                <div style="font-size: 12px; color: rgba(255, 255, 255, 0.6);">Tempo Total</div>
-              </div>
+            <div class="stat-card">
+              <div class="stat-value" id="statHabitosStreak">0</div>
+              <div class="stat-label">Streak de Hábitos</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="statXPTotal">0</div>
+              <div class="stat-label">XP Total</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="statNivelAtual">1</div>
+              <div class="stat-label">Nível Atual</div>
             </div>
           </div>
         </div>
       </div>
       
-      <div class="card" style="margin-top: var(--space-xl); background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 146, 60, 0.1));">
-        <h4 style="color: var(--gold); margin-bottom: var(--space-lg);">🎯 Dicas de Produtividade</h4>
+      <div class="grid-stack" style="margin-top: var(--space-xl);">
+        <div class="card" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 146, 60, 0.1));">
+          <h4 style="color: var(--gold); margin-bottom: var(--space-lg);">📅 Progresso Semanal</h4>
+          <div class="chart-container">
+            <canvas id="progressoSemanalChart"></canvas>
+          </div>
+        </div>
+        
+        <div class="card" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(219, 39, 119, 0.1));">
+          <h4 style="color: var(--danger); margin-bottom: var(--space-lg);">🔥 Comparativo de Produtividade</h4>
+          <div class="chart-container">
+            <canvas id="produtividadeChart"></canvas>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card" style="margin-top: var(--space-xl); background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(139, 92, 246, 0.1));">
+        <h4 style="color: var(--purple); margin-bottom: var(--space-lg);">🎯 Insights de Desenvolvimento</h4>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-lg);">
-          <div class="item" style="flex-direction: column; align-items: flex-start; background: rgba(255, 255, 255, 0.05);">
-            <div style="font-size: 20px; margin-bottom: var(--space-sm);">1️⃣</div>
-            <div style="font-weight: 600; margin-bottom: var(--space-xs);">Elimine Distrações</div>
-            <div style="font-size: 13px; color: rgba(255, 255, 255, 0.6);">Desligue notificações e foque em uma tarefa por vez.</div>
+          <div class="item" style="flex-direction: column; align-items: flex-start; background: rgba(255, 255, 255, 0.05); padding: var(--space-lg); border-radius: var(--radius-md);">
+            <div style="font-size: 20px; margin-bottom: var(--space-sm);">🎯</div>
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);">Categoria em Alta</div>
+            <div style="font-size: 13px; color: rgba(255, 255, 255, 0.6);" id="categoriaAlta">Carregando...</div>
           </div>
-          <div class="item" style="flex-direction: column; align-items: flex-start; background: rgba(255, 255, 255, 0.05);">
-            <div style="font-size: 20px; margin-bottom: var(--space-sm);">2️⃣</div>
-            <div style="font-weight: 600; margin-bottom: var(--space-xs);">Use o Timer</div>
-            <div style="font-size: 13px; color: rgba(255, 255, 255, 0.6);">O temporizador cria urgência e mantém o foco.</div>
+          <div class="item" style="flex-direction: column; align-items: flex-start; background: rgba(255, 255, 255, 0.05); padding: var(--space-lg); border-radius: var(--radius-md);">
+            <div style="font-size: 20px; margin-bottom: var(--space-sm);">📈</div>
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);">Média Diária</div>
+            <div style="font-size: 13px; color: rgba(255, 255, 255, 0.6);" id="mediaDiariaStats">Carregando...</div>
           </div>
-          <div class="item" style="flex-direction: column; align-items: flex-start; background: rgba(255, 255, 255, 0.05);">
-            <div style="font-size: 20px; margin-bottom: var(--space-sm);">3️⃣</div>
-            <div style="font-weight: 600; margin-bottom: var(--space-xs);">Faça Pausas</div>
-            <div style="font-size: 13px; color: rgba(255, 255, 255, 0.6);">As pausas são essenciais para manter a produtividade.</div>
+          <div class="item" style="flex-direction: column; align-items: flex-start; background: rgba(255, 255, 255, 0.05); padding: var(--space-lg); border-radius: var(--radius-md);">
+            <div style="font-size: 20px; margin-bottom: var(--space-sm);">🚀</div>
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);">Meta Sugerida</div>
+            <div style="font-size: 13px; color: rgba(255, 255, 255, 0.6);" id="metaSugerida">Carregando...</div>
           </div>
         </div>
       </div>
@@ -2679,8 +2860,15 @@ input:focus, select:focus, textarea:focus {
     </div>
     
     <div class="modal-form-group">
+      <label class="modal-label">TAREFAS ATIVAS</label>
+      <div id="taskListModal" class="task-list-modal">
+        <!-- Lista de tarefas será inserida aqui -->
+      </div>
+    </div>
+    
+    <div class="modal-form-group">
       <label class="modal-label">CATEGORIAS EXISTENTES</label>
-      <div id="modalListCats" style="max-height:200px; overflow-y:auto; padding:var(--space-sm); background:rgba(255,255,255,0.03); border-radius:var(--radius-md);"></div>
+      <div id="modalListCats" style="max-height:150px; overflow-y:auto; padding:var(--space-sm); background:rgba(255,255,255,0.03); border-radius:var(--radius-md);"></div>
     </div>
   </div>
 </div>
@@ -2703,6 +2891,30 @@ input:focus, select:focus, textarea:focus {
     <div class="modal-form-group">
       <label class="modal-label">HÁBITOS EXISTENTES</label>
       <div id="modalListHabs" style="max-height:200px; overflow-y:auto; padding:var(--space-sm); background:rgba(255,255,255,0.03); border-radius:var(--radius-md);"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL PARA ADICIONAR SUBTAREFA ==================== -->
+<div id="modalSubtarefa" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>➕ Adicionar Subtarefa</h3>
+      <button class="modal-close" onclick="fecharModal('modalSubtarefa')">×</button>
+    </div>
+    
+    <div class="modal-form-group">
+      <label class="modal-label">TAREFA PRINCIPAL</label>
+      <div id="subtarefaTarefaNome" style="padding:var(--space-md); background:rgba(255,255,255,0.05); border-radius:var(--radius-sm); margin-bottom:var(--space-lg); font-weight:600;"></div>
+    </div>
+    
+    <div class="modal-form-group">
+      <label class="modal-label">NOME DA SUBTAREFA</label>
+      <input id="modalSubtarNome" placeholder="Ex: Pesquisar referências, Revisar conteúdo...">
+    </div>
+    
+    <div class="modal-form-group">
+      <button class="btn-primary" onclick="adicionarSubtarefaModal()">➕ Adicionar Subtarefa</button>
     </div>
   </div>
 </div>
@@ -2777,7 +2989,7 @@ function partialRender(components) {
       case 'structure': renderStructure(); break;
       case 'badges': renderBadges(); break;
       case 'history': renderHistory(); break;
-      case 'pomodoro': renderPomodoroStats(); break;
+      case 'stats': renderStatistics(); break;
       case 'quickPomodoro': updateQuickPomodoroDisplay(); break;
     }
   });
@@ -2873,6 +3085,11 @@ function irPara(id, btn) {
     document.querySelector('.menu-toggle').style.position = 'absolute';
     document.getElementById('menu-text').classList.remove('menu-text-active');
   }
+  
+  // Se for para a página de estatísticas, renderizar os gráficos
+  if (id === 'modofoco') {
+    setTimeout(renderStatistics, 100);
+  }
 }
 
 function toggleAuth(m) { 
@@ -2880,7 +3097,7 @@ function toggleAuth(m) {
   document.getElementById('auth-register').style.display = m==='register'?'block':'none'; 
 }
 
-// ==================== TOGGLE CARD CONTENT ====================
+// ==================== TOGGLE CARD CONTENT CORRIGIDO ====================
 function toggleCardContent(cardId, button) {
   const cardContent = document.getElementById(cardId);
   if (!cardContent) return;
@@ -2889,7 +3106,9 @@ function toggleCardContent(cardId, button) {
     // Expandir
     cardContent.classList.remove('collapsed');
     cardContent.style.maxHeight = cardContent.scrollHeight + 'px';
-    button.textContent = '▼';
+    button.classList.remove('closed');
+    button.classList.add('open');
+    button.textContent = '▲';
     
     setTimeout(() => {
       cardContent.style.maxHeight = 'none';
@@ -2900,7 +3119,9 @@ function toggleCardContent(cardId, button) {
     cardContent.offsetHeight; // Forçar reflow
     cardContent.style.maxHeight = '0';
     cardContent.classList.add('collapsed');
-    button.textContent = '▶';
+    button.classList.remove('open');
+    button.classList.add('closed');
+    button.textContent = '▼';
   }
 }
 
@@ -2954,6 +3175,95 @@ function renderModalContent() {
       </div>`
     ).join("") || "<small style='color:rgba(255, 255, 255, 0.5); padding:var(--space-sm); text-align:center; display:block;'>Nenhum hábito</small>";
   }
+  
+  // Listar tarefas ativas para adicionar subtarefas
+  const taskListModal = getElement("taskListModal");
+  if (taskListModal) {
+    const tarefasAtivas = S.tarefas.filter(t => t.status !== 'oculta');
+    
+    if (tarefasAtivas.length === 0) {
+      taskListModal.innerHTML = '<small style="color:rgba(255, 255, 255, 0.5); padding:var(--space-sm); text-align:center; display:block;">Nenhuma tarefa ativa</small>';
+    } else {
+      taskListModal.innerHTML = tarefasAtivas.map((t, index) => {
+        const tarefaIndex = S.tarefas.indexOf(t);
+        return `
+          <div class="task-item-modal">
+            <div class="task-item-header">
+              <span class="task-item-name">${t.nome}</span>
+              <div class="task-item-actions">
+                <button class="add-subtask-btn" onclick="abrirModalSubtarefa(${tarefaIndex})" title="Adicionar subtarefa">+</button>
+                <button class="delete-task-btn" onclick="removerTarefa(${tarefaIndex})" title="Remover tarefa">✖</button>
+              </div>
+            </div>
+            ${t.descricao ? `<div style="font-size:12px; color:rgba(255,255,255,0.6); margin-top:var(--space-xs);">${t.descricao}</div>` : ''}
+            ${t.subtarefas && t.subtarefas.length > 0 ? `
+              <div class="subtask-list">
+                ${t.subtarefas.map((sub, subIndex) => `
+                  <div class="subtask-item-modal">
+                    <span>${sub.nome}</span>
+                    <button class="delete-subtask-btn" onclick="removerSubtarefa(${tarefaIndex}, ${subIndex})">✖</button>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+  }
+}
+
+// ==================== FUNÇÕES DE SUBTAREFAS ====================
+let tarefaAtualParaSubtarefa = null;
+
+function abrirModalSubtarefa(tarefaIndex) {
+  tarefaAtualParaSubtarefa = tarefaIndex;
+  const tarefa = S.tarefas[tarefaIndex];
+  document.getElementById('subtarefaTarefaNome').textContent = tarefa.nome;
+  document.getElementById('modalSubtarNome').value = '';
+  document.getElementById('modalSubtarefa').style.display = 'flex';
+}
+
+function adicionarSubtarefaModal() {
+  const nome = document.getElementById('modalSubtarNome').value.trim();
+  if (nome && tarefaAtualParaSubtarefa !== null) {
+    const tarefa = S.tarefas[tarefaAtualParaSubtarefa];
+    if (!tarefa.subtarefas) tarefa.subtarefas = [];
+    
+    tarefa.subtarefas.push({
+      nome: nome,
+      concluida: false
+    });
+    
+    salvar();
+    renderModalContent();
+    scheduleRender('tasks');
+    fecharModal('modalSubtarefa');
+    showToast("Subtarefa adicionada!", 'success');
+  }
+}
+
+function removerSubtarefa(tarefaIndex, subtarefaIndex) {
+  if (confirm("Remover esta subtarefa?")) {
+    const tarefa = S.tarefas[tarefaIndex];
+    if (tarefa && tarefa.subtarefas) {
+      tarefa.subtarefas.splice(subtarefaIndex, 1);
+      salvar();
+      renderModalContent();
+      scheduleRender('tasks');
+      showToast("Subtarefa removida!", 'success');
+    }
+  }
+}
+
+function removerTarefa(tarefaIndex) {
+  if (confirm("Remover esta tarefa?")) {
+    S.tarefas.splice(tarefaIndex, 1);
+    salvar();
+    renderModalContent();
+    scheduleRender('tasks');
+    showToast("Tarefa removida!", 'success');
+  }
 }
 
 function addCatModal() {
@@ -2997,6 +3307,7 @@ function addTarModal() {
     showToast("Tarefa criada!", 'success');
     
     salvar();
+    renderModalContent();
     scheduleRender('tasks');
   } else if (!catSelect.value) {
     showToast("Crie uma categoria primeiro!", 'error');
@@ -3196,61 +3507,128 @@ function toggleQuickPomodoro() {
   const startBtn = document.getElementById('quickPomodoroStart');
   
   if (!isQuickPomodoroRunning) {
-    // Iniciar pomodoro
-    isQuickPomodoroRunning = true;
-    isQuickPomodoroPaused = false;
-    startBtn.innerHTML = '⏸';
-    startBtn.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
-    
-    quickPomodoroTimer = setInterval(() => {
-      if (!isQuickPomodoroPaused && quickPomodoroTime > 0) {
-        quickPomodoroTime--;
-        updateQuickPomodoroDisplay();
-        
-        if (quickPomodoroTime === 0) {
-          clearInterval(quickPomodoroTimer);
-          showToast("🍅 Pomodoro completo! Hora de uma pausa.", 'success');
-          
-          // Reiniciar para próximo pomodoro
-          setTimeout(() => {
-            resetQuickPomodoro();
-            startBtn.innerHTML = '▶';
-            startBtn.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
-          }, 1000);
-          
-          // Registrar no histórico
-          const hoje = new Date().toLocaleDateString();
-          S.pomodoroStats.hoje = (S.pomodoroStats.hoje || 0) + 1;
-          S.pomodoroStats.total = (S.pomodoroStats.total || 0) + 1;
-          S.pomodoroStats.tempoHoje = (S.pomodoroStats.tempoHoje || 0) + 25;
-          S.pomodoroStats.tempoTotal = (S.pomodoroStats.tempoTotal || 0) + 25;
-          
-          // Ganhar XP
-          S.xp += 15;
-          S.hist.push({
-            nome: "Pomodoro Rápido Completado",
-            data: hoje,
-            tipo: 'P',
-            xpGanhos: 15
-          });
-          
-          salvar();
-          scheduleRender('pomodoro');
-        }
-      }
-    }, 1000);
-    
+    // Iniciar modo foco
+    iniciarModoFocoRapido();
   } else if (isQuickPomodoroRunning && !isQuickPomodoroPaused) {
     // Pausar pomodoro
     isQuickPomodoroPaused = true;
     startBtn.innerHTML = '▶';
     startBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+    clearInterval(quickPomodoroTimer);
     
   } else if (isQuickPomodoroRunning && isQuickPomodoroPaused) {
     // Retomar pomodoro
     isQuickPomodoroPaused = false;
     startBtn.innerHTML = '⏸';
-    startBtn.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+    startBtn.style.background = 'linear-gradient(135deg, #38bdf8, #a855f7)';
+    
+    quickPomodoroTimer = setInterval(updateQuickPomodoro, 1000);
+  }
+}
+
+function iniciarModoFocoRapido() {
+  const startBtn = document.getElementById('quickPomodoroStart');
+  
+  // Iniciar pomodoro
+  isQuickPomodoroRunning = true;
+  isQuickPomodoroPaused = false;
+  startBtn.innerHTML = '⏸';
+  startBtn.style.background = 'linear-gradient(135deg, #38bdf8, #a855f7)';
+  
+  quickPomodoroTime = 25 * 60;
+  
+  // Mostrar overlay de modo foco
+  document.getElementById('focoOverlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  
+  // Atualizar timer do overlay
+  const focoTimer = document.getElementById('focoTimer');
+  const focoStatus = document.getElementById('focoStatus');
+  
+  if (focoTimer) focoTimer.textContent = '25:00';
+  if (focoStatus) focoStatus.textContent = 'Foco - Pomodoro Rápido';
+  
+  // Iniciar contagem regressiva
+  quickPomodoroTimer = setInterval(() => {
+    if (!isQuickPomodoroPaused && quickPomodoroTime > 0) {
+      quickPomodoroTime--;
+      updateQuickPomodoroDisplay();
+      
+      // Atualizar timer do overlay
+      if (focoTimer) {
+        const minutes = Math.floor(quickPomodoroTime / 60);
+        const seconds = quickPomodoroTime % 60;
+        focoTimer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      }
+      
+      if (quickPomodoroTime === 0) {
+        clearInterval(quickPomodoroTimer);
+        
+        // Completar pomodoro
+        showToast("🍅 Pomodoro completo! Hora de uma pausa.", 'success');
+        
+        // Registrar no histórico
+        const hoje = new Date().toLocaleDateString();
+        S.pomodoroStats.hoje = (S.pomodoroStats.hoje || 0) + 1;
+        S.pomodoroStats.total = (S.pomodoroStats.total || 0) + 1;
+        S.pomodoroStats.tempoHoje = (S.pomodoroStats.tempoHoje || 0) + 25;
+        S.pomodoroStats.tempoTotal = (S.pomodoroStats.tempoTotal || 0) + 25;
+        
+        // Ganhar XP
+        S.xp += 15;
+        S.hist.push({
+          nome: "Pomodoro Rápido Completado",
+          data: hoje,
+          tipo: 'P',
+          xpGanhos: 15
+        });
+        
+        salvar();
+        scheduleRender('stats');
+        
+        // Fechar overlay
+        setTimeout(() => {
+          document.getElementById('focoOverlay').style.display = 'none';
+          document.body.style.overflow = 'auto';
+          
+          // Reiniciar para próximo pomodoro
+          resetQuickPomodoro();
+          startBtn.innerHTML = '▶';
+          startBtn.style.background = 'linear-gradient(135deg, #38bdf8, #a855f7)';
+        }, 1000);
+      }
+    }
+  }, 1000);
+}
+
+function updateQuickPomodoro() {
+  if (!isQuickPomodoroPaused && quickPomodoroTime > 0) {
+    quickPomodoroTime--;
+    updateQuickPomodoroDisplay();
+    
+    if (quickPomodoroTime === 0) {
+      clearInterval(quickPomodoroTimer);
+      showToast("🍅 Pomodoro completo! Hora de uma pausa.", 'success');
+      
+      // Registrar no histórico
+      const hoje = new Date().toLocaleDateString();
+      S.pomodoroStats.hoje = (S.pomodoroStats.hoje || 0) + 1;
+      S.pomodoroStats.total = (S.pomodoroStats.total || 0) + 1;
+      S.pomodoroStats.tempoHoje = (S.pomodoroStats.tempoHoje || 0) + 25;
+      S.pomodoroStats.tempoTotal = (S.pomodoroStats.tempoTotal || 0) + 25;
+      
+      // Ganhar XP
+      S.xp += 15;
+      S.hist.push({
+        nome: "Pomodoro Rápido Completado",
+        data: hoje,
+        tipo: 'P',
+        xpGanhos: 15
+      });
+      
+      salvar();
+      scheduleRender('stats');
+    }
   }
 }
 
@@ -3262,7 +3640,7 @@ function resetQuickPomodoro() {
   
   const startBtn = document.getElementById('quickPomodoroStart');
   startBtn.innerHTML = '▶';
-  startBtn.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+  startBtn.style.background = 'linear-gradient(135deg, #38bdf8, #a855f7)';
   
   updateQuickPomodoroDisplay();
 }
@@ -3277,12 +3655,12 @@ function updateQuickPomodoroDisplay() {
     
     // Mudar cor quando estiver nos últimos 5 minutos
     if (quickPomodoroTime <= 5 * 60 && quickPomodoroTime > 0) {
-      timerDisplay.style.background = 'linear-gradient(135deg, #f59e0b, #dc2626)';
+      timerDisplay.style.background = 'linear-gradient(135deg, #f59e0b, #a855f7)';
       timerDisplay.style.webkitBackgroundClip = 'text';
       timerDisplay.style.webkitTextFillColor = 'transparent';
       timerDisplay.style.backgroundClip = 'text';
     } else {
-      timerDisplay.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+      timerDisplay.style.background = 'linear-gradient(135deg, #38bdf8, #a855f7)';
       timerDisplay.style.webkitBackgroundClip = 'text';
       timerDisplay.style.webkitTextFillColor = 'transparent';
       timerDisplay.style.backgroundClip = 'text';
@@ -3842,16 +4220,409 @@ function atualizarEstatisticasHistorico(historico) {
   document.getElementById('melhorDia').textContent = melhorDiaXP;
 }
 
-function renderPomodoroStats() {
-  const pomodorosHoje = document.getElementById('pomodorosHoje');
-  const tempoFocoHoje = document.getElementById('tempoFocoHoje');
-  const pomodorosTotal = document.getElementById('pomodorosTotal');
-  const tempoFocoTotal = document.getElementById('tempoFocoTotal');
+// ==================== ESTATÍSTICAS E GRÁFICOS ====================
+function renderStatistics() {
+  if (!S || !S.hist || S.hist.length === 0) {
+    // Mostrar estado vazio
+    document.getElementById('statTarefasCompletas').textContent = '0';
+    document.getElementById('statHabitosStreak').textContent = '0';
+    document.getElementById('statXPTotal').textContent = '0';
+    document.getElementById('statNivelAtual').textContent = '1';
+    document.getElementById('categoriaAlta').textContent = 'Nenhuma atividade ainda';
+    document.getElementById('mediaDiariaStats').textContent = '0 atividades/dia';
+    document.getElementById('metaSugerida').textContent = 'Complete sua primeira tarefa!';
+    
+    // Limpar gráficos
+    const chartContainers = ['categoriaChart', 'progressoSemanalChart', 'produtividadeChart'];
+    chartContainers.forEach(id => {
+      const canvas = document.getElementById(id);
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Mostrar mensagem de estado vazio
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+        ctx.font = '16px "Segoe UI"';
+        ctx.textAlign = 'center';
+        ctx.fillText('Sem dados suficientes', canvas.width/2, canvas.height/2);
+        ctx.font = '12px "Segoe UI"';
+        ctx.fillText('Complete algumas atividades primeiro', canvas.width/2, canvas.height/2 + 20);
+      }
+    });
+    
+    return;
+  }
   
-  if (pomodorosHoje) pomodorosHoje.textContent = S.pomodoroStats?.hoje || 0;
-  if (tempoFocoHoje) tempoFocoHoje.textContent = formatarTempo((S.pomodoroStats?.tempoHoje || 0) * 60);
-  if (pomodorosTotal) pomodorosTotal.textContent = S.pomodoroStats?.total || 0;
-  if (tempoFocoTotal) tempoFocoTotal.textContent = formatarTempo((S.pomodoroStats?.tempoTotal || 0) * 60);
+  // Atualizar estatísticas gerais
+  const tarefasCompletas = S.hist.filter(h => h.tipo === 'T').length;
+  const maiorStreak = S.habitos.length > 0 ? Math.max(...S.habitos.map(h => h.streak || 0)) : 0;
+  const nivelInfo = xpInfo(S.xp);
+  
+  document.getElementById('statTarefasCompletas').textContent = tarefasCompletas;
+  document.getElementById('statHabitosStreak').textContent = maiorStreak;
+  document.getElementById('statXPTotal').textContent = S.xp;
+  document.getElementById('statNivelAtual').textContent = nivelInfo.n;
+  
+  // Calcular estatísticas por categoria
+  const statsPorCategoria = {};
+  S.tarefas.forEach(t => {
+    if (!statsPorCategoria[t.cat]) {
+      statsPorCategoria[t.cat] = { completas: 0, total: 0 };
+    }
+    statsPorCategoria[t.cat].total++;
+    if (t.status === 'concluido') {
+      statsPorCategoria[t.cat].completas++;
+    }
+  });
+  
+  // Encontrar categoria em alta
+  let categoriaAlta = { nome: 'Nenhuma', taxa: 0 };
+  for (const cat in statsPorCategoria) {
+    const taxa = statsPorCategoria[cat].total > 0 ? 
+      (statsPorCategoria[cat].completas / statsPorCategoria[cat].total) * 100 : 0;
+    if (taxa > categoriaAlta.taxa) {
+      categoriaAlta = { nome: cat, taxa: taxa };
+    }
+  }
+  
+  // Calcular média diária
+  const ultimos7Dias = [...Array(7)].map((_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (6 - i));
+    return d.toLocaleDateString();
+  });
+  
+  const atividadesPorDia = {};
+  S.hist.forEach(h => {
+    if (ultimos7Dias.includes(h.data)) {
+      atividadesPorDia[h.data] = (atividadesPorDia[h.data] || 0) + 1;
+    }
+  });
+  
+  const mediaDiaria = Object.values(atividadesPorDia).reduce((a, b) => a + b, 0) / 7;
+  
+  // Atualizar insights
+  document.getElementById('categoriaAlta').textContent = `${categoriaAlta.nome} (${categoriaAlta.taxa.toFixed(0)}% concluída)`;
+  document.getElementById('mediaDiariaStats').textContent = `${mediaDiaria.toFixed(1)} atividades/dia`;
+  
+  // Sugerir meta
+  let metaSugerida = '';
+  if (tarefasCompletas < 5) {
+    metaSugerida = 'Complete 5 tarefas para desbloquear sua primeira conquista!';
+  } else if (maiorStreak < 3) {
+    metaSugerida = 'Mantenha um hábito por 3 dias seguidos para aumentar seu streak!';
+  } else if (categoriaAlta.taxa < 50) {
+    metaSugerida = `Tente completar 50% das tarefas em ${categoriaAlta.nome}`;
+  } else {
+    metaSugerida = 'Excelente progresso! Continue mantendo a consistência.';
+  }
+  document.getElementById('metaSugerida').textContent = metaSugerida;
+  
+  // Renderizar gráficos
+  renderGraficoCategorias(statsPorCategoria);
+  renderGraficoProgressoSemanal(atividadesPorDia, ultimos7Dias);
+  renderGraficoProdutividade();
+}
+
+function renderGraficoCategorias(statsPorCategoria) {
+  const ctx = document.getElementById('categoriaChart').getContext('2d');
+  
+  // Destruir gráfico anterior se existir
+  if (window.categoriaChart) {
+    window.categoriaChart.destroy();
+  }
+  
+  const categorias = Object.keys(statsPorCategoria);
+  const dadosCompletas = categorias.map(cat => statsPorCategoria[cat].completas);
+  const dadosTotais = categorias.map(cat => statsPorCategoria[cat].total);
+  const taxas = categorias.map(cat => 
+    statsPorCategoria[cat].total > 0 ? 
+    (statsPorCategoria[cat].completas / statsPorCategoria[cat].total) * 100 : 0
+  );
+  
+  // Cores para as categorias
+  const cores = categorias.map((cat, index) => getCategoryColor(index));
+  
+  window.categoriaChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: categorias,
+      datasets: [
+        {
+          label: 'Taxa de Conclusão (%)',
+          data: taxas,
+          backgroundColor: cores.map(cor => cor + '80'),
+          borderColor: cores,
+          borderWidth: 2,
+          yAxisID: 'y'
+        },
+        {
+          label: 'Tarefas Completas',
+          data: dadosCompletas,
+          backgroundColor: cores.map(cor => cor + '40'),
+          borderColor: cores,
+          borderWidth: 1,
+          type: 'line',
+          yAxisID: 'y1'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'index',
+        intersect: false,
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: 'rgba(255, 255, 255, 0.7)'
+          },
+          grid: {
+            color: 'rgba(255, 255, 255, 0.1)'
+          }
+        },
+        y: {
+          type: 'linear',
+          display: true,
+          position: 'left',
+          title: {
+            display: true,
+            text: 'Taxa (%)',
+            color: 'rgba(255, 255, 255, 0.7)'
+          },
+          min: 0,
+          max: 100,
+          ticks: {
+            color: 'rgba(255, 255, 255, 0.7)'
+          },
+          grid: {
+            color: 'rgba(255, 255, 255, 0.1)'
+          }
+        },
+        y1: {
+          type: 'linear',
+          display: true,
+          position: 'right',
+          title: {
+            display: true,
+            text: 'Quantidade',
+            color: 'rgba(255, 255, 255, 0.7)'
+          },
+          ticks: {
+            color: 'rgba(255, 255, 255, 0.7)'
+          },
+          grid: {
+            drawOnChartArea: false,
+            color: 'rgba(255, 255, 255, 0.1)'
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          labels: {
+            color: 'rgba(255, 255, 255, 0.7)'
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(22, 30, 45, 0.9)',
+          titleColor: 'rgba(255, 255, 255, 0.9)',
+          bodyColor: 'rgba(255, 255, 255, 0.7)',
+          borderColor: 'rgba(255, 255, 255, 0.2)',
+          borderWidth: 1
+        }
+      }
+    }
+  });
+}
+
+function renderGraficoProgressoSemanal(atividadesPorDia, dias) {
+  const ctx = document.getElementById('progressoSemanalChart').getContext('2d');
+  
+  // Destruir gráfico anterior se existir
+  if (window.progressoSemanalChart) {
+    window.progressoSemanalChart.destroy();
+  }
+  
+  // Nomes dos dias da semana
+  const nomesDias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+  
+  // Preparar dados
+  const dados = dias.map(dia => {
+    const dataObj = new Date(dia.split('/').reverse().join('-'));
+    const nomeDia = nomesDias[dataObj.getDay()];
+    return {
+      dia: nomeDia,
+      data: dia,
+      atividades: atividadesPorDia[dia] || 0
+    };
+  });
+  
+  window.progressoSemanalChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: dados.map(d => d.dia),
+      datasets: [{
+        label: 'Atividades',
+        data: dados.map(d => d.atividades),
+        backgroundColor: 'rgba(56, 189, 248, 0.2)',
+        borderColor: 'rgba(56, 189, 248, 1)',
+        borderWidth: 3,
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: 'rgba(56, 189, 248, 1)',
+        pointBorderColor: 'rgba(255, 255, 255, 1)',
+        pointBorderWidth: 2,
+        pointRadius: 6,
+        pointHoverRadius: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          ticks: {
+            color: 'rgba(255, 255, 255, 0.7)'
+          },
+          grid: {
+            color: 'rgba(255, 255, 255, 0.1)'
+          }
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            color: 'rgba(255, 255, 255, 0.7)',
+            precision: 0
+          },
+          grid: {
+            color: 'rgba(255, 255, 255, 0.1)'
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          labels: {
+            color: 'rgba(255, 255, 255, 0.7)'
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(22, 30, 45, 0.9)',
+          titleColor: 'rgba(255, 255, 255, 0.9)',
+          bodyColor: 'rgba(255, 255, 255, 0.7)',
+          borderColor: 'rgba(255, 255, 255, 0.2)',
+          borderWidth: 1,
+          callbacks: {
+            label: function(context) {
+              const index = context.dataIndex;
+              return `Atividades: ${context.parsed.y} (${dados[index].data})`;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+function renderGraficoProdutividade() {
+  const ctx = document.getElementById('produtividadeChart').getContext('2d');
+  
+  // Destruir gráfico anterior se existir
+  if (window.produtividadeChart) {
+    window.produtividadeChart.destroy();
+  }
+  
+  // Agrupar atividades por tipo
+  const atividadesPorTipo = {
+    'Tarefas': S.hist.filter(h => h.tipo === 'T').length,
+    'Hábitos': S.hist.filter(h => h.tipo === 'H').length,
+    'Pomodoros': S.hist.filter(h => h.tipo === 'P').length
+  };
+  
+  // Calcular XP por tipo
+  const xpPorTipo = {
+    'Tarefas': S.hist.filter(h => h.tipo === 'T').reduce((sum, h) => sum + (h.xpGanhos || 0), 0),
+    'Hábitos': S.hist.filter(h => h.tipo === 'H').reduce((sum, h) => sum + (h.xpGanhos || 0), 0),
+    'Pomodoros': S.hist.filter(h => h.tipo === 'P').reduce((sum, h) => sum + (h.xpGanhos || 0), 0)
+  };
+  
+  window.produtividadeChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(atividadesPorTipo),
+      datasets: [
+        {
+          label: 'Atividades',
+          data: Object.values(atividadesPorTipo),
+          backgroundColor: [
+            'rgba(56, 189, 248, 0.8)',
+            'rgba(34, 197, 94, 0.8)',
+            'rgba(245, 158, 11, 0.8)'
+          ],
+          borderColor: [
+            'rgba(56, 189, 248, 1)',
+            'rgba(34, 197, 94, 1)',
+            'rgba(245, 158, 11, 1)'
+          ],
+          borderWidth: 2
+        },
+        {
+          label: 'XP Ganhos',
+          data: Object.values(xpPorTipo),
+          backgroundColor: [
+            'rgba(56, 189, 248, 0.4)',
+            'rgba(34, 197, 94, 0.4)',
+            'rgba(245, 158, 11, 0.4)'
+          ],
+          borderColor: [
+            'rgba(56, 189, 248, 0.8)',
+            'rgba(34, 197, 94, 0.8)',
+            'rgba(245, 158, 11, 0.8)'
+          ],
+          borderWidth: 2
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '60%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            color: 'rgba(255, 255, 255, 0.7)',
+            padding: 20,
+            font: {
+              size: 12
+            }
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(22, 30, 45, 0.9)',
+          titleColor: 'rgba(255, 255, 255, 0.9)',
+          bodyColor: 'rgba(255, 255, 255, 0.7)',
+          borderColor: 'rgba(255, 255, 255, 0.2)',
+          borderWidth: 1,
+          callbacks: {
+            label: function(context) {
+              const label = context.dataset.label;
+              const value = context.parsed;
+              const total = context.dataset.data.reduce((a, b) => a + b, 0);
+              const percentage = Math.round((value / total) * 100);
+              
+              if (label === 'Atividades') {
+                return `${label}: ${value} (${percentage}%)`;
+              } else {
+                return `${label}: ${value} XP (${percentage}%)`;
+              }
+            }
+          }
+        }
+      }
+    }
+  });
 }
 
 function fullRender() {
@@ -3864,7 +4635,7 @@ function fullRender() {
   renderHabits();
   renderBadges();
   renderHistory();
-  renderPomodoroStats();
+  renderStatistics();
 }
 
 function render() {
@@ -3955,9 +4726,6 @@ function pararModoFoco() {
   document.getElementById('focoOverlay').style.display = 'none';
   document.body.style.overflow = 'auto';
   showToast("Modo foco encerrado", 'info');
-  
-  // Atualizar estatísticas
-  renderPomodoroStats();
 }
 
 function atualizarDisplayTimer() {
@@ -4073,6 +4841,7 @@ function toggleTarefa(idx) {
     scheduleRender('header');
     scheduleRender('tasks');
     scheduleRender('history');
+    scheduleRender('stats');
     checarConquistas();
   } else {
     t.status = 'pendente'; 
@@ -4084,6 +4853,7 @@ function toggleTarefa(idx) {
     scheduleRender('header');
     scheduleRender('tasks');
     scheduleRender('history');
+    scheduleRender('stats');
     checarConquistas();
   }
 
@@ -4119,6 +4889,7 @@ function toggleSubtarefa(tarefaIndex, subtarefaIndex) {
   scheduleRender('header');
   scheduleRender('tasks');
   scheduleRender('history');
+  scheduleRender('stats');
   checarConquistas();
   salvar();
 }
@@ -4151,6 +4922,7 @@ function concluirHabito(habIdx, dataStr) {
   scheduleRender('header');
   scheduleRender('habits');
   scheduleRender('history');
+  scheduleRender('stats');
   checarConquistas();
   
   salvar();
@@ -4275,6 +5047,7 @@ function checarConquistas() {
     salvar();
     scheduleRender('badges');
     scheduleRender('header');
+    scheduleRender('stats');
   }
 }
 
@@ -4585,6 +5358,11 @@ function atualizarVisibilidadeBadges() {
 }
 
 window.addEventListener('resize', atualizarVisibilidadeBadges);
+window.addEventListener('resize', () => {
+  if (window.categoriaChart) window.categoriaChart.resize();
+  if (window.progressoSemanalChart) window.progressoSemanalChart.resize();
+  if (window.produtividadeChart) window.produtividadeChart.resize();
+});
 
 // ==================== INICIALIZAÇÃO ====================
 function inicializarApp() {
@@ -4594,7 +5372,10 @@ function inicializarApp() {
     'homeBadges', 'homeBadgesMobile',
     'homeTarefas', 'habitHead', 'homeHabitos',
     'muralConquistas', 'listHist',
-    'quickPomodoroTimer', 'quickPomodoroStart', 'quickPomodoroReset'
+    'quickPomodoroTimer', 'quickPomodoroStart', 'quickPomodoroReset',
+    'categoriaChart', 'progressoSemanalChart', 'produtividadeChart',
+    'statTarefasCompletas', 'statHabitosStreak', 'statXPTotal', 'statNivelAtual',
+    'categoriaAlta', 'mediaDiariaStats', 'metaSugerida'
   ];
   
   ids.forEach(id => {
