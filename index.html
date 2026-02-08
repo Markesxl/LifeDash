@@ -16,214 +16,1302 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <style>
-:root{
-  --bg-sidebar: #020617; --bg-main: #0b1120;
-  --card-bg: #161e2d; --accent: #38bdf8; --text: #e5e7eb;
-  --gold: #f59e0b; --danger: #ef4444; --success: #22c55e;
-  --input-bg: #0f172a; --purple: #a855f7; --orange: #fb923c;
+:root {
+  /* Design System Tokens */
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --glass-backdrop: blur(12px) saturate(180%);
+  
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --accent-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  
+  --bg-sidebar: rgba(2, 6, 23, 0.85);
+  --bg-main: rgba(11, 17, 32, 0.95);
+  --card-bg: rgba(22, 30, 45, 0.7);
+  --accent: #38bdf8;
+  --text: #e5e7eb;
+  --gold: #f59e0b;
+  --danger: #ef4444;
+  --success: #22c55e;
+  --input-bg: rgba(15, 23, 42, 0.6);
+  --purple: #a855f7;
+  --orange: #fb923c;
+  
+  /* Espaçamento */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  
+  /* Bordas */
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  
+  /* Efeitos */
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-*{box-sizing:border-box; margin:0; padding:0;}
-body{font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-main); color: var(--text); display: flex; min-height: 100vh; overflow-x: hidden;}
 
-/* MENU MOBILE */
-.menu-toggle { display: none; position: fixed; top: 15px; left: 15px; z-index: 3000; background: transparent; color: var(--accent); border: none; width: auto; height: 45px; border-radius: 8px; font-size: 25px; cursor: pointer; align-items: center; justify-content: flex-start; padding: 5px 10px; transition: 0.3s; }
-.menu-toggle:hover { background: rgba(56, 189, 248, 0.1); }
-#mobile-logo { display: none; text-align: center; color: var(--accent); font-size: 28px; font-weight: 700; margin-bottom: 20px; letter-spacing: 1px; }
-#menu-text { margin-left: 8px; font-size: 16px; color: var(--accent); opacity: 0; transform: translateX(-15px); transition: all 0.3s ease; white-space: nowrap; display: inline-block; width: 0; overflow: hidden; }
-.menu-text-active { opacity: 1 !important; transform: translateX(5px) !important; width: auto !important; margin-left: 8px !important; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-/* SIDEBAR */
-.sidebar { width: 260px; background: var(--bg-sidebar); padding: 20px; border-right: 1px solid #1e293b; position: fixed; height: 100vh; z-index: 1500; transition: 0.3s; overflow-y: auto; }
-.sidebar h1 { color: var(--accent); font-size: 24px; margin-bottom: 40px; text-align: center; font-weight: 700; letter-spacing: 0.5px; }
-.nav button { width: 100%; background: none; border: none; color: #94a3b8; padding: 14px 16px; text-align: left; border-radius: 10px; cursor: pointer; margin-bottom: 8px; font-size: 15px; display: flex; align-items: center; gap: 12px; transition: all 0.2s; font-weight: 500; }
-.nav button:hover { background: #1e293b; color: #fff; transform: translateX(4px); }
-.nav button.active { background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%); color: #fff; box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3); }
-.nav button .icon { font-size: 18px; width: 20px; text-align: center; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg-main);
+  color: var(--text);
+  display: flex;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(at 40% 20%, rgba(56, 189, 248, 0.15) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, rgba(168, 85, 247, 0.15) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, rgba(34, 197, 94, 0.1) 0px, transparent 50%);
+  backdrop-filter: blur(20px);
+}
 
-.main { flex: 1; padding: 30px; margin-left: 260px; min-width: 0; transition: 0.3s; max-width: 1400px; }
-.section { display: none; animation: fadeIn 0.4s ease; }
-.section.active { display: block; }
+/* ==================== GLASSMORPHISM EFFECTS ==================== */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
 
-/* HEADER GRID */
-.header-grid { display: grid; grid-template-columns: 1fr 380px; gap: 20px; margin-bottom: 30px; }
-.card-slim { background: var(--card-bg); border-radius: 16px; padding: 20px 28px; border: 1px solid #1e293b66; display: flex; align-items: center; min-height: 140px; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.3s; }
-.card-slim:hover { border-color: var(--accent); box-shadow: 0 8px 16px rgba(56, 189, 248, 0.15); }
-.profile-img-slim { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--accent); object-fit: cover; background: #020617; flex-shrink: 0; margin-right: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
-.profile-info-slim { flex: 1; min-width: 0; }
-.profile-info-slim p { margin: 4px 0; font-size: 13px; color: #cbd5e1; }
-.phrase-slim { font-style: italic; color: var(--accent) !important; font-size: 12px !important; margin-top: 6px !important; }
+.glass-hover {
+  transition: var(--transition);
+}
 
-/* XP BAR */
-.xp-wrapper { margin-top: 12px; width: 100%; }
-.xp-container { background: #020617; border-radius: 12px; height: 12px; overflow: hidden; margin-top: 6px; border: 1px solid #1e293b; }
-.xp-bar { background: linear-gradient(90deg, #38bdf8 0%, #0ea5e9 100%); height: 100%; width: 0%; transition: width 1s ease; box-shadow: 0 0 10px rgba(56, 189, 248, 0.5); }
+.glass-hover:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+}
 
-.mini-conquistas { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
-.badge-mini { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); display: flex; align-items: center; justify-content: center; font-size: 18px; border: 2px solid var(--gold); transition: 0.3s; cursor: pointer; }
-.badge-mini:hover { transform: scale(1.15); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4); }
-
-/* PHOTO UPLOAD */
-.photo-upload-container { position: relative; width: 160px; height: 160px; margin: 0 auto; cursor: pointer; background: #020617; border-radius: 50%; overflow: hidden; border: 3px dashed #1e293b; transition: 0.3s; }
-.photo-upload-container:hover { border-color: var(--accent); transform: scale(1.05); }
-.camera-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; font-size: 28px; color: white; }
-.photo-upload-container:hover .camera-overlay { opacity: 1; }
-.upload-label { font-size: 12px; color: var(--accent); display: block; margin: 10px 0 15px 0; cursor: pointer; text-decoration: underline; transition: 0.3s; }
-.upload-label:hover { color: #7dd3fc; }
-
-/* CATEGORIAS E TAREFAS */
-.cat-header { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 12px 18px; border-radius: 10px; margin-top: 10px; cursor: pointer; color: var(--accent); font-size: 14px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; border: 1px solid #1e293b; transition: 0.3s; }
-.cat-header:hover { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); transform: translateX(4px); }
-.cat-done { color: var(--success); border-color: var(--success); background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.05) 100%); }
-.task-container-wrapper {
+/* ==================== MENU MOBILE ==================== */
+.menu-toggle {
   display: none;
-  background: rgba(15, 23, 42, 0.3);
-  border: 1px solid #1e293b;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 3000;
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--accent);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius-md);
+  font-size: 24px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  backdrop-filter: blur(10px);
+}
+
+.menu-toggle:hover {
+  background: rgba(56, 189, 248, 0.25);
+  transform: scale(1.05);
+}
+
+#mobile-logo {
+  display: none;
+  text-align: center;
+  color: var(--accent);
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: var(--space-lg);
+  letter-spacing: 1px;
+  background: linear-gradient(135deg, #38bdf8, #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+#menu-text {
+  margin-left: var(--space-sm);
+  font-size: 14px;
+  color: var(--accent);
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  white-space: nowrap;
+}
+
+.menu-text-active {
+  opacity: 1 !important;
+  transform: translateX(0) !important;
+}
+
+/* ==================== SIDEBAR GLASS ==================== */
+.sidebar {
+  width: 280px;
+  background: var(--bg-sidebar);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  padding: var(--space-xl);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  position: fixed;
+  height: 100vh;
+  z-index: 1500;
+  transition: var(--transition);
+  overflow-y: auto;
+}
+
+.sidebar h1 {
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 28px;
+  margin-bottom: var(--space-xl);
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.nav button {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  padding: var(--space-md) var(--space-lg);
+  text-align: left;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  margin-bottom: var(--space-sm);
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  transition: var(--transition);
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+}
+
+.nav button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  transform: translateX(8px);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav button.active {
+  background: var(--primary-gradient);
+  color: white;
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
+  border: none;
+}
+
+.nav button .icon {
+  font-size: 20px;
+  width: 24px;
+  text-align: center;
+}
+
+.main {
+  flex: 1;
+  padding: var(--space-xl);
+  margin-left: 280px;
+  min-width: 0;
+  transition: var(--transition);
+  max-width: 1400px;
+}
+
+.section {
+  display: none;
+  animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.section.active {
+  display: block;
+}
+
+/* ==================== HEADER GRID GLASS ==================== */
+.header-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.card-slim {
+  background: var(--card-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg) var(--space-xl);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  min-height: 160px;
+  position: relative;
+  transition: var(--transition);
+  overflow: hidden;
+}
+
+.card-slim::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+}
+
+.card-slim:hover {
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(56, 189, 248, 0.1);
+  transform: translateY(-4px);
+}
+
+.profile-img-slim {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  background: var(--primary-gradient) border-box;
+  object-fit: cover;
+  flex-shrink: 0;
+  margin-right: var(--space-lg);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.profile-img-slim::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  background: var(--primary-gradient);
+  border-radius: 50%;
+  z-index: -1;
+}
+
+.profile-info-slim {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-info-slim p {
+  margin: 6px 0;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.phrase-slim {
+  font-style: italic;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 13px !important;
+  margin-top: var(--space-sm) !important;
+  font-weight: 500;
+}
+
+/* ==================== XP BAR ANIMATED ==================== */
+.xp-wrapper {
+  margin-top: var(--space-md);
+  width: 100%;
+}
+
+.xp-container {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: var(--radius-sm);
+  height: 16px;
+  overflow: hidden;
+  margin-top: var(--space-sm);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+.xp-bar {
+  background: var(--primary-gradient);
+  background-size: 200% 100%;
+  height: 100%;
+  width: 0%;
+  transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: xpShine 2s infinite linear;
+  position: relative;
+  overflow: hidden;
+}
+
+.xp-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: shine 2s infinite;
+}
+
+@keyframes xpShine {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes shine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ==================== CONQUISTAS GLASS ==================== */
+.mini-conquistas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin: var(--space-sm) 0;
+}
+
+.badge-mini {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  border: 2px solid transparent;
+  background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+              var(--primary-gradient) border-box;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.badge-mini:hover {
+  transform: scale(1.2) rotate(5deg);
+  box-shadow: 0 8px 32px rgba(245, 158, 11, 0.4);
+}
+
+/* ==================== PHOTO UPLOAD GLASS ==================== */
+.photo-upload-container {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin: 0 auto;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  transition: var(--transition);
+  backdrop-filter: blur(10px);
+}
+
+.photo-upload-container:hover {
+  border-color: var(--accent);
+  transform: scale(1.05);
+  box-shadow: 0 0 40px rgba(56, 189, 248, 0.3);
+}
+
+.camera-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: var(--transition);
+  font-size: 32px;
+  color: white;
+  backdrop-filter: blur(4px);
+}
+
+.photo-upload-container:hover .camera-overlay {
+  opacity: 1;
+}
+
+.upload-label {
+  font-size: 13px;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: block;
+  margin: var(--space-sm) 0 var(--space-md);
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+  font-weight: 600;
+}
+
+.upload-label:hover {
+  transform: translateY(-2px);
+}
+
+/* ==================== CATEGORIAS E TAREFAS GLASS ==================== */
+.cat-header {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  margin-top: var(--space-sm);
+  cursor: pointer;
+  color: var(--accent);
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.cat-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--primary-gradient);
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.cat-header:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(8px);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.cat-header:hover::before {
+  opacity: 1;
+}
+
+.cat-done {
+  background: linear-gradient(135deg, 
+    rgba(34, 197, 94, 0.15) 0%, 
+    rgba(34, 197, 94, 0.05) 100%);
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.task-container-wrapper {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-top: none;
-  border-radius: 0 0 10px 10px;
-  padding: 8px 18px;
-  margin-bottom: 12px;
-  overflow: hidden; /* IMPORTANTE: adicione esta linha */
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  padding: 0 var(--space-lg);
+  margin-bottom: var(--space-sm);
+  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+              opacity 0.3s ease,
+              padding 0.3s ease;
 }
 
-/* QUANDO ABERTO PELA PRIMEIRA VEZ (render inicial) */
 .task-container-wrapper.open {
+  max-height: 1000px;
+  opacity: 1;
+  padding: var(--space-lg);
+}
+
+/* ==================== SWITCH MODERNO ==================== */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  margin-left: auto;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  transition: var(--transition);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background: white;
+  transition: var(--transition);
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+input:checked + .slider {
+  background: var(--success-gradient);
+  border-color: transparent;
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* ==================== HABITOS GLASS ==================== */
+.habit-name {
+  font-weight: 600;
+  font-size: 16px;
+  color: white;
+  letter-spacing: 0.3px;
+}
+
+.habit-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: var(--space-md);
+  table-layout: fixed;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.habit-table th {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  padding: var(--space-md) var(--space-sm);
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.habit-table td {
+  padding: var(--space-md) var(--space-sm);
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.habit-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: var(--transition);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(4px);
+}
+
+.habit-circle.done {
+  background: var(--success-gradient);
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 4px 20px rgba(67, 233, 123, 0.4);
+  animation: pulse 1.5s infinite;
+}
+
+.habit-circle:hover:not(.done) {
+  transform: scale(1.2);
+  border-color: var(--accent);
+  background: rgba(56, 189, 248, 0.1);
+}
+
+/* ==================== CARDS GLASS ==================== */
+.card {
+  background: var(--card-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  margin-bottom: var(--space-xl);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.3), 
+    transparent);
+}
+
+.card:hover {
+  border-color: rgba(56, 189, 248, 0.3);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(56, 189, 248, 0.1);
+  transform: translateY(-4px);
+}
+
+h3 {
+  color: var(--accent);
+  font-size: 20px;
+  margin: 0 0 var(--space-lg) 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: var(--space-md);
+  cursor: pointer;
+  user-select: none;
+  font-weight: 700;
+  background: linear-gradient(135deg, #38bdf8, #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-sm);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 15px;
+  transition: var(--transition);
+  backdrop-filter: blur(10px);
+}
+
+.item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateX(8px);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* ==================== BOTÕES GLASS ==================== */
+.btn-primary {
+  width: 100%;
+  padding: var(--space-md) var(--space-lg);
+  background: var(--primary-gradient);
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  cursor: pointer;
+  color: white;
+  transition: var(--transition);
+  font-size: 16px;
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.2), 
+    transparent);
+  transition: left 0.5s;
+  z-index: -1;
+}
+
+.btn-primary:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.5);
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+}
+
+.btn-danger-outline {
+  background: transparent;
+  border: 2px solid var(--danger);
+  color: var(--danger);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  width: 100%;
+  font-size: 15px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-danger-outline:hover {
+  background: var(--danger);
+  color: white;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(239, 68, 68, 0.4);
+}
+
+.btn-gold-outline {
+  background: transparent;
+  border: 2px solid var(--gold);
+  color: var(--gold);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  width: 100%;
+  font-size: 15px;
+}
+
+.btn-gold-outline:hover {
+  background: var(--gold);
+  color: black;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(245, 158, 11, 0.4);
+}
+
+.btn-plus {
+  width: 48px !important;
+  height: 48px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 28px !important;
+  line-height: 1 !important;
+  font-weight: bold !important;
+  border: none !important;
+  cursor: pointer;
+  flex-shrink: 0;
+  border-radius: var(--radius-md) !important;
+  background: var(--primary-gradient) !important;
+  color: white !important;
+  transition: var(--transition) !important;
+}
+
+.btn-plus:hover {
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
+}
+
+/* ==================== CONQUISTAS GLASS ==================== */
+.badge-category {
+  margin-bottom: var(--space-xl);
+}
+
+.badge-category-title {
+  font-size: 16px;
+  font-weight: 800;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-transform: uppercase;
+  margin-bottom: var(--space-lg);
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-lg);
+}
+
+.badge-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  padding: var(--space-lg);
+  border-radius: var(--radius-md);
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: var(--transition);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.badge-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--primary-gradient);
+  opacity: 0;
+  transition: var(--transition);
+  z-index: -1;
+}
+
+.badge-card.unlocked {
+  border-color: transparent;
+  background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+              var(--primary-gradient) border-box;
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.2);
+}
+
+.badge-card.unlocked:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+}
+
+.badge-card.locked {
+  opacity: 0.6;
+  filter: grayscale(0.5);
+}
+
+.badge-card.locked:hover {
+  opacity: 0.8;
+  filter: grayscale(0.3);
+}
+
+.badge-icon {
+  font-size: 48px;
+  margin-bottom: var(--space-md);
   display: block;
-  animation: slideDown 0.3s ease;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
 
-/* QUANDO ABERTO VIA JAVASCRIPT (interação do usuário) */
-.task-container-wrapper.open-dynamic {
-  display: block;
-  /* Usamos transition em vez de animation para ter mais controle */
-  transition: max-height 0.3s ease, opacity 0.3s ease;
+.badge-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  margin: var(--space-sm) 0 var(--space-xs);
 }
-/* SWITCH TAREFA */
-.switch { position: relative; display: inline-block; width: 38px; height: 20px; margin-left: auto; }
-.switch input { opacity: 0; width: 0; height: 0; }
-.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #334155; transition: .3s; border-radius: 20px; }
-.slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
-input:checked + .slider { background: linear-gradient(135deg, var(--success) 0%, #16a34a 100%); box-shadow: 0 0 8px rgba(34, 197, 94, 0.4); }
-input:checked + .slider:before { transform: translateX(18px); }
 
-/* HABITOS */
-.habit-name { font-weight: 600; font-size: 15px; color: #fff; letter-spacing: 0.3px; }
-.habit-table { width: 100%; border-collapse: collapse; margin-top: 12px; table-layout: fixed; }
-.habit-table th { font-size: 10px; color: #94a3b8; padding: 8px 4px; text-align: center; border-bottom: 2px solid #1e293b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-.habit-table td { padding: 12px 4px; text-align: center; border-bottom: 1px solid #1e293b44; }
-.habit-circle { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #334155; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; transition: all 0.3s; background: rgba(15, 23, 42, 0.5); }
-.habit-circle.done { border-color: var(--success); color: var(--success); background: rgba(34, 197, 94, 0.1); }
-.habit-circle:hover:not(.done) { transform: scale(1.15); border-color: var(--accent); }
+.badge-desc {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.4;
+}
 
-/* CARDS */
-.card { background: var(--card-bg); border-radius: 16px; padding: 28px; margin-bottom: 28px; border: 1px solid #1e293b66; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.3s; }
-.card:hover { border-color: rgba(56, 189, 248, 0.3); }
-h3 { color: var(--accent); font-size: 19px; margin: 0 0 24px 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1e293b; padding-bottom: 12px; cursor: pointer; user-select: none; font-weight: 600; }
-.item { display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.6); padding: 10px 16px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #1e293b; font-size: 14px; transition: 0.2s; }
-.item:hover { background: rgba(30, 41, 59, 0.6); transform: translateX(4px); }
+.badge-progress {
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
 
-/* BOTÕES */
-.btn-primary { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--accent) 0%, #0ea5e9 100%); border:none; border-radius:10px; font-weight:600; cursor:pointer; color: #000; transition: 0.3s; font-size: 15px; box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3); }
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(56, 189, 248, 0.4); }
-.btn-danger-outline { background: transparent; border: 2px solid var(--danger); color: var(--danger); padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.3s; width: 100%; font-size: 14px; }
-.btn-danger-outline:hover { background: var(--danger); color: white; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4); }
-.btn-gold-outline { background: transparent; border: 2px solid var(--gold); color: var(--gold); padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.3s; width: 100%; font-size: 14px; }
-.btn-gold-outline:hover { background: var(--gold); color: black; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4); }
-.btn-plus { width: 44px !important; height: 44px !important; padding: 0 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; font-size: 26px !important; line-height: 1 !important; font-weight: bold !important; border: none !important; cursor: pointer; flex-shrink: 0; border-radius: 10px !important; }
+.badge-progress-bar {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-sm);
+  height: 8px;
+  overflow: hidden;
+  margin-top: var(--space-xs);
+}
 
-/* CONQUISTAS */
-.badge-category { margin-bottom: 32px; }
-.badge-category-title { font-size: 14px; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 16px; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
-.badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px; }
-.badge-card { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 20px; border-radius: 14px; text-align: center; border: 2px solid #1e293b; transition: all 0.3s; cursor: pointer; position: relative; }
-.badge-card.unlocked { border-color: var(--gold); box-shadow: 0 0 20px rgba(245, 158, 11, 0.2); }
-.badge-card.unlocked:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(245, 158, 11, 0.3); }
-.badge-card.locked { opacity: 0.4; }
-.badge-card.locked:hover { opacity: 0.6; }
-.badge-icon { font-size: 40px; margin-bottom: 12px; display: block; }
-.badge-title { font-size: 13px; font-weight: 600; color: #fff; margin: 8px 0 4px 0; }
-.badge-desc { font-size: 10px; color: #94a3b8; line-height: 1.4; }
-.badge-progress { margin-top: 8px; padding-top: 8px; border-top: 1px solid #1e293b; }
-.badge-progress-bar { background: #0f172a; border-radius: 8px; height: 6px; overflow: hidden; margin-top: 4px; }
-.badge-progress-fill { background: linear-gradient(90deg, var(--accent) 0%, #0ea5e9 100%); height: 100%; transition: width 0.5s; }
+.badge-progress-fill {
+  background: var(--primary-gradient);
+  height: 100%;
+  transition: width 0.5s ease;
+  position: relative;
+  overflow: hidden;
+}
 
-/* REGISTRO GROUP */
-.registro-group { background: rgba(15, 23, 42, 0.4); border: 1px solid #1e293b; border-radius: 12px; padding: 16px; margin-bottom: 18px; }
-.registro-group-title { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 1px; border-bottom: 1px solid #1e293b; padding-bottom: 6px; }
+.badge-progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shine 2s infinite;
+}
 
-/* AUTH */
-#login-screen { position: fixed; inset: 0; background: linear-gradient(135deg, #020617 0%, #0b1120 100%); z-index: 10000; display: flex; align-items: center; justify-content: center; overflow-y: auto; padding: 20px; }
-.login-box { background: var(--card-bg); padding: 40px; border-radius: 20px; border: 2px solid var(--accent); width: 100%; max-width: 480px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-.login-box h1 { color: var(--accent); font-size: 32px; margin-bottom: 8px; font-weight: 700; }
-.login-box h2 { color: #e5e7eb; font-size: 20px; margin-bottom: 28px; font-weight: 500; }
-input, select { width: 100%; padding: 14px 16px; border-radius: 10px; border: 1px solid #1e293b; background: #0f172a; color: white; margin-bottom: 12px; font-size: 15px; transition: 0.3s; }
-input:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1); }
+/* ==================== REGISTRO GROUP GLASS ==================== */
+.registro-group {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+  backdrop-filter: blur(10px);
+}
 
-.grid-stack { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
+.registro-group-title {
+  font-size: 13px;
+  font-weight: 700;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-transform: uppercase;
+  margin-bottom: var(--space-md);
+  letter-spacing: 1px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: var(--space-sm);
+}
 
-/* MOBILE */
+/* ==================== MODO FOCO (POMODORO) ==================== */
+#focoOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(20px);
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.foco-container {
+  background: rgba(22, 30, 45, 0.9);
+  backdrop-filter: blur(40px);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 40px 80px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  max-width: 500px;
+  width: 90%;
+  animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.foco-timer {
+  font-size: 96px;
+  font-weight: 800;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: var(--space-xl) 0;
+  text-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+  animation: pulse 2s infinite;
+}
+
+.foco-botoes {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: center;
+  margin-top: var(--space-xl);
+}
+
+/* ==================== AUTH GLASS ==================== */
+#login-screen {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at top, rgba(2, 6, 23, 0.95), rgba(11, 17, 32, 1));
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  padding: var(--space-xl);
+  backdrop-filter: blur(20px);
+}
+
+.login-box {
+  background: rgba(22, 30, 45, 0.8);
+  backdrop-filter: blur(40px);
+  padding: var(--space-xl);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+  box-shadow: 
+    0 40px 80px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  animation: slideInRight 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.login-box h1 {
+  font-size: 40px;
+  margin-bottom: var(--space-sm);
+  font-weight: 800;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+}
+
+.login-box h2 {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 22px;
+  margin-bottom: var(--space-xl);
+  font-weight: 500;
+}
+
+input, select {
+  width: 100%;
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  margin-bottom: var(--space-md);
+  font-size: 16px;
+  transition: var(--transition);
+  backdrop-filter: blur(10px);
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 
+    0 0 0 3px rgba(56, 189, 248, 0.1),
+    0 8px 32px rgba(56, 189, 248, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.grid-stack {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+/* ==================== MOBILE RESPONSIVO ==================== */
 @media (max-width: 1090px) {
-  .menu-toggle { display: flex !important; }
-  #mobile-logo { display: block; }
-  .sidebar { left: -260px; padding-top: 90px; }
-  .sidebar.open { left: 0; box-shadow: 0 0 0 10000px rgba(0, 0, 0, 0.6); }
-  .sidebar h1 { display: none; }
-  .main { margin-left: 0; padding: 90px 18px 24px 18px; }
-  .header-grid { grid-template-columns: 1fr; }
-  .card-slim:nth-child(1) { order: 1; }
-  .card-slim:nth-child(2) { display: none; }
-  .mobile-badges-container { display: block; margin-top: 12px; padding-top: 12px; border-top: 1px solid #1e293b; }
-  .grid-stack { grid-template-columns: 1fr !important; }
-  .card { padding: 20px; }
-  h3 { font-size: 16px; }
-  .badge-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; }
-
+  .menu-toggle {
+    display: flex !important;
+  }
+  
+  #mobile-logo {
+    display: block;
+  }
+  
+  .sidebar {
+    left: -280px;
+    padding-top: 100px;
+  }
+  
+  .sidebar.open {
+    left: 0;
+    box-shadow: 0 0 0 10000px rgba(0, 0, 0, 0.8);
+  }
+  
+  .sidebar h1 {
+    display: none;
+  }
+  
+  .main {
+    margin-left: 0;
+    padding: 100px var(--space-md) var(--space-xl);
+  }
+  
+  .header-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .card-slim:nth-child(1) {
+    order: 1;
+  }
+  
+  .card-slim:nth-child(2) {
+    display: none !important;
+  }
+  
+  .mobile-badges-container {
+    display: block;
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .grid-stack {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .card {
+    padding: var(--space-lg);
+  }
+  
+  h3 {
+    font-size: 18px;
+  }
+  
+  .badge-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: var(--space-md);
+  }
+  
+  /* Habitos mobile otimizado */
+  .habit-circle {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+  }
+  
+  .habit-table th,
+  .habit-table td {
+    padding: var(--space-sm) 4px !important;
+  }
+  
+  .habit-table th {
+    font-size: 10px !important;
+  }
+  
+  .habit-name {
+    font-size: 14px !important;
+  }
 }
 
-.mobile-badges-container { display: none; }
+.mobile-badges-container {
+  display: none;
+}
+
 @media (max-width: 1090px) {
-  .mobile-badges-container { display: block; }
+  .mobile-badges-container {
+    display: block;
+  }
 }
 
-/* ANIMAÇÕES */
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes slideDown { from { opacity: 0; max-height: 0; } to { opacity: 1; max-height: 500px; } } /* Vamos usar de forma inteligente */
-@keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
-@keyframes bounceIn { 
-  0% { transform: scale(0) rotate(-180deg); }
-  50% { transform: scale(1.1) rotate(10deg); }
-  100% { transform: scale(1) rotate(0deg); }
+/* ==================== ANIMAÇÕES ==================== */
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
 }
-@keyframes pulse { 
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-}
-@keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-@keyframes slideInRight { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-@keyframes slideOutRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(400px); opacity: 0; } }
 
-/* ADICIONE ESTA NOVA ANIMAÇÃO APENAS */
-@keyframes dynamicSlideDown { 
+@keyframes slideDown {
   from { 
     opacity: 0; 
     max-height: 0; 
-  } 
+  }
   to { 
     opacity: 1; 
-    /* A altura será definida via JS - usamos 'none' como placeholder */
-    max-height: none;
-  } 
+    max-height: 1000px; 
+  }
 }
 
-/* POPUP */
-#popup { position: fixed; top: 24px; right: 24px; padding: 16px 28px; border-radius: 12px; font-weight: 600; display: none; z-index: 9999; box-shadow: 0 8px 24px rgba(0,0,0,0.3); font-size: 15px; }
+@keyframes scaleIn {
+  from { 
+    transform: scale(0.8); 
+    opacity: 0; 
+  }
+  to { 
+    transform: scale(1); 
+    opacity: 1; 
+  }
+}
 
-/* ==================== SKELETONS & LOADING STATES ==================== */
+@keyframes bounceIn {
+  0% { 
+    transform: scale(0) rotate(-180deg); 
+  }
+  50% { 
+    transform: scale(1.1) rotate(10deg); 
+  }
+  100% { 
+    transform: scale(1) rotate(0deg); 
+  }
+}
 
+@keyframes pulse {
+  0%, 100% { 
+    transform: scale(1); 
+  }
+  50% { 
+    transform: scale(1.05); 
+  }
+}
+
+@keyframes rotate {
+  from { 
+    transform: rotate(0deg); 
+  }
+  to { 
+    transform: rotate(360deg); 
+  }
+}
+
+@keyframes slideInRight {
+  from { 
+    transform: translateX(100px); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translateX(0); 
+    opacity: 1; 
+  }
+}
+
+@keyframes slideOutRight {
+  from { 
+    transform: translateX(0); 
+    opacity: 1; 
+  }
+  to { 
+    transform: translateX(100px); 
+    opacity: 0; 
+  }
+}
+
+@keyframes float {
+  0%, 100% { 
+    transform: translateY(0px); 
+  }
+  50% { 
+    transform: translateY(-10px); 
+  }
+}
+
+/* ==================== SKELETONS ==================== */
 .skeleton {
   animation: skeleton-pulse 1.5s ease-in-out infinite;
-  background: linear-gradient(90deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 100%);
   background-size: 200% 100%;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
 }
 
 @keyframes skeleton-pulse {
@@ -233,63 +1321,81 @@ input:focus, select:focus { outline: none; border-color: var(--accent); box-shad
 
 .skeleton-line {
   animation: skeleton-pulse 1.5s ease-in-out infinite;
-  background: linear-gradient(90deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 100%);
   background-size: 200% 100%;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
 }
 
 .skeleton-badge {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
   animation: skeleton-pulse 1.5s ease-in-out infinite;
-  background: linear-gradient(90deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 100%);
   background-size: 200% 100%;
 }
 
 .skeleton-cat {
-  height: 40px;
-  border-radius: 10px;
+  height: 48px;
+  border-radius: var(--radius-md);
   animation: skeleton-pulse 1.5s ease-in-out infinite;
-  background: linear-gradient(90deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 100%);
   background-size: 200% 100%;
 }
 
 .skeleton-task {
-  height: 48px;
-  border-radius: 8px;
-  margin-bottom: 8px;
+  height: 56px;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-sm);
   animation: skeleton-pulse 1.5s ease-in-out infinite;
-  background: linear-gradient(90deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 100%);
   background-size: 200% 100%;
 }
 
 .skeleton-habit-row {
-  height: 60px;
-  border-radius: 8px;
-  margin-bottom: 12px;
+  height: 68px;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-md);
   animation: skeleton-pulse 1.5s ease-in-out infinite;
-  background: linear-gradient(90deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 100%);
   background-size: 200% 100%;
 }
 
 .skeleton-badge-card {
-  height: 140px;
-  border-radius: 14px;
+  height: 160px;
+  border-radius: var(--radius-md);
   animation: skeleton-pulse 1.5s ease-in-out infinite;
-  background: linear-gradient(90deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 100%);
   background-size: 200% 100%;
 }
 
 .skeleton-category {
-  margin-bottom: 32px;
+  margin-bottom: var(--space-xl);
 }
 
-/* Loading spinner */
+/* ==================== LOADING OVERLAY ==================== */
 .spinner {
   display: inline-block;
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   border: 3px solid rgba(56, 189, 248, 0.3);
   border-radius: 50%;
   border-top-color: var(--accent);
@@ -300,14 +1406,14 @@ input:focus, select:focus { outline: none; border-color: var(--accent); box-shad
   to { transform: rotate(360deg); }
 }
 
-/* Loading overlay */
 .loading-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(2, 6, 23, 0.9);
+  background: rgba(2, 6, 23, 0.95);
+  backdrop-filter: blur(20px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -324,30 +1430,35 @@ input:focus, select:focus { outline: none; border-color: var(--accent); box-shad
 
 .loading-content {
   text-align: center;
-  padding: 40px;
-  background: var(--card-bg);
-  border-radius: 20px;
-  border: 2px solid var(--accent);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  padding: var(--space-xl);
+  background: rgba(22, 30, 45, 0.9);
+  backdrop-filter: blur(40px);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+  animation: float 3s ease-in-out infinite;
 }
 
-/* Toast notifications */
+/* ==================== TOAST NOTIFICATIONS ==================== */
 .toast {
   position: fixed;
-  bottom: 24px;
+  bottom: var(--space-xl);
   left: 50%;
   transform: translateX(-50%) translateY(100px);
-  background: var(--card-bg);
-  border: 1px solid var(--accent);
-  border-radius: 12px;
-  padding: 16px 24px;
+  background: rgba(22, 30, 45, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-lg);
   min-width: 300px;
   max-width: 90vw;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
   z-index: 10000;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-md);
   opacity: 0;
   transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
@@ -358,135 +1469,73 @@ input:focus, select:focus { outline: none; border-color: var(--accent); box-shad
 }
 
 .toast-icon {
-  font-size: 20px;
+  font-size: 24px;
   flex-shrink: 0;
 }
 
-.toast-success { border-color: var(--success); }
-.toast-error { border-color: var(--danger); }
-.toast-warning { border-color: var(--gold); }
-.toast-info { border-color: var(--accent); }
-
-/* Progress bars */
-.progress-bar {
-  height: 6px;
-  background: #1e293b;
-  border-radius: 3px;
-  overflow: hidden;
-  margin: 8px 0;
+.toast-success { 
+  border-color: rgba(34, 197, 94, 0.3); 
 }
 
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent) 0%, #0ea5e9 100%);
-  border-radius: 3px;
-  transition: width 0.5s ease;
+.toast-error { 
+  border-color: rgba(239, 68, 68, 0.3); 
 }
 
-/* Empty states */
+.toast-warning { 
+  border-color: rgba(245, 158, 11, 0.3); 
+}
+
+.toast-info { 
+  border-color: rgba(56, 189, 248, 0.3); 
+}
+
+/* ==================== ESTADOS VAZIOS ==================== */
 .empty-state {
   text-align: center;
-  padding: 40px 20px;
-  color: #64748b;
+  padding: var(--space-xl) var(--space-lg);
+  color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-md);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
 }
 
 .empty-state-icon {
-  font-size: 48px;
-  margin-bottom: 16px;
-  opacity: 0.5;
+  font-size: 56px;
+  margin-bottom: var(--space-lg);
+  opacity: 0.3;
+  animation: float 3s ease-in-out infinite;
 }
 
 .empty-state-title {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
-  margin-bottom: 8px;
-  color: #94a3b8;
+  margin-bottom: var(--space-sm);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .empty-state-description {
-  font-size: 14px;
+  font-size: 15px;
   max-width: 300px;
   margin: 0 auto;
-  line-height: 1.5;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.6);
 }
 
-/* Hover effects for better UX */
-.btn-primary:active {
-  transform: translateY(0) !important;
-  transition: transform 0.1s !important;
+/* ==================== GESTOS TOUCH ==================== */
+.touch-target {
+  min-height: 48px;
+  min-width: 48px;
 }
 
-.nav button:active {
-  transform: scale(0.98) !important;
-  transition: transform 0.1s !important;
-}
-
-/* Focus states for accessibility */
-button:focus, input:focus, select:focus {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-/* Disabled states */
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none !important;
-}
-
-/* Smooth transitions for all interactive elements */
-.nav button, .btn-primary, .item, .badge-card, .habit-circle {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Mobile touch targets */
-@media (max-width: 1090px) {
-  .nav button, .btn-primary, .habit-circle {
-    min-height: 44px;
-  }
-  
-  .switch {
-    transform: scale(1.2);
-  }
-}
-
-/* ==================== CORREÇÃO PARA HABITOS NO MOBILE ==================== */
-@media (max-width: 1090px) {
-  .habit-circle {
-    width: 32px !important;
-    height: 32px !important;
-    min-width: 32px !important;
-    min-height: 32px !important;
-  }
-  
-  .habit-table th,
-  .habit-table td {
-    padding: 8px 2px !important;
-  }
-  
-  .habit-table th {
-    font-size: 9px !important;
-  }
-  
-  .habit-name {
-    font-size: 13px !important;
-  }
-}
-
-/* Garantir proporção dos círculos */
-.habit-circle {
-  aspect-ratio: 1 / 1;
-  flex-shrink: 0;
-}
-
-/* ==================== CONTROLE DE VISIBILIDADE MOBILE/DESKTOP ==================== */
-
-/* Por padrão, esconder elementos mobile-only no desktop */
+/* ==================== CONTROLE DE VISIBILIDADE ==================== */
 .mobile-only {
   display: none !important;
 }
 
-/* No mobile, mostrar elementos mobile-only e esconder desktop-only */
+.desktop-only {
+  display: block !important;
+}
+
 @media (max-width: 1090px) {
   .mobile-only {
     display: block !important;
@@ -495,20 +1544,29 @@ button:disabled {
   .desktop-only {
     display: none !important;
   }
-  
-  /* Esconder o card de conquistas recentes no mobile */
-  .card-slim:nth-child(2) {
-    display: none !important;
-  }
 }
 
-/* No desktop, garantir que o card de conquistas aparece */
 @media (min-width: 1091px) {
   .card-slim:nth-child(2) {
     display: flex !important;
   }
 }
 
+/* ==================== POPUP ==================== */
+#popup {
+  position: fixed;
+  top: var(--space-lg);
+  right: var(--space-lg);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  display: none;
+  z-index: 9999;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  font-size: 15px;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
 </style>
 </head>
 <body>
@@ -525,8 +1583,8 @@ button:disabled {
     <input type="email" id="login-email" placeholder="Seu e-mail">
     <input type="password" id="login-password" placeholder="Sua senha">
     <button class="btn-primary" onclick="fazerLogin()">Entrar</button>
-    <p onclick="recuperarSenha()" style="color: var(--accent); cursor: pointer; font-size: 13px; margin-top: 18px;">Esqueci minha senha</p>
-    <span onclick="toggleAuth('register')" style="color: var(--accent); cursor: pointer; text-decoration: underline; font-size: 14px; margin-top: 12px; display: block;">Criar nova conta</span>
+    <p onclick="recuperarSenha()" style="color: var(--accent); cursor: pointer; font-size: 14px; margin-top: var(--space-lg);">Esqueci minha senha</p>
+    <span onclick="toggleAuth('register')" style="color: var(--accent); cursor: pointer; text-decoration: underline; font-size: 14px; margin-top: var(--space-md); display: block;">Criar nova conta</span>
   </div>
 
   <div class="login-box" id="auth-register" style="display: none;">
@@ -538,7 +1596,7 @@ button:disabled {
     <span class="upload-label" onclick="document.getElementById('regFoto').click()">Adicionar foto de perfil</span>
     <input type="file" id="regFoto" onchange="previewRegistro(this)" style="display:none;" accept="image/*">
     <input type="text" id="regNome" placeholder="Nome completo">
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
         <input type="date" id="regNascimento">
         <select id="regSexo"><option value="">Sexo...</option><option>Masculino</option><option>Feminino</option><option>Outro</option></select>
     </div>
@@ -546,7 +1604,7 @@ button:disabled {
     <input type="email" id="regEmail" placeholder="E-mail">
     <input type="password" id="regPassword" placeholder="Senha (mínimo 6 caracteres)">
     <button class="btn-primary" onclick="fazerRegistro()">Criar Conta</button>
-    <span onclick="toggleAuth('login')" style="color: var(--accent); cursor: pointer; text-decoration: underline; font-size: 14px; margin-top: 18px; display: block;">Já tem conta? Faça login</span>
+    <span onclick="toggleAuth('login')" style="color: var(--accent); cursor: pointer; text-decoration: underline; font-size: 14px; margin-top: var(--space-lg); display: block;">Já tem conta? Faça login</span>
   </div>
 </div>
 
@@ -558,6 +1616,7 @@ button:disabled {
     <button onclick="irPara('perfil', this)"><span class="icon">👤</span> Perfil</button>
     <button onclick="irPara('registros', this)"><span class="icon">📝</span> Registros</button>
     <button onclick="irPara('historico', this)"><span class="icon">📜</span> Histórico</button>
+    <button onclick="irPara('modofoco', this)" id="modoFocoBtn"><span class="icon">🍅</span> Modo Foco</button>
     <button onclick="fazerLogout()" style="margin-top: 40px; color: var(--danger);"><span class="icon">🚪</span> Sair</button>
   </div>
 </div>
@@ -565,128 +1624,120 @@ button:disabled {
 <div class="main">
   <div id="mobile-logo">LIFE DASH</div>
   
-<div class="header-grid">
-  <!-- Card do Perfil -->
-  <div class="card-slim">
-    <!-- Skeleton para foto -->
-    <div id="hFotoSkeleton" class="profile-img-slim skeleton" style="border:none; background:#1e293b"></div>
-    <img id="hFoto" class="profile-img-slim" src="" style="display:none;">
-    
-    <div class="profile-info-slim">
-      <!-- ELEMENTOS REAIS (escondidos inicialmente) -->
-      <div id="profileInfoReal" style="display: none;">
-        <p><strong>Nome:</strong> <span id="hNome">---</span> | <strong>Idade:</strong> <span id="hIdade">--</span></p>
-        <p><strong>Sexo:</strong> <span id="hSexo">---</span> | <strong>Profissão:</strong> <span id="hProfissao">---</span></p>
-        <p id="hFrase" class="phrase-slim">"---"</p>
-      </div>
+  <div class="header-grid">
+    <!-- Card do Perfil -->
+    <div class="card-slim">
+      <div id="hFotoSkeleton" class="profile-img-slim skeleton" style="border:none;"></div>
+      <img id="hFoto" class="profile-img-slim" src="" style="display:none;">
       
-      <!-- Skeletons para informações -->
-      <div id="profileInfoSkeleton">
-        <div class="skeleton-line" style="width:70%; height:16px; margin-bottom:8px;"></div>
-        <div class="skeleton-line" style="width:60%; height:16px; margin-bottom:8px;"></div>
-        <div class="skeleton-line" style="width:50%; height:12px; margin-bottom:12px;"></div>
-      </div>
-      
-      <!-- ELEMENTOS REAIS para badges mobile -->
-      <!-- A classe "mobile-only" será usada para esconder no desktop -->
-      <div id="mobileBadgesReal" class="mobile-badges-container mobile-only" style="display: none;">
-        <div style="font-size: 11px; color: var(--accent); margin-bottom: 8px; font-weight: 700;">🏆 CONQUISTAS</div>
-      <div id="homeBadgesMobile" class="mini-conquistas"></div>
-    </div>
+      <div class="profile-info-slim">
+        <div id="profileInfoReal" style="display: none;">
+          <p><strong>Nome:</strong> <span id="hNome">---</span> | <strong>Idade:</strong> <span id="hIdade">--</span></p>
+          <p><strong>Sexo:</strong> <span id="hSexo">---</span> | <strong>Profissão:</strong> <span id="hProfissao">---</span></p>
+          <p id="hFrase" class="phrase-slim">"---"</p>
+        </div>
+        
+        <div id="profileInfoSkeleton">
+          <div class="skeleton-line" style="width:70%; height:18px; margin-bottom:var(--space-sm);"></div>
+          <div class="skeleton-line" style="width:60%; height:18px; margin-bottom:var(--space-sm);"></div>
+          <div class="skeleton-line" style="width:50%; height:14px; margin-bottom:var(--space-md);"></div>
+        </div>
+        
+        <!-- Badges Mobile -->
+        <div id="mobileBadgesReal" class="mobile-badges-container mobile-only" style="display: none;">
+          <div style="font-size: 12px; color: var(--accent); margin-bottom: var(--space-sm); font-weight: 700;">🏆 CONQUISTAS</div>
+          <div id="homeBadgesMobile" class="mini-conquistas"></div>
+        </div>
 
-      <!-- Skeletons para badges mobile -->
-      <div id="mobileBadgesSkeleton" class="mobile-badges-container">
-        <div style="font-size: 11px; color: var(--accent); margin-bottom: 8px; font-weight: 700;">🏆 CONQUISTAS</div>
-        <div style="display:flex; gap:8px;">
-          <div class="skeleton-badge"></div>
-          <div class="skeleton-badge"></div>
-          <div class="skeleton-badge"></div>
-        </div>
-      </div>
-      
-      <!-- ELEMENTOS REAIS para XP -->
-      <div id="xpInfoReal" class="xp-wrapper" style="display: none;">
-        <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--accent); font-weight:600">
-          <span>Nível <b id="hNivel">1</b></span>
-          <span id="xpNumerico">0/100 XP</span>
-        </div>
-        <div class="xp-container">
-          <div id="xpBar" class="xp-bar" style="width: 0%;"></div>
-        </div>
-      </div>
-      
-      <!-- Skeleton para XP -->
-      <div id="xpInfoSkeleton" class="xp-wrapper">
-        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-          <div class="skeleton-line" style="width:40px; height:12px;"></div>
-          <div class="skeleton-line" style="width:60px; height:12px;"></div>
-        </div>
-        <div class="skeleton-line" style="width:100%; height:12px; border-radius:12px;"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Card de Conquistas Recentes -->
-  <div class="card-slim" style="flex-direction: column; align-items: flex-start; justify-content: center;">
-    <!-- Título real -->
-    <h3 style="margin-bottom: 12px; font-size: 15px; border:none; padding:0; cursor:default; display: none;" id="conquistasTitulo">🏆 Conquistas Recentes</h3>
-    
-    <!-- Skeleton do título -->
-    <div class="skeleton-line" style="width:140px; height:18px; margin-bottom:12px;"></div>
-    
-    <!-- ELEMENTOS REAIS para badges desktop -->
-    <div id="homeBadges" class="mini-conquistas" style="display: none;"></div>
-    
-    <!-- Skeletons para badges -->
-    <div id="badgesSkeleton" style="display:flex; gap:8px; flex-wrap:wrap;">
-      <div class="skeleton-badge"></div>
-      <div class="skeleton-badge"></div>
-      <div class="skeleton-badge"></div>
-    </div>
-  </div>
-</div>
-
-<div id="home" class="section active">
-  <div class="grid-stack">
-    <!-- Card de Tarefas -->
-    <div class="card">
-      <h3 onclick="toggleCollapse('homeTarefasCont')">🚀 Tarefas do Dia <span id="icon-homeTarefasCont">▼</span></h3>
-      <div id="homeTarefasCont">
-        <!-- Skeleton para tarefas -->
-        <div id="tarefasSkeleton">
-          <div class="skeleton-cat" style="margin-bottom:12px;"></div>
-          <div class="skeleton-task"></div>
-          <div class="skeleton-task"></div>
-          <div class="skeleton-task"></div>
-        </div>
-        <div id="homeTarefas" style="display:none;"></div>
-      </div>
-    </div>
-    
-    <!-- Card de Hábitos -->
-    <div class="card">
-      <h3 onclick="toggleCollapse('homeHabitosCont')">✨ Hábitos Ativos <span id="icon-homeHabitosCont">▼</span></h3>
-      <div id="homeHabitosCont">
-        <!-- Skeleton para hábitos -->
-        <div id="habitosSkeleton">
-          <div style="display:flex; gap:12px; margin-bottom:16px;">
-            <div class="skeleton-line" style="width:100px; height:20px;"></div>
-            <div class="skeleton-line" style="width:80px; height:20px;"></div>
-            <div class="skeleton-line" style="width:60px; height:20px;"></div>
+        <!-- Skeleton Mobile Badges -->
+        <div id="mobileBadgesSkeleton" class="mobile-badges-container">
+          <div style="font-size: 12px; color: var(--accent); margin-bottom: var(--space-sm); font-weight: 700;">🏆 CONQUISTAS</div>
+          <div style="display:flex; gap:var(--space-sm);">
+            <div class="skeleton-badge"></div>
+            <div class="skeleton-badge"></div>
+            <div class="skeleton-badge"></div>
           </div>
-          <div class="skeleton-habit-row"></div>
-          <div class="skeleton-habit-row"></div>
-          <div class="skeleton-habit-row"></div>
         </div>
-        <table class="habit-table" style="display:none;">
-          <thead id="habitHead"></thead>
-          <tbody id="homeHabitos"></tbody>
-        </table>
+        
+        <!-- XP Info Real -->
+        <div id="xpInfoReal" class="xp-wrapper" style="display: none;">
+          <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--accent); font-weight:600">
+            <span>Nível <b id="hNivel">1</b></span>
+            <span id="xpNumerico">0/100 XP</span>
+          </div>
+          <div class="xp-container">
+            <div id="xpBar" class="xp-bar" style="width: 0%;"></div>
+          </div>
+        </div>
+        
+        <!-- XP Skeleton -->
+        <div id="xpInfoSkeleton" class="xp-wrapper">
+          <div style="display:flex; justify-content:space-between; margin-bottom:var(--space-sm);">
+            <div class="skeleton-line" style="width:50px; height:14px;"></div>
+            <div class="skeleton-line" style="width:70px; height:14px;"></div>
+          </div>
+          <div class="skeleton-line" style="width:100%; height:16px; border-radius:var(--radius-sm);"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card de Conquistas Recentes -->
+    <div class="card-slim" style="flex-direction: column; align-items: flex-start; justify-content: center;">
+      <h3 style="margin-bottom: var(--space-md); font-size: 16px; border:none; padding:0; cursor:default; display: none;" id="conquistasTitulo">🏆 Conquistas Recentes</h3>
+      
+      <div class="skeleton-line" style="width:160px; height:20px; margin-bottom:var(--space-md);"></div>
+      
+      <div id="homeBadges" class="mini-conquistas" style="display: none;"></div>
+      
+      <div id="badgesSkeleton" style="display:flex; gap:var(--space-sm); flex-wrap:wrap;">
+        <div class="skeleton-badge"></div>
+        <div class="skeleton-badge"></div>
+        <div class="skeleton-badge"></div>
       </div>
     </div>
   </div>
-</div>
 
+  <!-- ==================== SEÇÃO HOME ==================== -->
+  <div id="home" class="section active">
+    <div class="grid-stack">
+      <!-- Card de Tarefas -->
+      <div class="card">
+        <h3 onclick="toggleCollapse('homeTarefasCont')">🚀 Tarefas do Dia <span id="icon-homeTarefasCont">▼</span></h3>
+        <div id="homeTarefasCont">
+          <div id="tarefasSkeleton">
+            <div class="skeleton-cat" style="margin-bottom:var(--space-md);"></div>
+            <div class="skeleton-task"></div>
+            <div class="skeleton-task"></div>
+            <div class="skeleton-task"></div>
+          </div>
+          <div id="homeTarefas" style="display:none;"></div>
+        </div>
+      </div>
+      
+      <!-- Card de Hábitos -->
+      <div class="card">
+        <h3 onclick="toggleCollapse('homeHabitosCont')">✨ Hábitos Ativos <span id="icon-homeHabitosCont">▼</span></h3>
+        <div id="homeHabitosCont">
+          <div id="habitosSkeleton">
+            <div style="display:flex; gap:var(--space-md); margin-bottom:var(--space-lg);">
+              <div class="skeleton-line" style="width:120px; height:24px;"></div>
+              <div class="skeleton-line" style="width:100px; height:24px;"></div>
+              <div class="skeleton-line" style="width:80px; height:24px;"></div>
+            </div>
+            <div class="skeleton-habit-row"></div>
+            <div class="skeleton-habit-row"></div>
+            <div class="skeleton-habit-row"></div>
+          </div>
+          <table class="habit-table" style="display:none;">
+            <thead id="habitHead"></thead>
+            <tbody id="homeHabitos"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SEÇÃO PERFIL ==================== -->
   <div id="perfil" class="section">
     <div class="card">
       <h3 style="cursor: default;">👤 Editar Perfil</h3>
@@ -711,25 +1762,26 @@ button:disabled {
     </div>
   </div>
 
+  <!-- ==================== SEÇÃO REGISTROS ==================== -->
   <div id="registros" class="section">
     <div class="grid-stack">
       <div class="card">
         <h3 style="cursor: default;">➕ Novo Registro</h3>
-        <p style="color:var(--accent); font-size:12px; font-weight:700; margin-bottom:8px;">CATEGORIA</p>
-        <div style="display:flex; gap:12px; margin-bottom:20px">
+        <p style="color:var(--accent); font-size:13px; font-weight:700; margin-bottom:var(--space-sm);">CATEGORIA</p>
+        <div style="display:flex; gap:var(--space-md); margin-bottom:var(--space-lg)">
             <input id="regCatNome" placeholder="Ex: Trabalho, Estudos...">
             <button class="btn-primary btn-plus" onclick="addCat()">+</button>
         </div>
         
-        <p style="color:var(--accent); font-size:12px; font-weight:700; margin-bottom:8px;">TAREFA</p>
-        <select id="regTarCat" style="margin-bottom:12px"></select>
-        <div style="display:flex; gap:12px; margin-bottom:20px">
+        <p style="color:var(--accent); font-size:13px; font-weight:700; margin-bottom:var(--space-sm);">TAREFA</p>
+        <select id="regTarCat" style="margin-bottom:var(--space-md)"></select>
+        <div style="display:flex; gap:var(--space-md); margin-bottom:var(--space-lg)">
             <input id="regTarNome" placeholder="Nome da tarefa...">
             <button class="btn-primary btn-plus" onclick="addTar()">+</button>
         </div>
         
-        <p style="color:var(--accent); font-size:12px; font-weight:700; margin-bottom:8px;">HÁBITO</p>
-        <div style="display:flex; gap:12px">
+        <p style="color:var(--accent); font-size:13px; font-weight:700; margin-bottom:var(--space-sm);">HÁBITO</p>
+        <div style="display:flex; gap:var(--space-md)">
             <input id="regHabNome" placeholder="Ex: Meditar, Ler...">
             <button class="btn-primary btn-plus" onclick="addHab()">+</button>
         </div>
@@ -755,55 +1807,164 @@ button:disabled {
       </div>
     </div>
     
-    <div class="card" style="border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.05);">
+    <div class="card" style="border-color: rgba(239, 68, 68, 0.2); background: rgba(239, 68, 68, 0.05);">
         <h3 style="color: var(--danger); border-bottom-color: var(--danger); cursor: default;">⚠️ Zona de Perigo</h3>
         <div class="grid-stack">
             <div>
-                <p style="font-size: 13px; margin-bottom: 12px; color: #cbd5e1; line-height: 1.5;">Remove apenas o progresso de hoje (tarefas e hábitos concluídos).</p>
+                <p style="font-size: 14px; margin-bottom: var(--space-md); color: rgba(255, 255, 255, 0.7); line-height: 1.6;">Remove apenas o progresso de hoje (tarefas e hábitos concluídos).</p>
                 <button onclick="resetDia()" class="btn-gold-outline">🔄 Resetar Hoje</button>
             </div>
             <div>
-                <p style="font-size: 13px; margin-bottom: 12px; color: #cbd5e1; line-height: 1.5;">⚠️ CUIDADO! Apaga TODOS os dados permanentemente.</p>
+                <p style="font-size: 14px; margin-bottom: var(--space-md); color: rgba(255, 255, 255, 0.7); line-height: 1.6;">⚠️ CUIDADO! Apaga TODOS os dados permanentemente.</p>
                 <button onclick="resetGeral()" class="btn-danger-outline">💣 Reset Total</button>
             </div>
         </div>
     </div>
   </div>
 
-<div id="conquistas" class="section">
-  <div class="card">
-    <h3 style="cursor: default;">🏆 Mural de Honra</h3>
-    <p style="color:#94a3b8; font-size:13px; margin-bottom:28px; line-height:1.6;">Desbloqueie conquistas épicas completando desafios! Cada categoria representa um nível de dificuldade crescente.</p>
-    <div id="muralConquistas">
-      <!-- Skeleton para conquistas -->
-      <div id="conquistasSkeleton">
-        <div class="skeleton-category" style="margin-bottom:32px;">
-          <div class="skeleton-line" style="width:120px; height:18px; margin-bottom:16px;"></div>
-          <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:16px;">
-            <div class="skeleton-badge-card"></div>
-            <div class="skeleton-badge-card"></div>
-            <div class="skeleton-badge-card"></div>
-            <div class="skeleton-badge-card"></div>
+  <!-- ==================== SEÇÃO CONQUISTAS ==================== -->
+  <div id="conquistas" class="section">
+    <div class="card">
+      <h3 style="cursor: default;">🏆 Mural de Honra</h3>
+      <p style="color:rgba(255, 255, 255, 0.6); font-size:14px; margin-bottom:var(--space-xl); line-height:1.6;">Desbloqueie conquistas épicas completando desafios! Cada categoria representa um nível de dificuldade crescente.</p>
+      <div id="muralConquistas">
+        <div id="conquistasSkeleton">
+          <div class="skeleton-category" style="margin-bottom:var(--space-xl);">
+            <div class="skeleton-line" style="width:140px; height:20px; margin-bottom:var(--space-lg);"></div>
+            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap:var(--space-lg);">
+              <div class="skeleton-badge-card"></div>
+              <div class="skeleton-badge-card"></div>
+              <div class="skeleton-badge-card"></div>
+              <div class="skeleton-badge-card"></div>
+            </div>
+          </div>
+          <div class="skeleton-category">
+            <div class="skeleton-line" style="width:140px; height:20px; margin-bottom:var(--space-lg);"></div>
+            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap:var(--space-lg);">
+              <div class="skeleton-badge-card"></div>
+              <div class="skeleton-badge-card"></div>
+              <div class="skeleton-badge-card"></div>
+            </div>
           </div>
         </div>
-        <div class="skeleton-category">
-          <div class="skeleton-line" style="width:120px; height:18px; margin-bottom:16px;"></div>
-          <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:16px;">
-            <div class="skeleton-badge-card"></div>
-            <div class="skeleton-badge-card"></div>
-            <div class="skeleton-badge-card"></div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- ==================== SEÇÃO HISTÓRICO ==================== -->
+  <div id="historico" class="section">
+    <div class="card">
+      <h3 style="cursor: default;">📜 Histórico de Atividades</h3>
+      <p style="color:rgba(255, 255, 255, 0.6); font-size:14px; margin-bottom:var(--space-lg);">Registro completo de todas as suas atividades realizadas.</p>
+      <div id="listHist"></div>
+    </div>
+  </div>
+
+  <!-- ==================== SEÇÃO MODO FOCO ==================== -->
+  <div id="modofoco" class="section">
+    <div class="card">
+      <h3 style="cursor: default;">🍅 Modo Foco (Pomodoro)</h3>
+      <p style="color:rgba(255, 255, 255, 0.6); font-size:14px; margin-bottom:var(--space-xl); line-height:1.6;">
+        Aumente sua produtividade com a técnica Pomodoro! Trabalhe com foco total por 25 minutos e descanse por 5.
+      </p>
+      
+      <div class="grid-stack">
+        <div class="card" style="background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(168, 85, 247, 0.1));">
+          <h4 style="color: var(--accent); margin-bottom: var(--space-lg);">⚙️ Configurações</h4>
+          <div style="margin-bottom: var(--space-md);">
+            <label style="display: block; color: rgba(255, 255, 255, 0.8); margin-bottom: var(--space-sm); font-size: 14px;">Tempo de Foco (minutos):</label>
+            <select id="focoTempo" style="width: 100%;">
+              <option value="15">15 minutos</option>
+              <option value="25" selected>25 minutos (Pomodoro Clássico)</option>
+              <option value="30">30 minutos</option>
+              <option value="45">45 minutos</option>
+              <option value="50">50 minutos</option>
+            </select>
+          </div>
+          
+          <div style="margin-bottom: var(--space-lg);">
+            <label style="display: block; color: rgba(255, 255, 255, 0.8); margin-bottom: var(--space-sm); font-size: 14px;">Tempo de Descanso (minutos):</label>
+            <select id="descansoTempo" style="width: 100%;">
+              <option value="5" selected>5 minutos</option>
+              <option value="10">10 minutos</option>
+              <option value="15">15 minutos</option>
+            </select>
+          </div>
+          
+          <button class="btn-primary" onclick="iniciarModoFoco()">🚀 Iniciar Modo Foco</button>
+        </div>
+        
+        <div class="card" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.1));">
+          <h4 style="color: var(--success); margin-bottom: var(--space-lg);">📊 Estatísticas</h4>
+          
+          <div class="registro-group" style="margin-bottom: var(--space-lg);">
+            <div class="registro-group-title">Hoje</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
+              <div style="text-align: center;">
+                <div style="font-size: 32px; font-weight: 800; color: var(--accent);" id="pomodorosHoje">0</div>
+                <div style="font-size: 12px; color: rgba(255, 255, 255, 0.6);">Pomodoros</div>
+              </div>
+              <div style="text-align: center;">
+                <div style="font-size: 32px; font-weight: 800; color: var(--success);" id="tempoFocoHoje">0h</div>
+                <div style="font-size: 12px; color: rgba(255, 255, 255, 0.6);">Tempo Focado</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="registro-group">
+            <div class="registro-group-title">Total</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
+              <div style="text-align: center;">
+                <div style="font-size: 32px; font-weight: 800; color: var(--gold);" id="pomodorosTotal">0</div>
+                <div style="font-size: 12px; color: rgba(255, 255, 255, 0.6);">Total Pomodoros</div>
+              </div>
+              <div style="text-align: center;">
+                <div style="font-size: 32px; font-weight: 800; color: var(--purple);" id="tempoFocoTotal">0h</div>
+                <div style="font-size: 12px; color: rgba(255, 255, 255, 0.6);">Tempo Total</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card" style="margin-top: var(--space-xl); background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 146, 60, 0.1));">
+        <h4 style="color: var(--gold); margin-bottom: var(--space-lg);">🎯 Dicas de Produtividade</h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-lg);">
+          <div class="item" style="flex-direction: column; align-items: flex-start; background: rgba(255, 255, 255, 0.05);">
+            <div style="font-size: 20px; margin-bottom: var(--space-sm);">1️⃣</div>
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);">Elimine Distrações</div>
+            <div style="font-size: 13px; color: rgba(255, 255, 255, 0.6);">Desligue notificações e foque em uma tarefa por vez.</div>
+          </div>
+          <div class="item" style="flex-direction: column; align-items: flex-start; background: rgba(255, 255, 255, 0.05);">
+            <div style="font-size: 20px; margin-bottom: var(--space-sm);">2️⃣</div>
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);">Use o Timer</div>
+            <div style="font-size: 13px; color: rgba(255, 255, 255, 0.6);">O temporizador cria urgência e mantém o foco.</div>
+          </div>
+          <div class="item" style="flex-direction: column; align-items: flex-start; background: rgba(255, 255, 255, 0.05);">
+            <div style="font-size: 20px; margin-bottom: var(--space-sm);">3️⃣</div>
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);">Faça Pausas</div>
+            <div style="font-size: 13px; color: rgba(255, 255, 255, 0.6);">As pausas são essenciais para manter a produtividade.</div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-  
-  <div id="historico" class="section">
-    <div class="card">
-      <h3 style="cursor: default;">📜 Histórico de Atividades</h3>
-      <p style="color:#94a3b8; font-size:13px; margin-bottom:20px;">Registro completo de todas as suas atividades realizadas.</p>
-      <div id="listHist"></div>
+
+<!-- ==================== OVERLAY MODO FOCO ==================== -->
+<div id="focoOverlay">
+  <div class="foco-container">
+    <div style="font-size: 20px; color: rgba(255, 255, 255, 0.8); margin-bottom: var(--space-md);">🍅 MODO FOCO ATIVO</div>
+    <div class="foco-timer" id="focoTimer">25:00</div>
+    <div style="color: rgba(255, 255, 255, 0.6); margin-bottom: var(--space-xl); font-size: 16px;" id="focoStatus">Foco - Iniciando...</div>
+    
+    <div class="foco-botoes">
+      <button class="btn-primary" onclick="pausarModoFoco()" id="btnPausar">⏸️ Pausar</button>
+      <button class="btn-danger-outline" onclick="pararModoFoco()">⏹️ Parar</button>
+    </div>
+    
+    <div style="margin-top: var(--space-xl); color: rgba(255, 255, 255, 0.5); font-size: 13px;">
+      Dica: Mantenha o foco! Distrações reduzem sua produtividade.
     </div>
   </div>
 </div>
@@ -857,6 +2018,7 @@ function partialRender(components) {
       case 'structure': renderStructure(); break;
       case 'badges': renderBadges(); break;
       case 'history': renderHistory(); break;
+      case 'pomodoro': renderPomodoroStats(); break;
     }
   });
 }
@@ -872,25 +2034,31 @@ function getElement(id) {
 
 // ==================== FUNÇÕES BÁSICAS ====================
 function xpInfo(xp) { 
-  let n=1, ac=0, pr=100; 
-  console.log("Calculando XP info para:", xp);
+  if (typeof xp !== 'number' || xp < 0) xp = 0;
   
-  while(xp>=pr){ 
-    n++; 
-    ac=pr; 
-    pr+=Math.floor(150*Math.pow(1.2,n-1)); 
-  } 
+  let nivel = 1;
+  let xpBase = 0;
+  let xpProximo = 100;
   
-  const resultado = {
-    n, 
-    p:((xp-ac)/(pr-ac))*100, 
-    cur:xp-ac, 
-    max:pr-ac
+  while (xp >= xpProximo) {
+    nivel++;
+    xpBase = xpProximo;
+    xpProximo += Math.floor(100 * Math.pow(1.15, nivel - 1));
+  }
+  
+  const xpAtualNivel = xp - xpBase;
+  const xpNecessarioNivel = xpProximo - xpBase;
+  const porcentagem = xpNecessarioNivel > 0 ? 
+    Math.min((xpAtualNivel / xpNecessarioNivel) * 100, 100) : 0;
+  
+  return {
+    n: nivel,
+    p: porcentagem,
+    cur: Math.floor(xpAtualNivel),
+    max: Math.floor(xpNecessarioNivel)
   };
-  
-  console.log("Resultado XP:", resultado);
-  return resultado;
 }
+
 function calcularIdade(d) { 
   if(!d) return "--"; 
   const h=new Date(), n=new Date(d); 
@@ -934,7 +2102,7 @@ function irPara(id, btn) {
   document.querySelectorAll(".section").forEach(s=>s.classList.remove("active")); 
   document.getElementById(id).classList.add("active"); 
   document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active")); 
-  btn.classList.add("active");
+  if (btn) btn.classList.add("active");
   
   if(window.innerWidth <= 1090) {
     document.querySelector('.sidebar').classList.remove('open');
@@ -973,8 +2141,6 @@ async function fazerLogin() {
   
   try {
     await auth.signInWithEmailAndPassword(email, senha);
-    // onAuthStateChanged vai lidar com o resto
-    
   } catch (error) {
     hideLoading();
     
@@ -1029,7 +2195,13 @@ async function fazerRegistro() {
       habitos: [],
       hist: [],
       xp: 0,
-      badges_unlocked: []
+      badges_unlocked: [],
+      pomodoroStats: {
+        total: 0,
+        hoje: 0,
+        tempoTotal: 0,
+        tempoHoje: 0
+      }
     };
     
     await db.collection("users").doc(userCredential.user.uid).set(dadosUsuario);
@@ -1099,7 +2271,13 @@ let S = {
   habitos: [], 
   hist: [], 
   xp: 0, 
-  badges_unlocked: [] 
+  badges_unlocked: [],
+  pomodoroStats: {
+    total: 0,
+    hoje: 0,
+    tempoTotal: 0,
+    tempoHoje: 0
+  }
 };
 let openCats = JSON.parse(localStorage.getItem('lifeDash_openCats')) || {};
 
@@ -1112,7 +2290,6 @@ auth.onAuthStateChanged(async (user) => {
     document.getElementById('login-screen').style.display = 'none';
     showLoading("Carregando seus dados...");
     
-    // RESETAR o nivelAnterior quando fizer login
     window.nivelAnterior = undefined;
     window.jaDeuBoasVindas = false;
     
@@ -1123,7 +2300,6 @@ auth.onAuthStateChanged(async (user) => {
         S = doc.data();
         console.log("Dados carregados do Firestore:", S);
         
-        // Garantir estrutura completa
         S.perfil = S.perfil || {};
         S.badges_unlocked = S.badges_unlocked || [];
         S.hist = S.hist || [];
@@ -1131,48 +2307,36 @@ auth.onAuthStateChanged(async (user) => {
         S.tarefas = S.tarefas || [];
         S.habitos = S.habitos || [];
         S.xp = S.xp || 0;
-        
-        console.log("Estrutura após normalização:");
-        console.log("- Perfil:", S.perfil);
-        console.log("- Badges:", S.badges_unlocked);
-        console.log("- XP:", S.xp);
-        console.log("Estrutura após normalização:");
-        console.log("- Perfil:", S.perfil);
-        console.log("- Badges:", S.badges_unlocked);
-        console.log("- XP:", S.xp);
+        S.pomodoroStats = S.pomodoroStats || {
+          total: 0,
+          hoje: 0,
+          tempoTotal: 0,
+          tempoHoje: 0
+        };
   
-  // ========== ADICIONE ESTAS 2 LINHAS AQUI ==========
-  // CORRIGIR NÍVEL ANTES DE RENDERIZAR
         if (S.xp !== undefined) {
           const l = xpInfo(S.xp);
           window.nivelAnterior = l.n;
           console.log("Nível corrigido para:", window.nivelAnterior);
         }
-  // ===================================================
   
-  // Primeiro sincronizar inputs
-  sincronizarInputsPerfil();
+        sincronizarInputsPerfil();
         
-        
-        // Depois renderizar
         setTimeout(() => {
           console.log("Chamando fullRender...");
           fullRender();
 
-        // Forçar renderização das badges
           setTimeout(() => renderHomeBadges(), 300);
 
-        // Debug imediato
-         setTimeout(() => {
-          debugPerfil();
-         }, 500);
+          setTimeout(() => {
+            debugPerfil();
+          }, 500);
 
           setTimeout(() => {
             hideSkeletons();
             console.log("Skeletons escondidos");
           }, 300);
           
-          // Boas-vindas (apenas uma vez)
           if (!window.jaDeuBoasVindas && S.perfil && S.perfil.nome) {
             setTimeout(() => {
               showToast(`Bem-vindo, ${S.perfil.nome}!`, 'success', 2000);
@@ -1201,7 +2365,13 @@ auth.onAuthStateChanged(async (user) => {
           habitos: [],
           hist: [],
           xp: 0,
-          badges_unlocked: []
+          badges_unlocked: [],
+          pomodoroStats: {
+            total: 0,
+            hoje: 0,
+            tempoTotal: 0,
+            tempoHoje: 0
+          }
         };
         
         await db.collection("users").doc(user.uid).set(novosDados);
@@ -1231,50 +2401,41 @@ auth.onAuthStateChanged(async (user) => {
 function renderHeader() {
   console.log("🔧 RENDER HEADER INICIADO");
   
-  // Verificar dados
   if (!S || !S.perfil) {
     console.error("❌ ERRO: Sem dados do perfil");
     return;
   }
   
-  // Calcular nível
   const xpAtual = S.xp || 0;
   const nivel = xpInfo(xpAtual);
   
-  // ATUALIZAR CADA ELEMENTO MANUALMENTE
-  // 1. Nome
   const hNome = document.getElementById("hNome");
   if (hNome) hNome.textContent = S.perfil.nome || "---";
   
-  // 2. Idade
   const hIdade = document.getElementById("hIdade");
   if (hIdade) hIdade.textContent = calcularIdade(S.perfil.nascimento);
   
-  // 3. Sexo
   const hSexo = document.getElementById("hSexo");
   if (hSexo) hSexo.textContent = S.perfil.sexo || "---";
   
-  // 4. Profissão
   const hProfissao = document.getElementById("hProfissao");
   if (hProfissao) hProfissao.textContent = S.perfil.profissao || "---";
   
-  // 5. Frase
   const hFrase = document.getElementById("hFrase");
   if (hFrase) hFrase.textContent = S.perfil.frase ? `"${S.perfil.frase}"` : `"Foco no progresso!"`;
   
-  // 6. Nível
   const hNivel = document.getElementById("hNivel");
   if (hNivel) hNivel.textContent = nivel.n;
   
-  // 7. XP numérico
   const xpNumerico = document.getElementById("xpNumerico");
   if (xpNumerico) xpNumerico.textContent = `${Math.floor(nivel.cur)}/${Math.floor(nivel.max)} XP`;
   
-  // 8. Barra de XP
   const xpBar = document.getElementById("xpBar");
-  if (xpBar) xpBar.style.width = nivel.p + "%";
+  if (xpBar) {
+    xpBar.style.width = nivel.p + "%";
+    xpBar.style.animationDelay = '0.5s';
+  }
   
-  // 9. Foto
   const hFoto = document.getElementById("hFoto");
   if (hFoto && S.perfil.foto) {
     hFoto.src = S.perfil.foto;
@@ -1287,13 +2448,9 @@ function renderHeader() {
 function renderHomeBadges() {
   console.log("🏆 RENDER HOME BADGES INICIADO");
   
-  // 1. Verificar se temos dados
   if (!S || !S.badges_unlocked || !Array.isArray(S.badges_unlocked)) {
     console.error("❌ ERRO: badges_unlocked não é array ou não existe");
-    console.log("S:", S);
-    console.log("S.badges_unlocked:", S ? S.badges_unlocked : "S é undefined");
     
-    // Mostrar mensagem de erro
     const erroHTML = '<small style="color:#ef4444; font-size:12px;">Erro ao carregar conquistas</small>';
     
     const homeBadges = document.getElementById("homeBadges");
@@ -1305,13 +2462,11 @@ function renderHomeBadges() {
     return;
   }
   
-  // 2. Pegar as badges
   const badges = S.badges_unlocked;
   console.log(`✅ Temos ${badges.length} conquistas desbloqueadas:`, badges);
   
-  // 3. Criar HTML
   let html = "";
-  const ultimas5 = badges.slice(-5); // Últimas 5 conquistas
+  const ultimas5 = badges.slice(-5);
   
   console.log(`📋 Últimas 5 conquistas:`, ultimas5);
   
@@ -1319,7 +2474,6 @@ function renderHomeBadges() {
     ultimas5.forEach((badgeId, index) => {
       console.log(`🔍 Procurando badge ID: ${badgeId} (${index + 1}/${ultimas5.length})`);
       
-      // Encontrar a badge na lista BADGES
       const badge = BADGES.find(b => b.id === badgeId);
       
       if (badge) {
@@ -1327,130 +2481,108 @@ function renderHomeBadges() {
         html += `<div class="badge-mini" title="${badge.title}: ${badge.desc}" style="animation-delay: ${index * 0.1}s;">${badge.icon}</div>`;
       } else {
         console.warn(`⚠️ Badge ID ${badgeId} não encontrada na lista BADGES`);
-        // Ícone padrão para badges não encontradas
-        html += `<div class="badge-mini" title="Conquista desconhecida" style="border-color: #64748b;">❓</div>`;
+        html += `<div class="badge-mini" title="Conquista desconhecida" style="border-color: rgba(255, 255, 255, 0.3);">❓</div>`;
       }
     });
   } else {
     console.log("📭 Nenhuma conquista desbloqueada ainda");
-    html = '<small style="color:#64748b; font-size:12px;">Nenhuma conquista ainda</small>';
+    html = '<small style="color:rgba(255, 255, 255, 0.5); font-size:13px;">Nenhuma conquista ainda</small>';
   }
   
   console.log("🎨 HTML gerado:", html);
   
-  // 4. Atualizar elementos COM CONTROLE DE VISIBILIDADE
-  const homeBadges = document.getElementById("homeBadges"); // Desktop (card direito)
-  const homeBadgesMobile = document.getElementById("homeBadgesMobile"); // Mobile (no perfil)
+  const homeBadges = document.getElementById("homeBadges");
+  const homeBadgesMobile = document.getElementById("homeBadgesMobile");
   
   console.log("📍 Procurando elementos...");
   console.log("homeBadges (desktop):", homeBadges ? "ENCONTRADO" : "NÃO ENCONTRADO");
   console.log("homeBadgesMobile (mobile):", homeBadgesMobile ? "ENCONTRADO" : "NÃO ENCONTRADO");
   
-  // 4.1. Atualizar BADGES DESKTOP (sempre no card da direita)
   if (homeBadges) {
     homeBadges.innerHTML = html;
     console.log("✅ homeBadges (desktop) atualizado");
     
-    // Estilos para desktop
     homeBadges.style.display = "flex";
-    homeBadges.style.gap = "8px";
+    homeBadges.style.gap = "var(--space-sm)";
     homeBadges.style.flexWrap = "wrap";
     homeBadges.style.justifyContent = "flex-start";
   } else {
     console.error("❌ homeBadges (desktop) NÃO ENCONTRADO!");
   }
   
-  // 4.2. Atualizar BADGES MOBILE (só aparecem no mobile)
   if (homeBadgesMobile) {
     homeBadgesMobile.innerHTML = html;
     console.log("✅ homeBadgesMobile (mobile) atualizado");
     
-    // Estilos para mobile
     homeBadgesMobile.style.display = "flex";
-    homeBadgesMobile.style.gap = "8px";
+    homeBadgesMobile.style.gap = "var(--space-sm)";
     homeBadgesMobile.style.flexWrap = "wrap";
     homeBadgesMobile.style.justifyContent = "flex-start";
     
-    // Verificar se estamos no mobile para mostrar
-    const isMobile = window.innerWidth <= 768;
-    console.log(`📱 É mobile? ${isMobile} (largura: ${window.innerWidth}px)`);
-    
-    if (isMobile) {
-      // No mobile: mostrar badges no perfil
-      homeBadgesMobile.style.display = "flex";
-      
-      // Esconder o card de conquistas do desktop
-      const conquistasDesktop = document.querySelector('.card-slim:nth-child(2)');
-      if (conquistasDesktop) {
-        conquistasDesktop.style.display = "none";
-      }
-    } else {
-      // No desktop: esconder badges no perfil
-      homeBadgesMobile.style.display = "none";
-      
-      // Mostrar o card de conquistas do desktop
-      const conquistasDesktop = document.querySelector('.card-slim:nth-child(2)');
-      if (conquistasDesktop) {
-        conquistasDesktop.style.display = "flex";
-      }
-    }
+    atualizarVisibilidadeBadges();
   } else {
     console.error("❌ homeBadgesMobile (mobile) NÃO ENCONTRADO!");
   }
 
   console.log("✅ RENDER HOME BADGES CONCLUÍDO");
-
-    // Atualizar visibilidade baseada no tamanho da tela
-  setTimeout(atualizarVisibilidadeBadges, 100);
 }
 
 function renderTasks() {
   console.log("📋 RENDER TASKS INICIADO");
-  console.log("Categorias:", S.categorias);
-  console.log("Tarefas:", S.tarefas);
   let tarHtml = "";
-  S.categorias.forEach(cat => {
-    const ts = S.tarefas.filter(t => t.cat === cat);
-    const conc = ts.filter(t => t.status === 'concluido').length;
-    const isOpen = openCats[cat];
-    
-    tarHtml += `<div class="cat-header ${conc>0 && conc===ts.length?'cat-done':''}" onclick="toggleCat('${cat}')">
-        <span>${cat}</span><span style="font-size:11px; margin-left:auto; margin-right:12px; font-weight:600">${conc}/${ts.length}</span><span>${isOpen?'▲':'▼'}</span>
-      </div>
-      <div class="task-container-wrapper ${isOpen?'open':''}">
-        ${ts.map(t => `<div style="display:flex; align-items:center; padding:12px 0; border-bottom:1px solid #1e293b44;">
-            <span style="font-size:14px; flex:1">${t.nome}</span>
-            <label class="switch"><input type="checkbox" ${t.status==='concluido'?'checked':''} onchange="toggleTarefa(${S.tarefas.indexOf(t)})"><span class="slider"></span></label>
-          </div>`).join("")}
+  
+  if (S.categorias.length === 0) {
+    tarHtml = `
+      <div class="empty-state">
+        <div class="empty-state-icon">📝</div>
+        <div class="empty-state-title">Nenhuma tarefa registrada</div>
+        <div class="empty-state-description">Crie sua primeira tarefa na aba Registros!</div>
       </div>`;
-       setTimeout(() => {
+  } else {
+    S.categorias.forEach(cat => {
+      const ts = S.tarefas.filter(t => t.cat === cat);
+      const conc = ts.filter(t => t.status === 'concluido').length;
+      const isOpen = openCats[cat];
+      
+      tarHtml += `
+        <div class="cat-header ${conc>0 && conc===ts.length?'cat-done':''}" onclick="toggleCat('${cat}')">
+          <span>${cat}</span>
+          <span style="font-size:12px; margin-left:auto; margin-right:var(--space-md); font-weight:600">${conc}/${ts.length}</span>
+          <span>${isOpen?'▲':'▼'}</span>
+        </div>
+        <div class="task-container-wrapper ${isOpen?'open':''}">
+          ${ts.map(t => `
+            <div style="display:flex; align-items:center; padding:var(--space-md) 0; border-bottom:1px solid rgba(255, 255, 255, 0.05);">
+              <span style="font-size:15px; flex:1">${t.nome}</span>
+              <label class="switch">
+                <input type="checkbox" ${t.status==='concluido'?'checked':''} onchange="toggleTarefa(${S.tarefas.indexOf(t)})">
+                <span class="slider"></span>
+              </label>
+            </div>
+          `).join("")}
+        </div>`;
+    });
+  }
+  
+  setTimeout(() => {
     S.categorias.forEach((cat, index) => {
       if (openCats[cat]) {
         const wrapper = document.querySelectorAll('.task-container-wrapper')[index];
         if (wrapper && wrapper.classList.contains('open')) {
-          // Para containers abertos na renderização, garantir altura correta
           wrapper.style.maxHeight = wrapper.scrollHeight + 'px';
         }
       }
     });
   }, 50);
-  });
   
   const homeTarefas = getElement("homeTarefas");
   if (homeTarefas) {
-    homeTarefas.innerHTML = tarHtml || 
-      `<div class="empty-state">
-        <div class="empty-state-icon">📝</div>
-        <div class="empty-state-title">Nenhuma tarefa registrada</div>
-        <div class="empty-state-description">Crie sua primeira tarefa na aba Registros!</div>
-      </div>`;
+    homeTarefas.innerHTML = tarHtml;
   }
 }
 
 function renderHabits() {
   console.log("🔁 RENDER HABITS INICIADO");
-  console.log("Hábitos:", S.habitos);
-  console.log("Histórico:", S.hist);
   const diasS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
   const hoje = new Date().toLocaleDateString();
   const ultimos7 = [...Array(7)].map((_, i) => {
@@ -1465,14 +2597,14 @@ function renderHabits() {
   
   const hHead = getElement("habitHead");
   if (hHead) {
-    hHead.innerHTML = `<tr><th style="text-align:left; width:35%">Hábito</th>${ultimos7.map(d=>`<th>${d.label}<br><span style="font-size:11px">${d.num}</span></th>`).join("")}</tr>`;
+    hHead.innerHTML = `<tr><th style="text-align:left; width:35%">Hábito</th>${ultimos7.map(d=>`<th>${d.label}<br><span style="font-size:12px">${d.num}</span></th>`).join("")}</tr>`;
   }
   
   const hBody = getElement("homeHabitos");
   if (hBody) {
     if (S.habitos.length === 0) {
       hBody.innerHTML = `<tr><td colspan="8">
-        <div class="empty-state" style="padding:40px 20px;">
+        <div class="empty-state" style="padding:var(--space-xl) var(--space-lg);">
           <div class="empty-state-icon">🔁</div>
           <div class="empty-state-title">Nenhum hábito configurado</div>
           <div class="empty-state-description">Adicione hábitos na aba Registros!</div>
@@ -1483,7 +2615,7 @@ function renderHabits() {
         <tr>
           <td style="text-align:left">
             <div class="habit-name">${h.nome}</div>
-            <div style="font-size:10px; color:var(--gold); margin-top:4px">🔥 ${h.streak||0} dias</div>
+            <div style="font-size:11px; color:var(--gold); margin-top:var(--space-xs)">🔥 ${h.streak||0} dias</div>
           </td>
           ${ultimos7.map(d => {
             const feito = S.hist.some(r => r.nome === h.nome && r.data === d.data);
@@ -1516,22 +2648,22 @@ function renderStructure() {
   const listCats = getElement("listCats");
   if (listCats) {
     listCats.innerHTML = S.categorias.map((c,i) => 
-      `<div class="item"><span>${c}</span><button onclick="if(confirm('Remover categoria ${c}?')){S.categorias.splice(${i},1);salvar();}" style="color:var(--danger);border:none;background:none;cursor:pointer;font-size:18px">✖</button></div>`
-    ).join("") || "<small style='color:#64748b'>Nenhuma categoria</small>";
+      `<div class="item"><span>${c}</span><button onclick="if(confirm('Remover categoria ${c}?')){S.categorias.splice(${i},1);salvar();}" style="color:var(--danger);border:none;background:none;cursor:pointer;font-size:20px">✖</button></div>`
+    ).join("") || "<small style='color:rgba(255, 255, 255, 0.5)'>Nenhuma categoria</small>";
   }
   
   const listTars = getElement("listTars");
   if (listTars) {
     listTars.innerHTML = S.tarefas.map((t,i) => 
-      `<div class="item"><span>${t.nome} <small style='color:#64748b'>(${t.cat})</small></span><button onclick="if(confirm('Remover tarefa?')){S.tarefas.splice(${i},1);salvar();}" style="color:var(--danger);border:none;background:none;cursor:pointer;font-size:18px">✖</button></div>`
-    ).join("") || "<small style='color:#64748b'>Nenhuma tarefa</small>";
+      `<div class="item"><span>${t.nome} <small style='color:rgba(255, 255, 255, 0.5)'>(${t.cat})</small></span><button onclick="if(confirm('Remover tarefa?')){S.tarefas.splice(${i},1);salvar();}" style="color:var(--danger);border:none;background:none;cursor:pointer;font-size:20px">✖</button></div>`
+    ).join("") || "<small style='color:rgba(255, 255, 255, 0.5)'>Nenhuma tarefa</small>";
   }
   
   const listHabs = getElement("listHabs");
   if (listHabs) {
     listHabs.innerHTML = S.habitos.map((h,i) => 
-      `<div class="item"><span>${h.nome}</span><button onclick="if(confirm('Remover hábito?')){S.habitos.splice(${i},1);salvar();}" style="color:var(--danger);border:none;background:none;cursor:pointer;font-size:18px">✖</button></div>`
-    ).join("") || "<small style='color:#64748b'>Nenhum hábito</small>";
+      `<div class="item"><span>${h.nome}</span><button onclick="if(confirm('Remover hábito?')){S.habitos.splice(${i},1);salvar();}" style="color:var(--danger);border:none;background:none;cursor:pointer;font-size:20px">✖</button></div>`
+    ).join("") || "<small style='color:rgba(255, 255, 255, 0.5)'>Nenhum hábito</small>";
   }
 }
 
@@ -1540,7 +2672,7 @@ function renderBadges() {
   if (!mConquistas) return;
   
   if (!S.badges_unlocked) {
-    mConquistas.innerHTML = "<p style='color:#64748b; padding:20px; text-align:center;'>Carregando conquistas...</p>";
+    mConquistas.innerHTML = "<p style='color:rgba(255, 255, 255, 0.5); padding:var(--space-lg); text-align:center;'>Carregando conquistas...</p>";
     return;
   }
   
@@ -1557,7 +2689,7 @@ function renderBadges() {
         <div class="badge-category-title" style="color:${cor}">
           <span>${cat === 'Iniciante' ? '🌱' : cat === 'Intermediário' ? '⚡' : cat === 'Avançado' ? '🔥' : '👑'}</span>
           <span>${cat}</span>
-          <span style="font-size:12px; color:#64748b; font-weight:400; margin-left:auto">${desbloqueadas}/${badgesCat.length}</span>
+          <span style="font-size:13px; color:rgba(255, 255, 255, 0.5); font-weight:400; margin-left:auto">${desbloqueadas}/${badgesCat.length}</span>
         </div>
         <div class="badge-grid">
           ${badgesCat.map(b => {
@@ -1570,12 +2702,12 @@ function renderBadges() {
                 <div class="badge-desc">${b.desc}</div>
                 ${!ok ? `
                   <div class="badge-progress">
-                    <div style="font-size:9px; color:#64748b; margin-bottom:2px">${prog.atual}/${prog.total}</div>
+                    <div style="font-size:10px; color:rgba(255, 255, 255, 0.5); margin-bottom:var(--space-xs)">${prog.atual}/${prog.total}</div>
                     <div class="badge-progress-bar">
                       <div class="badge-progress-fill" style="width:${prog.percent}%"></div>
                     </div>
                   </div>
-                ` : '<div style="font-size:10px; color:var(--gold); margin-top:8px">✓ Desbloqueada</div>'}
+                ` : '<div style="font-size:11px; color:var(--gold); margin-top:var(--space-sm)">✓ Desbloqueada</div>'}
               </div>
             `;
           }).join("")}
@@ -1602,51 +2734,200 @@ function renderHistory() {
     histEl.innerHTML = S.hist.slice().reverse().map(h => `
       <div class="item">
         <span>${h.tipo === 'T' ? '📋' : '🔁'} ${h.nome}</span>
-        <small style="color:#64748b">${h.data} • <span style="color:var(--accent);font-weight:600">+${h.xpGanhos}XP</span></small>
+        <small style="color:rgba(255, 255, 255, 0.5)">${h.data} • <span style="color:var(--accent);font-weight:600">+${h.xpGanhos}XP</span></small>
       </div>
     `).join("");
   }
 }
 
+function renderPomodoroStats() {
+  const pomodorosHoje = document.getElementById('pomodorosHoje');
+  const tempoFocoHoje = document.getElementById('tempoFocoHoje');
+  const pomodorosTotal = document.getElementById('pomodorosTotal');
+  const tempoFocoTotal = document.getElementById('tempoFocoTotal');
+  
+  if (pomodorosHoje) pomodorosHoje.textContent = S.pomodoroStats?.hoje || 0;
+  if (tempoFocoHoje) tempoFocoHoje.textContent = formatarTempo((S.pomodoroStats?.tempoHoje || 0) * 60);
+  if (pomodorosTotal) pomodorosTotal.textContent = S.pomodoroStats?.total || 0;
+  if (tempoFocoTotal) tempoFocoTotal.textContent = formatarTempo((S.pomodoroStats?.tempoTotal || 0) * 60);
+}
+
 function fullRender() {
   console.log("=== FULL RENDER INICIADO ===");
-  console.log("Estado S:", S);
   
   if (!S || !S.perfil || Object.keys(S.perfil).length === 0) {
     console.log("AVISO: Perfil vazio, pulando render");
     return;
   }
   
-  console.log("Chamando renderHeader...");
   renderHeader();
-  
-  console.log("Chamando renderTasks...");
   renderTasks();
-  
-  console.log("Chamando renderHabits...");
   renderHabits();
-  
-  console.log("Chamando renderStructure...");
   renderStructure();
-  
-  console.log("Chamando renderBadges...");
   renderBadges();
-  
-  console.log("Chamando renderHistory...");
   renderHistory();
+  renderPomodoroStats();
   
   console.log("=== FULL RENDER CONCLUÍDO ===");
-  
-  renderHeader();
-  renderTasks();
-  renderHabits();
-  renderStructure();
-  renderBadges();
-  renderHistory();
 }
 
 function render() {
   scheduleRender('all');
+}
+
+// ==================== MODO FOCO (POMODORO) ====================
+let focoTimer = null;
+let tempoRestante = 25 * 60;
+let isPomodoro = true;
+let isRunning = false;
+let pomodoroCount = 0;
+
+function iniciarModoFoco() {
+  const tempoFoco = parseInt(document.getElementById('focoTempo').value) * 60;
+  tempoRestante = tempoFoco;
+  isPomodoro = true;
+  isRunning = true;
+  
+  document.getElementById('focoOverlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  
+  atualizarDisplayTimer();
+  
+  focoTimer = setInterval(() => {
+    if (isRunning) {
+      tempoRestante--;
+      atualizarDisplayTimer();
+      
+      if (tempoRestante <= 0) {
+        clearInterval(focoTimer);
+        if (isPomodoro) {
+          // Pomodoro completado
+          pomodoroCount++;
+          S.pomodoroStats.hoje = (S.pomodoroStats.hoje || 0) + 1;
+          S.pomodoroStats.total = (S.pomodoroStats.total || 0) + 1;
+          S.pomodoroStats.tempoHoje = (S.pomodoroStats.tempoHoje || 0) + parseInt(document.getElementById('focoTempo').value);
+          S.pomodoroStats.tempoTotal = (S.pomodoroStats.tempoTotal || 0) + parseInt(document.getElementById('focoTempo').value);
+          
+          // Ganhar XP por pomodoro completado
+          S.xp += 25;
+          S.hist.push({
+            nome: "Pomodoro Completado",
+            data: new Date().toLocaleDateString(),
+            tipo: 'P',
+            xpGanhos: 25
+          });
+          
+          salvar();
+          showToast(`🍅 Pomodoro completo! +25 XP`, 'success');
+          
+          // Iniciar descanso
+          const tempoDescanso = parseInt(document.getElementById('descansoTempo').value) * 60;
+          tempoRestante = tempoDescanso;
+          isPomodoro = false;
+          isRunning = true;
+          
+          document.getElementById('focoStatus').textContent = "Descanso - Relaxe!";
+          
+          focoTimer = setInterval(() => {
+            if (isRunning) {
+              tempoRestante--;
+              atualizarDisplayTimer();
+              
+              if (tempoRestante <= 0) {
+                clearInterval(focoTimer);
+                showToast("⏰ Descanso terminado! Hora de focar novamente.", 'info');
+                document.getElementById('focoStatus').textContent = "Pronto para começar...";
+              }
+            }
+          }, 1000);
+        }
+      }
+    }
+  }, 1000);
+}
+
+function pausarModoFoco() {
+  isRunning = !isRunning;
+  const btnPausar = document.getElementById('btnPausar');
+  if (btnPausar) {
+    btnPausar.innerHTML = isRunning ? '⏸️ Pausar' : '▶️ Continuar';
+  }
+}
+
+function pararModoFoco() {
+  clearInterval(focoTimer);
+  document.getElementById('focoOverlay').style.display = 'none';
+  document.body.style.overflow = 'auto';
+  showToast("Modo foco encerrado", 'info');
+  
+  // Atualizar estatísticas
+  renderPomodoroStats();
+}
+
+function atualizarDisplayTimer() {
+  const minutos = Math.floor(tempoRestante / 60);
+  const segundos = tempoRestante % 60;
+  const timerDisplay = document.getElementById('focoTimer');
+  const statusDisplay = document.getElementById('focoStatus');
+  
+  if (timerDisplay) {
+    timerDisplay.textContent = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+  }
+  
+  if (statusDisplay) {
+    statusDisplay.textContent = isPomodoro ? 
+      `Foco - ${pomodoroCount + 1}º Pomodoro` : 
+      "Descanso - Relaxe!";
+  }
+}
+
+function formatarTempo(segundos) {
+  const horas = Math.floor(segundos / 3600);
+  const minutos = Math.floor((segundos % 3600) / 60);
+  
+  if (horas > 0) {
+    return `${horas}h ${minutos}m`;
+  } else {
+    return `${minutos}m`;
+  }
+}
+
+// ==================== GESTOS TOUCH PARA MOBILE ====================
+let touchStartX = 0;
+let touchEndX = 0;
+
+document.addEventListener('touchstart', e => {
+  touchStartX = e.changedTouches[0].screenX;
+});
+
+document.addEventListener('touchend', e => {
+  touchEndX = e.changedTouches[0].screenX;
+  handleSwipe();
+});
+
+function handleSwipe() {
+  const sections = ['home', 'conquistas', 'perfil', 'registros', 'modofoco', 'historico'];
+  const currentSection = document.querySelector('.section.active');
+  if (!currentSection) return;
+  
+  const currentIndex = sections.indexOf(currentSection.id);
+  if (currentIndex === -1) return;
+  
+  const swipeThreshold = 50;
+  
+  if (touchEndX < touchStartX - swipeThreshold && currentIndex < sections.length - 1) {
+    // Swipe left - próxima seção
+    const nextBtn = document.querySelector(`.nav button[onclick*="${sections[currentIndex + 1]}"]`);
+    if (nextBtn) {
+      irPara(sections[currentIndex + 1], nextBtn);
+    }
+  } else if (touchEndX > touchStartX + swipeThreshold && currentIndex > 0) {
+    // Swipe right - seção anterior
+    const prevBtn = document.querySelector(`.nav button[onclick*="${sections[currentIndex - 1]}"]`);
+    if (prevBtn) {
+      irPara(sections[currentIndex - 1], prevBtn);
+    }
+  }
 }
 
 // ==================== OUTRAS FUNÇÕES ====================
@@ -1798,18 +3079,15 @@ function concluirHabito(habIdx, dataStr) {
 }
 
 function toggleCat(cat) {
-  // Estado atual
-  const isOpening = !openCats[cat];
   openCats[cat] = !openCats[cat];
   localStorage.setItem('lifeDash_openCats', JSON.stringify(openCats));
   
-  // Encontrar os elementos
   const catIndex = S.categorias.indexOf(cat);
-  const catHeaders = document.querySelectorAll('.cat-header');
-  const taskWrappers = document.querySelectorAll('.task-container-wrapper');
+  const wrappers = document.querySelectorAll('.task-container-wrapper');
+  const headers = document.querySelectorAll('.cat-header');
   
-  const currentHeader = catHeaders[catIndex];
-  const currentWrapper = taskWrappers[catIndex];
+  const currentWrapper = wrappers[catIndex];
+  const currentHeader = headers[catIndex];
   
   if (!currentWrapper) return;
   
@@ -1819,73 +3097,14 @@ function toggleCat(cat) {
     iconSpan.innerText = openCats[cat] ? '▲' : '▼';
   }
   
-  if (isOpening) {
-    // ========== ABRIR ==========
-    
-    // 1. Primeiro, mostrar o container (sem animação ainda)
-    currentWrapper.style.display = 'block';
-    
-    // 2. Calcular a altura REAL do conteúdo
-    // IMPORTANTE: precisamos ver a altura sem restrições primeiro
-    currentWrapper.style.maxHeight = 'none';
-    const contentHeight = currentWrapper.scrollHeight;
-    
-    // 3. Resetar para 0 e forçar reflow
-    currentWrapper.style.maxHeight = '0';
-    currentWrapper.style.opacity = '0';
-    currentWrapper.offsetHeight; // Força reflow
-    
-    // 4. Adicionar classe para transição
-    currentWrapper.classList.remove('open'); // Remove a animação CSS
-    currentWrapper.classList.add('open-dynamic'); // Usa transição controlada
-    
-    // 5. Animar para a altura real
-    requestAnimationFrame(() => {
-      currentWrapper.style.transition = 'max-height 0.3s ease, opacity 0.3s ease';
-      currentWrapper.style.maxHeight = contentHeight + 'px';
-      currentWrapper.style.opacity = '1';
-    });
-    
-    // 6. Limpar após animação
-    setTimeout(() => {
-      currentWrapper.style.maxHeight = 'none';
-      currentWrapper.style.transition = '';
-    }, 300);
-    
+  // Alternar classe
+  if (openCats[cat]) {
+    currentWrapper.classList.add('open');
   } else {
-    // ========== FECHAR ==========
-    
-    // 1. Pegar altura atual
-    const currentHeight = currentWrapper.scrollHeight;
-    
-    // 2. Configurar transição
     currentWrapper.classList.remove('open');
-    currentWrapper.classList.add('open-dynamic');
-    currentWrapper.style.maxHeight = currentHeight + 'px';
-    currentWrapper.style.transition = 'max-height 0.3s ease, opacity 0.3s ease';
-    
-    // 3. Forçar reflow
-    currentWrapper.offsetHeight;
-    
-    // 4. Animar fechamento
-    currentWrapper.style.maxHeight = '0';
-    currentWrapper.style.opacity = '0';
-    
-    // 5. Esconder completamente após animação
-    setTimeout(() => {
-      currentWrapper.style.display = 'none';
-      currentWrapper.classList.remove('open-dynamic');
-      currentWrapper.style.maxHeight = '';
-      currentWrapper.style.opacity = '';
-      currentWrapper.style.transition = '';
-    }, 300);
   }
-  
-  // Atualizar classe "cat-done" (opcional, mantém sua lógica)
-  const ts = S.tarefas.filter(t => t.cat === cat);
-  const conc = ts.filter(t => t.status === 'concluido').length;
-  currentHeader.classList.toggle('cat-done', conc > 0 && conc === ts.length);
 }
+
 // ==================== CONQUISTAS ====================
 const BADGES = [
   {id:'1', icon:'👋', title:'Primeiro Passo', desc:'Crie sua primeira tarefa', cat:'Iniciante', req:(s)=> s.tarefas.length >= 1},
@@ -1913,6 +3132,8 @@ const BADGES = [
   {id:'20', icon:'🏆', title:'Mestre da Produtividade', desc:'1000 XP acumulados', cat:'Lendário', req:(s)=> s.xp >= 1000},
   {id:'21', icon:'💫', title:'Perfeição', desc:'Complete 50 hábitos', cat:'Lendário', req:(s)=> s.hist.filter(h=>h.tipo==='H').length >= 50},
   {id:'22', icon:'🌈', title:'Arco-Íris', desc:'Desbloqueie 15 conquistas', cat:'Lendário', req:(s)=> s.badges_unlocked.length >= 15},
+  {id:'23', icon:'🍅', title:'Pomodoro Master', desc:'Complete 10 pomodoros', cat:'Intermediário', req:(s)=> s.pomodoroStats?.total >= 10},
+  {id:'24', icon:'⏳', title:'Foco Total', desc:'Acumule 10 horas em modo foco', cat:'Avançado', req:(s)=> (s.pomodoroStats?.tempoTotal || 0) >= 600}
 ];
 
 const BADGE_COLORS = {
@@ -1947,8 +3168,14 @@ function calcularProgressoConquista(badge) {
   else if(badge.id === '20') { atual = S.xp; total = 1000; }
   else if(badge.id === '21') { atual = S.hist.filter(h=>h.tipo==='H').length; total = 50; }
   else if(badge.id === '22') { atual = S.badges_unlocked.length; total = 15; }
+  else if(badge.id === '23') { atual = S.pomodoroStats?.total || 0; total = 10; }
+  else if(badge.id === '24') { atual = S.pomodoroStats?.tempoTotal || 0; total = 600; }
   
-  return { atual: Math.min(atual, total), total, percent: total > 0 ? Math.min((atual / total) * 100, 100) : 0 };
+  return { 
+    atual: Math.min(atual, total), 
+    total, 
+    percent: total > 0 ? Math.min((atual / total) * 100, 100) : 0 
+  };
 }
 
 function checarConquistas() {
@@ -1978,9 +3205,9 @@ function showLoading(message = "Carregando...") {
     overlay.className = 'loading-overlay';
     overlay.innerHTML = `
       <div class="loading-content">
-        <div class="spinner" style="width:48px; height:48px; margin-bottom:20px;"></div>
-        <div style="color:var(--accent); font-size:18px; font-weight:600;">${message}</div>
-        <div style="color:#94a3b8; font-size:14px; margin-top:8px;">Aguarde um momento...</div>
+        <div class="spinner" style="width:48px; height:48px; margin-bottom:var(--space-lg);"></div>
+        <div style="color:var(--accent); font-size:20px; font-weight:600;">${message}</div>
+        <div style="color:rgba(255, 255, 255, 0.6); font-size:15px; margin-top:var(--space-sm);">Aguarde um momento...</div>
       </div>
     `;
     document.body.appendChild(overlay);
@@ -2015,7 +3242,7 @@ function showToast(message, type = 'info', duration = 3000) {
   toast.className = `toast toast-${type}`;
   toast.innerHTML = `
     <span class="toast-icon">${icons[type] || icons.info}</span>
-    <span style="flex:1; font-size:14px;">${message}</span>
+    <span style="flex:1; font-size:15px;">${message}</span>
   `;
   
   document.body.appendChild(toast);
@@ -2033,35 +3260,29 @@ function showToast(message, type = 'info', duration = 3000) {
 function hideSkeletons() {
   console.log("🎭 ESCONDENDO SKELETONS E MOSTRANDO DADOS REAIS");
   
-  // 1. Foto
   const fotoSkeleton = document.getElementById("hFotoSkeleton");
   const foto = document.getElementById("hFoto");
   if (fotoSkeleton) fotoSkeleton.style.display = "none";
   if (foto) foto.style.display = "block";
   
-  // 2. Informações do perfil
   const profileInfoSkeleton = document.getElementById("profileInfoSkeleton");
   const profileInfoReal = document.getElementById("profileInfoReal");
   if (profileInfoSkeleton) profileInfoSkeleton.style.display = "none";
   if (profileInfoReal) profileInfoReal.style.display = "block";
   
-  // 3. Badges mobile - usar a função de responsividade
   const mobileBadgesSkeleton = document.getElementById("mobileBadgesSkeleton");
   const mobileBadgesReal = document.getElementById("mobileBadgesReal");
   if (mobileBadgesSkeleton) mobileBadgesSkeleton.style.display = "none";
   if (mobileBadgesReal) {
     mobileBadgesReal.style.display = "block";
-    // Chamar função de responsividade para decidir se mostra ou não
     setTimeout(atualizarVisibilidadeBadges, 50);
   }
   
-  // 4. XP
   const xpInfoSkeleton = document.getElementById("xpInfoSkeleton");
   const xpInfoReal = document.getElementById("xpInfoReal");
   if (xpInfoSkeleton) xpInfoSkeleton.style.display = "none";
   if (xpInfoReal) xpInfoReal.style.display = "block";
   
-  // 5. Badges desktop
   const badgesSkeleton = document.getElementById("badgesSkeleton");
   const homeBadges = document.getElementById("homeBadges");
   const conquistasTitulo = document.getElementById("conquistasTitulo");
@@ -2069,18 +3290,15 @@ function hideSkeletons() {
   if (homeBadges) homeBadges.style.display = "flex";
   if (conquistasTitulo) conquistasTitulo.style.display = "block";
   
-  // 6. Remover classes skeleton dos textos (se houver)
   document.querySelectorAll('.skeleton-line').forEach(el => {
     el.style.display = 'none';
   });
 
-    // 7. Tarefas
   const tarefasSkeleton = document.getElementById("tarefasSkeleton");
   const homeTarefas = document.getElementById("homeTarefas");
   if (tarefasSkeleton) tarefasSkeleton.style.display = "none";
   if (homeTarefas) homeTarefas.style.display = "block";
   
-  // 8. Hábitos
   const habitosSkeleton = document.getElementById("habitosSkeleton");
   const habitTable = document.querySelector(".habit-table");
   if (habitosSkeleton) habitosSkeleton.style.display = "none";
@@ -2115,14 +3333,18 @@ function localPreview(input) {
   } 
 }
 
-// ==================== OUTRAS FUNÇÕES ====================
+// ==================== SISTEMA DE SALVAMENTO ====================
+let saveTimeout;
 function salvar() { 
-  if(auth.currentUser) {
-    db.collection("users").doc(auth.currentUser.uid).set(S).catch(err => {
-      console.error("Erro ao salvar:", err);
-      showToast("Erro ao salvar dados", 'error');
-    });
-  }
+  if (saveTimeout) clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(() => {
+    if(auth.currentUser) {
+      db.collection("users").doc(auth.currentUser.uid).set(S, { merge: true }).catch(err => {
+        console.error("Erro ao salvar:", err);
+        showToast("Erro ao salvar dados", 'error');
+      });
+    }
+  }, 1000);
 }
 
 function resetDia() {
@@ -2166,7 +3388,13 @@ function resetGeral() {
     habitos: [], 
     hist: [], 
     xp: 0, 
-    badges_unlocked: [] 
+    badges_unlocked: [],
+    pomodoroStats: {
+      total: 0,
+      hoje: 0,
+      tempoTotal: 0,
+      tempoHoje: 0
+    }
   }; 
   
   localStorage.removeItem('lifeDash_openCats');
@@ -2187,7 +3415,8 @@ function mostrarAnimacaoLevelUp(nivel) {
   overlay.style.cssText = `
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.9);
+    background: rgba(0,0,0,0.95);
+    backdrop-filter: blur(20px);
     z-index: 99999;
     display: flex;
     align-items: center;
@@ -2196,10 +3425,10 @@ function mostrarAnimacaoLevelUp(nivel) {
   `;
   
   overlay.innerHTML = `
-    <div style="text-align: center; animation: scaleIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);">
-      <div style="font-size: 120px; margin-bottom: 20px; animation: rotate 1s ease;">⭐</div>
-      <h1 style="color: var(--gold); font-size: 56px; margin: 0; text-shadow: 0 0 30px var(--gold); font-weight:700">LEVEL UP!</h1>
-      <p style="color: white; font-size: 36px; margin: 15px 0; font-weight:600">Nível ${nivel}</p>
+    <div style="text-align: center; animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);">
+      <div style="font-size: 120px; margin-bottom: var(--space-lg); animation: rotate 1s ease;">⭐</div>
+      <h1 style="color: var(--gold); font-size: 56px; margin: 0; text-shadow: 0 0 30px var(--gold); font-weight:800">LEVEL UP!</h1>
+      <p style="color: white; font-size: 36px; margin: var(--space-md) 0; font-weight:600">Nível ${nivel}</p>
       <p style="color: var(--accent); font-size: 20px;">Você está evoluindo! Continue assim! 🚀</p>
     </div>
   `;
@@ -2217,6 +3446,7 @@ function mostrarAnimacaoConquista(badge) {
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.95);
+    backdrop-filter: blur(20px);
     z-index: 99999;
     display: flex;
     align-items: center;
@@ -2227,11 +3457,11 @@ function mostrarAnimacaoConquista(badge) {
   const cor = BADGE_COLORS[badge.cat] || 'var(--gold)';
   
   overlay.innerHTML = `
-    <div style="text-align: center; animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); max-width:500px; padding:20px">
-      <div style="font-size: 120px; margin-bottom: 20px; animation: pulse 1s infinite;">${badge.icon}</div>
-      <h2 style="color: ${cor}; font-size: 42px; margin: 0; text-shadow: 0 0 20px ${cor}; font-weight:700">🏆 CONQUISTA!</h2>
-      <p style="color: white; font-size: 32px; margin: 20px 0; font-weight: 700;">${badge.title}</p>
-      <p style="color: var(--accent); font-size: 18px; line-height:1.5">${badge.desc}</p>
+    <div style="text-align: center; animation: bounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); max-width:500px; padding:var(--space-lg)">
+      <div style="font-size: 120px; margin-bottom: var(--space-lg); animation: pulse 1s infinite;">${badge.icon}</div>
+      <h2 style="color: ${cor}; font-size: 42px; margin: 0; text-shadow: 0 0 20px ${cor}; font-weight:800">🏆 CONQUISTA!</h2>
+      <p style="color: white; font-size: 32px; margin: var(--space-lg) 0; font-weight: 700;">${badge.title}</p>
+      <p style="color: var(--accent); font-size: 18px; line-height:1.6">${badge.desc}</p>
     </div>
   `;
   
@@ -2242,36 +3472,31 @@ function mostrarAnimacaoConquista(badge) {
   }, 4000);
 }
 
-// ==================== SISTEMA DE SONS ====================
-const SONS = {};
-
-function carregarSons() {
-  if (Object.keys(SONS).length === 0) {
-    SONS.tarefaConcluida = new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3');
-    SONS.habitoConcluido = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
-    SONS.xpGanho = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-    SONS.conquistaDesbloqueada = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
-    SONS.levelUp = new Audio('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3');
-    SONS.erro = new Audio('https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3');
-    SONS.sucesso = new Audio('https://assets.mixkit.co/active_storage/sfx/2001/2001-preview.mp3');
-    
-    Object.values(SONS).forEach(som => {
-      som.preload = 'auto';
-      som.load();
-    });
+// ==================== CONTROLE DE RESPONSIVIDADE ====================
+function atualizarVisibilidadeBadges() {
+  const isMobile = window.innerWidth <= 1090;
+  
+  const homeBadgesMobile = document.getElementById("homeBadgesMobile");
+  const conquistasDesktop = document.querySelector('.card-slim:nth-child(2)');
+  
+  if (isMobile) {
+    if (homeBadgesMobile) {
+      homeBadgesMobile.style.display = "flex";
+    }
+    if (conquistasDesktop) {
+      conquistasDesktop.style.display = "none";
+    }
+  } else {
+    if (homeBadgesMobile) {
+      homeBadgesMobile.style.display = "none";
+    }
+    if (conquistasDesktop) {
+      conquistasDesktop.style.display = "flex";
+    }
   }
 }
 
-function tocarSom(tipo, vol = 0.5) {
-  try {
-    const som = SONS[tipo];
-    if (som) {
-      som.volume = vol;
-      som.currentTime = 0;
-      som.play().catch(e => console.log('Autoplay bloqueado'));
-    }
-  } catch(e) { console.log('Erro som:', e); }
-}
+window.addEventListener('resize', atualizarVisibilidadeBadges);
 
 // ==================== INICIALIZAÇÃO ====================
 function inicializarApp() {
@@ -2292,7 +3517,7 @@ function inicializarApp() {
   });
   
   window.jaDeuBoasVindas = false;
-  window.nivelAnterior = undefined; // Iniciar como undefined
+  window.nivelAnterior = undefined;
   window.tempFoto = "";
   
   if (!auth.currentUser) {
@@ -2320,11 +3545,10 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// ==================== FUNÇÃO DE DEBUG ====================
+// ==================== DEBUG FUNCTIONS ====================
 function debugPerfil() {
   console.log("=== DEBUG DO PERFIL ===");
   
-  // Verificar elementos HTML
   const elementos = ['hNome', 'hIdade', 'hSexo', 'hProfissao', 'hFrase', 'hNivel', 'xpNumerico', 'hFoto', 'homeBadges', 'homeBadgesMobile'];
   
   elementos.forEach(id => {
@@ -2332,13 +3556,11 @@ function debugPerfil() {
     console.log(`${id}:`, el ? "ENCONTRADO" : "NÃO ENCONTRADO");
   });
   
-  // Verificar dados
   console.log("Dados S.perfil:", S.perfil);
   console.log("Dados S.badges_unlocked:", S.badges_unlocked);
   console.log("=== FIM DEBUG ===");
 }
 
-// Adicionar botão de debug na tela
 setTimeout(() => {
   if (!document.getElementById('debugBtn')) {
     const btn = document.createElement('button');
@@ -2356,150 +3578,12 @@ setTimeout(() => {
       font-size: 12px;
       z-index: 9999;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
     `;
     btn.onclick = debugPerfil;
     document.body.appendChild(btn);
   }
 }, 2000);
-
-// ==================== BOTÃO DE DEBUG TAREFAS/HÁBITOS ====================
-function debugTarefasHabitos() {
-  console.log("=== DEBUG TAREFAS E HÁBITOS ===");
-  
-  // Verificar elementos
-  console.log("homeTarefas:", document.getElementById("homeTarefas"));
-  console.log("habitHead:", document.getElementById("habitHead"));
-  console.log("homeHabitos:", document.getElementById("homeHabitos"));
-  
-  // Verificar dados
-  console.log("Dados S.categorias:", S.categorias);
-  console.log("Dados S.tarefas:", S.tarefas);
-  console.log("Dados S.habitos:", S.habitos);
-  
-  // Forçar renderização
-  renderTasks();
-  renderHabits();
-  
-  // Forçar mostrar elementos
-  const homeTarefas = document.getElementById("homeTarefas");
-  const habitTable = document.querySelector(".habit-table");
-  if (homeTarefas) homeTarefas.style.display = "block";
-  if (habitTable) habitTable.style.display = "table";
-  
-  console.log("=== FIM DEBUG ===");
-}
-
-// Adicionar botão
-setTimeout(() => {
-  if (!document.getElementById('debugTarefasBtn')) {
-    const btn = document.createElement('button');
-    btn.id = 'debugTarefasBtn';
-    btn.textContent = "🐛 Debug Tarefas";
-    btn.style.cssText = `
-      position: fixed;
-      bottom: 140px;
-      right: 20px;
-      background: #a855f7;
-      color: white;
-      border: none;
-      border-radius: 20px;
-      padding: 8px 16px;
-      font-size: 12px;
-      z-index: 9999;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    `;
-    btn.onclick = debugTarefasHabitos;
-    document.body.appendChild(btn);
-  }
-}, 3000);
-
-// ==================== DEBUG ESPECÍFICO PARA CONQUISTAS ====================
-function debugConquistas() {
-  console.log("=== DEBUG CONQUISTAS ===");
-  
-  // 1. Verificar dados
-  console.log("S.badges_unlocked:", S.badges_unlocked);
-  console.log("Tipo:", typeof S.badges_unlocked);
-  console.log("É array?", Array.isArray(S.badges_unlocked));
-  
-  // 2. Verificar lista BADGES
-  console.log("BADGES disponíveis:", BADGES.length);
-  console.log("Primeiras 3 BADGES:", BADGES.slice(0, 3));
-  
-  // 3. Verificar elementos HTML
-  const homeBadges = document.getElementById("homeBadges");
-  const homeBadgesMobile = document.getElementById("homeBadgesMobile");
-  console.log("homeBadges encontrado?", !!homeBadges);
-  console.log("homeBadgesMobile encontrado?", !!homeBadgesMobile);
-  
-  if (homeBadges) {
-    console.log("Conteúdo atual de homeBadges:", homeBadges.innerHTML);
-  }
-  
-  // 4. Testar renderização manual
-  console.log("Testando renderização...");
-  renderHomeBadges();
-  
-  console.log("=== FIM DEBUG CONQUISTAS ===");
-}
-
-// Adicionar botão de debug conquistas
-setTimeout(() => {
-  if (!document.getElementById('debugConquistasBtn')) {
-    const btn = document.createElement('button');
-    btn.id = 'debugConquistasBtn';
-    btn.textContent = "🏆 Debug Conquistas";
-    btn.style.cssText = `
-      position: fixed;
-      bottom: 180px;
-      right: 20px;
-      background: #f59e0b;
-      color: black;
-      border: none;
-      border-radius: 20px;
-      padding: 8px 16px;
-      font-size: 12px;
-      z-index: 9999;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      font-weight: bold;
-    `;
-    btn.onclick = debugConquistas;
-    document.body.appendChild(btn);
-  }
-}, 3000);
-
-// ==================== CONTROLE DE RESPONSIVIDADE ====================
-function atualizarVisibilidadeBadges() {
-  const isMobile = window.innerWidth <= 1090;
-  console.log(`📱 Atualizando visibilidade: ${isMobile ? 'MOBILE' : 'DESKTOP'} (${window.innerWidth}px)`);
-  
-  const homeBadgesMobile = document.getElementById("homeBadgesMobile");
-  const conquistasDesktop = document.querySelector('.card-slim:nth-child(2)');
-  
-  if (isMobile) {
-    // Modo MOBILE
-    if (homeBadgesMobile) {
-      homeBadgesMobile.style.display = "flex";
-    }
-    if (conquistasDesktop) {
-      conquistasDesktop.style.display = "none";
-    }
-  } else {
-    // Modo DESKTOP
-    if (homeBadgesMobile) {
-      homeBadgesMobile.style.display = "none";
-    }
-    if (conquistasDesktop) {
-      conquistasDesktop.style.display = "flex";
-    }
-  }
-}
-
-// Executar quando a janela for redimensionada
-window.addEventListener('resize', atualizarVisibilidadeBadges);
 </script>
 </body>
 </html>
